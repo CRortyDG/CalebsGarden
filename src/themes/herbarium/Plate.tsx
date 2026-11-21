@@ -3,8 +3,8 @@
 import { useEffect, useRef } from 'react';
 import { statusLabel, type Project } from '@/projects';
 import { SheetDialog } from '@/site/ProjectSheet';
-import { Specimen } from './Specimen';
-import { SPECIMEN_BOX, drawSpecimen, latinName, stageNote } from './specimen';
+import { Specimen } from '@/plants/Specimen';
+import { SPECIMEN_BOX, drawSpecimen, latinName, stageNote } from '@/plants/specimen';
 
 /**
  * The Herbarium's project sheet: the specimen sheet at full size, as a

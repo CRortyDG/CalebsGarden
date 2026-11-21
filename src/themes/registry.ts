@@ -31,6 +31,14 @@ export const themes: ThemeDef[] = [
     load: () => import('./plot'),
   },
   {
+    id: 'orrery',
+    name: 'Orrery',
+    blurb: 'A carousel of small planets',
+    enabled: true,
+    weight: 1,
+    load: () => import('./orrery'),
+  },
+  {
     id: 'plain',
     name: 'No scenery',
     blurb: 'Just the list',
@@ -39,6 +47,12 @@ export const themes: ThemeDef[] = [
     load: () => import('./plain'),
   },
 ];
+
+/**
+ * The theme a visitor lands on. Set it to null and every visit gets a weighted
+ * random pick from the enabled themes instead.
+ */
+export const DEFAULT_THEME: string | null = 'overgrowth';
 
 const KEY = 'cg-theme';
 const byId = (id: string | null | undefined) => themes.find((t) => t.id === id);
@@ -69,7 +83,8 @@ function remember(id: string) {
  * Which theme this visit gets:
  *   1. `?theme=<id>` if it names a theme (`?theme=random` forces a fresh pick)
  *   2. the theme already picked in this browser tab
- *   3. a weighted random pick from the enabled themes
+ *   3. `DEFAULT_THEME`, or a weighted random pick from the enabled themes if
+ *      there is no default
  */
 export function pickTheme(): ThemeDef {
   const asked = new URLSearchParams(window.location.search).get('theme');
@@ -81,6 +96,7 @@ export function pickTheme(): ThemeDef {
       /* ignore */
     }
   }
+  if (!theme && asked !== 'random') theme = byId(DEFAULT_THEME);
   theme ??= randomTheme();
   remember(theme.id);
   return theme;

@@ -1,7 +1,8 @@
 import type { Status } from '@/projects';
 
-// A pressed plant drawn from a project's name. The same name always gives the
-// same plant, so a new project gets its own species without anyone drawing it.
+// A plant drawn from a project's name. The same name always gives the same
+// plant, so a new project gets its own species without anyone drawing it, and
+// every theme that shows plants shows the same one for a project.
 // The status decides how far along it is: a sprout, in bud, or in full flower.
 
 export interface Leaf {
@@ -40,7 +41,8 @@ const TONES = [
 ];
 const GREENS = ['#66773f', '#7b8a4d', '#8a9660', '#5d6e3a'];
 
-function seeded(text: string) {
+/** A repeatable random number source: the same text always gives the same numbers. */
+export function seeded(text: string) {
   let h = 2166136261;
   for (let i = 0; i < text.length; i++) h = Math.imul(h ^ text.charCodeAt(i), 16777619);
   return () => {

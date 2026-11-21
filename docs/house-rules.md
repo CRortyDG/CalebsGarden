@@ -1,8 +1,8 @@
 # House rules for themes
 
-A theme is scenery around the same content. It goes into the random pick
-(`enabled: true` in `src/themes/registry.ts`) only when it passes all eight.
-Until then it can still be opened with `?theme=<id>`.
+A theme is scenery around the same content. It goes into the Scenery menu and
+the random pick (`enabled: true` in `src/themes/registry.ts`) only when it
+passes all eight. Until then it can still be opened with `?theme=<id>`.
 
 1. **Names first.** Every project name is readable and clickable on the first
    screen, with no interaction and no wait longer than one second.

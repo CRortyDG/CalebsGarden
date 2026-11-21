@@ -6,8 +6,8 @@ import type { CSSProperties, KeyboardEvent } from 'react';
 import { site, statusLabel } from '@/projects';
 import type { ThemeProps } from '../types';
 import { Plate } from './Plate';
-import { Specimen } from './Specimen';
-import { drawSpecimen, latinName } from './specimen';
+import { Specimen } from '@/plants/Specimen';
+import { drawSpecimen, latinName } from '@/plants/specimen';
 
 /**
  * Herbarium: a field journal with tab dividers. The Projects page holds one

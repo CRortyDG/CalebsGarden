@@ -1,0 +1,339 @@
+/* Orrery: a carousel of planets in the night sky. Loaded only when this theme is. */
+.or {
+  /* the ring: an ellipse the planets sit on, seen from a little above */
+  --size: min(34svh, 27vw);
+  --rx: 33%;
+  --ry: 15%;
+  --cy: 32%;
+  /* the ring is tilted, so the planet at the back is not hidden behind the one in front */
+  --skew: 15%;
+  --smin: 0.32;
+  position: relative;
+  height: 100svh;
+  min-height: 560px;
+  overflow: hidden;
+  color: #eef0ff;
+  background: radial-gradient(120% 80% at 50% 112%, #1b2748 0%, #0b1024 46%, #05070f 100%);
+  touch-action: pan-y;
+  user-select: none;
+  -webkit-user-select: none;
+}
+.or-sky {
+  position: absolute;
+  top: 0;
+  left: -8%;
+  width: 116%;
+  height: 100%;
+  /* the stars slide a little as the ring turns */
+  transform: translateX(calc(var(--turn) * -1.4%));
+  transition: transform 1s cubic-bezier(0.3, 0.7, 0.2, 1);
+}
+.or-gate {
+  position: absolute;
+  z-index: 20;
+  left: max(20px, env(safe-area-inset-left, 0px));
+  top: calc(env(safe-area-inset-top, 0px) + 18px);
+  pointer-events: none;
+}
+.or-gate h1 {
+  margin: 0;
+  font-family: var(--display);
+  font-weight: 800;
+  font-size: clamp(1.5rem, 4.2vw, 3rem);
+  letter-spacing: -0.02em;
+  line-height: 1;
+}
+.or-gate p {
+  margin: 6px 0 0;
+  font: 500 0.72rem var(--mono);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #a9b1d6;
+}
+
+/* ---- the ring ---- */
+.or-ring {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.or-item {
+  --s: calc(var(--smin) + (1 - var(--smin)) * var(--depth));
+  position: absolute;
+  z-index: var(--z);
+  left: calc(50% + var(--rx) * var(--sin) + var(--skew) * (1 - var(--cos)) / 2);
+  top: calc(var(--cy) + var(--ry) * var(--cos));
+  width: var(--size);
+  opacity: calc(0.6 + 0.4 * var(--depth));
+  /* the planet's centre, not the top of its plant, sits on the ring */
+  transform: translate(-50%, -68.9%) scale(var(--s));
+  transform-origin: 50% 68.9%;
+  transition:
+    left 0.8s cubic-bezier(0.3, 0.7, 0.2, 1),
+    top 0.8s cubic-bezier(0.3, 0.7, 0.2, 1),
+    transform 0.8s cubic-bezier(0.3, 0.7, 0.2, 1),
+    opacity 0.8s;
+}
+.or-planet {
+  display: block;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  color: inherit;
+  background: none;
+  border: 0;
+  border-radius: 24px;
+  cursor: pointer;
+}
+span.or-planet {
+  cursor: default;
+}
+.or-planet svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+  animation: or-bob 6s ease-in-out var(--bob, 0s) infinite alternate;
+}
+@keyframes or-bob {
+  to {
+    transform: translateY(-2.2%);
+  }
+}
+.or-planet:focus-visible {
+  outline: 3px solid var(--lamp);
+  outline-offset: 2px;
+}
+button.or-planet:hover svg {
+  filter: brightness(1.15);
+}
+/* a waiting planet's name: always showing, and a link straight to the project */
+.or-name {
+  position: absolute;
+  top: 99%;
+  left: 50%;
+  transform: translateX(-50%) scale(calc(1 / var(--s)));
+  transform-origin: 50% 0;
+  white-space: nowrap;
+  font: 600 0.9rem var(--mono);
+  color: #eef0ff;
+  text-decoration: none;
+  background: rgba(10, 14, 32, 0.78);
+  border: 1px solid rgba(190, 200, 255, 0.35);
+  border-radius: 999px;
+  padding: 5px 12px;
+}
+a.or-name:hover,
+a.or-name:focus-visible {
+  border-color: var(--lamp);
+  color: var(--lamp);
+}
+
+/* ---- the planet in front: name, one line, Open ---- */
+.or-caption {
+  position: absolute;
+  z-index: 15;
+  left: 50%;
+  top: calc(var(--cy) + var(--ry) + var(--size) * 0.35 + 16px);
+  width: min(92vw, 560px);
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  text-align: center;
+  animation: or-in 0.5s 0.15s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+@keyframes or-in {
+  from {
+    opacity: 0;
+    transform: translate(-50%, 10px);
+  }
+}
+.or-caption p {
+  margin: 0;
+}
+.or-caption h2 {
+  margin: 0;
+  font-family: var(--display);
+  font-weight: 800;
+  font-size: clamp(1.8rem, 4.4vw, 3rem);
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+}
+.or-blurb {
+  font: 400 0.9rem var(--mono);
+  color: #a9b1d6;
+}
+.or-about {
+  color: #c5cbe6;
+}
+.or-actions {
+  margin-top: 8px !important;
+}
+
+/* ---- arrows and dots ---- */
+.or-controls {
+  position: absolute;
+  z-index: 15;
+  left: 50%;
+  bottom: calc(env(safe-area-inset-bottom, 0px) + 18px);
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.or-arrow {
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  font-size: 1.6rem;
+  line-height: 1;
+  color: var(--chrome-fg);
+  background: var(--chrome-bg);
+  border: 1px solid var(--chrome-line);
+  border-radius: 50%;
+  cursor: pointer;
+}
+.or-arrow span {
+  margin-top: -3px;
+}
+.or-arrow:hover {
+  border-color: var(--lamp);
+  color: var(--lamp);
+}
+.or-dots {
+  display: flex;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.or-dots button {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  background: none;
+  border: 0;
+  cursor: pointer;
+}
+.or-dots button::before {
+  content: '';
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  border: 1.5px solid #a9b1d6;
+  transition: transform 0.2s;
+}
+.or-dots button:hover::before {
+  border-color: var(--lamp);
+}
+.or-dots button[aria-current='true']::before {
+  background: var(--lamp);
+  border-color: var(--lamp);
+  transform: scale(1.35);
+}
+
+/* ---- opening a project: the view dives toward its planet ---- */
+.or.is-open .or-item[data-rel='0'] {
+  transform: translate(-50%, -68.9%) scale(2.1);
+}
+.or.is-open .or-item:not([data-rel='0']),
+.or.is-open .or-controls {
+  opacity: 0;
+}
+.or.is-open .or-caption {
+  visibility: hidden;
+}
+.or-controls {
+  transition: opacity 0.5s;
+}
+.site[data-theme='orrery'] .sheet::backdrop {
+  background: rgba(4, 6, 16, 0.5);
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+
+.or-names {
+  display: none;
+}
+
+/* ---- phones: a flat carousel. The neighbours peek in at the sides and the names sit in a row ---- */
+@media (max-width: 760px) {
+  .or {
+    --size: min(30svh, 52vw);
+    --cy: 40%;
+    --smin: 0.3;
+  }
+  .or-item {
+    left: calc(50% + 47% * var(--sin));
+    top: var(--cy);
+    opacity: min(1, calc(var(--depth) * 1.5));
+  }
+  .or-name {
+    display: none;
+  }
+  .or-caption {
+    top: calc(var(--cy) + var(--size) * 0.35 + 12px);
+  }
+  .or-names {
+    display: block;
+    position: absolute;
+    z-index: 15;
+    left: 0;
+    right: 0;
+    bottom: calc(env(safe-area-inset-bottom, 0px) + 74px);
+    transition: opacity 0.5s;
+  }
+  .or-names ul {
+    display: flex;
+    gap: 8px;
+    margin: 0;
+    padding: 2px 14px;
+    list-style: none;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .or-names ul::-webkit-scrollbar {
+    display: none;
+  }
+  .or-names a,
+  .or-names button {
+    display: block;
+    white-space: nowrap;
+    font: 600 0.82rem var(--mono);
+    color: #eef0ff;
+    text-decoration: none;
+    background: rgba(10, 14, 32, 0.78);
+    border: 1px solid rgba(190, 200, 255, 0.35);
+    border-radius: 999px;
+    padding: 7px 13px;
+  }
+  .or-names [aria-current='true'] {
+    color: #1d1503;
+    background: var(--lamp);
+    border-color: var(--lamp);
+  }
+  .or.is-open .or-names {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .or-item,
+  .or-sky,
+  .or-controls {
+    transition: none;
+  }
+  .or-planet svg,
+  .or-caption {
+    animation: none;
+  }
+  .or.is-open .or-item[data-rel='0'] {
+    transform: translate(-50%, -68.9%) scale(var(--s));
+  }
+}
