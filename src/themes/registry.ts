@@ -5,6 +5,15 @@ import type { ThemeDef } from './types';
 // passes the house rules in docs/house-rules.md.
 export const themes: ThemeDef[] = [
   {
+    id: 'overgrowth',
+    name: 'Overgrowth',
+    blurb: 'A page that grows as you scroll',
+    enabled: true,
+    weight: 1,
+    sheets: 'inline',
+    load: () => import('./overgrowth'),
+  },
+  {
     id: 'plot',
     name: 'The Plot',
     blurb: 'A garden map, lit by lantern at night',

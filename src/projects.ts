@@ -36,6 +36,8 @@ export interface Project {
 export const site = {
   name: 'calebs.garden',
   tagline: "a garden of things I've made",
+  /** Ways to reach you, shown in the footer of themes that have one. */
+  links: [] as { label: string; href: string }[],
 };
 
 export const projects: Project[] = [

@@ -11,14 +11,18 @@ Until then it can still be opened with `?theme=<id>`.
    design has failed.
 3. **Clickable things look clickable.** Anything that opens something looks
    like a button, a tag or a tab. Scenery is never the only way in.
-4. **One click to the project sheet.** Link a project's name to `#<id>` (use
-   `projectLink(p)`) or call `openProject(id)`. The sheet is shared, so its
-   content and buttons are the same in every theme.
+4. **One click to the project.** Link a project's name to `#<id>` (use
+   `projectLink(p)`) or call `openProject(id)`. That opens the shared project
+   sheet, so its content and buttons are the same in every theme. A theme
+   that is itself a scrolling page can set `sheets: 'inline'` in the registry
+   and render `ProjectDetails` in a section with `id={p.id}` instead: the same
+   links then scroll to the project, and nothing opens on top of it.
 5. **Always a way out.** The Index and Scenery buttons sit in the top right
    corner in every theme; keep that corner clear. Esc and Back close whatever
    is open.
 6. **Links can be shared.** `?theme=<id>#<project>` opens that theme with that
-   project showing. This comes free with the shared sheet.
+   project showing. This comes free with the shared sheet and with `id`
+   sections.
 7. **Works for everyone.** Thumb, keyboard and screen reader all work. Reduced
    motion gives a still version. Nothing depends on hover.
 8. **Scenery reacts, never blocks.** Animation can respond to the visitor. It

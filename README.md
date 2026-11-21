@@ -2,8 +2,9 @@
 
 My personal site. The content is one list of projects; around it the site
 wears a **theme**, picked at random for each visit or chosen with
-`?theme=<id>`. Whatever the theme, every project name opens the same project
-sheet, and the Index and Scenery buttons sit in the same corner.
+`?theme=<id>`. Whatever the theme, every project name leads to the same
+project details in one click, and the Index and Scenery buttons sit in the
+same corner.
 
 Built with Next.js (App Router) and React. Every page is static.
 
@@ -19,6 +20,7 @@ npm run build    # production build
 
 | `?theme=` | What it is | In the random pick |
 | --- | --- | --- |
+| `overgrowth` | A scrolling page. A stem grows down it as you scroll and each project flowers off it | yes |
 | `plot` | A garden map from above. At night the pointer is a lantern | yes |
 | `plain` | No scenery, just the list | no |
 | `random` | Forces a fresh random pick | |
@@ -42,8 +44,10 @@ sheet and the Index pick it up. For The Plot, also give it a bed in
 | `app/page.tsx` | Home page: the plain list from the server, then the theme on top |
 | `src/site/ThemeHost.tsx` | Picks and loads the theme; Index, Scenery menu, sheet and `#project` links |
 | `src/site/ProjectSheet.tsx` | The shared project sheet |
+| `src/site/ProjectDetails.tsx` | What the sheet shows about a project; scrolling themes put it on the page |
 | `src/site/PlainIndex.tsx` | The plain list (server page, Index panel, "No scenery") |
 | `src/themes/registry.ts` | The list of themes and the pick logic |
+| `src/themes/overgrowth/` | Overgrowth theme: page, stem that grows with scroll, vines, flowers, CSS |
 | `src/themes/plot/` | The Plot theme: markup, canvas engine, bed layout, CSS |
 | `app/case-studies/` | Case studies (the Candlefair one goes at `/case-studies/candlefair`) |
 

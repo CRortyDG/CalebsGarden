@@ -18,5 +18,11 @@ export interface ThemeDef {
   enabled: boolean;
   /** Relative chance in the random pick. */
   weight: number;
+  /**
+   * dialog (default): a `#project` link opens the shared sheet in a dialog.
+   * inline: the theme lays each project out on the page in an element whose id
+   * is the project id, so a `#project` link simply scrolls there.
+   */
+  sheets?: 'dialog' | 'inline';
   load: () => Promise<{ default: ComponentType<ThemeProps> }>;
 }

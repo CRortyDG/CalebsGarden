@@ -23,6 +23,12 @@ export function ThemeHost() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [failed, setFailed] = useState(false);
   const pushed = useRef(false);
+  // inline themes lay projects out on the page, so `#project` links just scroll there
+  const inline = theme?.sheets === 'inline';
+  const inlineRef = useRef(false);
+  useEffect(() => {
+    inlineRef.current = inline;
+  }, [inline]);
   const indexRef = useRef<HTMLDialogElement>(null);
   const menuRef = useRef<HTMLDivElement>(null);
 
@@ -69,7 +75,7 @@ export function ThemeHost() {
 
   const openProject = useCallback((id: string) => {
     if (!sheetFor(id)) return;
-    pushed.current = true;
+    pushed.current = !inlineRef.current;
     window.location.hash = id;
   }, []);
 
@@ -90,6 +96,11 @@ export function ThemeHost() {
       const a = (e.target as Element).closest?.('a[href^="#"]');
       const id = a?.getAttribute('href')?.slice(1);
       if (!id || !sheetFor(id)) return;
+      if (inlineRef.current) {
+        // the browser scrolls to the project; just get the Index out of the way
+        setIndexOpen(false);
+        return;
+      }
       e.preventDefault();
       openProject(id);
     };
@@ -166,7 +177,7 @@ export function ThemeHost() {
         </nav>
       )}
 
-      <ProjectSheet project={openId ? sheetFor(openId) : null} onClose={closeProject} />
+      <ProjectSheet project={openId && !inline ? sheetFor(openId) : null} onClose={closeProject} />
 
       <dialog
         ref={indexRef}
