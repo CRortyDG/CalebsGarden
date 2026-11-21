@@ -1,73 +1,99 @@
-// Everything that grows in the garden. Add a project here and it gets a bed,
-// a stake on the home page and an entry in the plain list below the garden.
-//
-// Bed positions are fractions of the garden (0..1). `wide` is used on landscape
-// screens, `tall` on portrait phones.
+// The content of the site. Themes are scenery around this list and never own
+// content: add an entry here and every theme, the project sheet and the Index
+// pick it up.
 
-export type BedKind = 'herbs' | 'sunflowers' | 'greenhouse' | 'seedlings';
-
-export interface BedRect {
-  x: number;
-  y: number;
-  w: number;
-  h: number;
-}
+/** Digital-garden growth stages. */
+export type Status = 'seedling' | 'budding' | 'evergreen';
 
 export interface Project {
   id: string;
   name: string;
-  /** One short line, shown when you hover the bed. */
+  /** One short line shown beside the name. */
   blurb: string;
-  /** Longer line for the list below the garden (optional). */
+  /** Two or three sentences for the project sheet. */
   about: string;
-  /** Omit for a bed that has nothing planted yet. */
+  status: Status;
+  /**
+   * project: opens the shared project sheet.
+   * section: a part of this site (goes straight to `href`).
+   * empty:   nothing to open yet.
+   */
+  type: 'project' | 'section' | 'empty';
+  /** The live site, or the page on this site for a section. */
   href?: string;
+  /** Shown next to the Visit button, e.g. the domain. */
   hostLabel?: string;
-  kind: BedKind;
-  wide: BedRect;
-  tall: BedRect;
+  /** Path of its case study on this site, once written. */
+  caseStudy?: string;
+  /** Public source code, if any. */
+  source?: string;
+  /** Screenshot under /public, with its real pixel size. */
+  image?: { src: string; alt: string; width: number; height: number };
+  /** Three to five short "built with" tags. */
+  tags?: string[];
 }
+
+export const site = {
+  name: 'calebs.garden',
+  tagline: "a garden of things I've made",
+};
 
 export const projects: Project[] = [
   {
     id: 'candlefair',
     name: 'Candlefair',
-    blurb: 'D&D at the table · dungeon.garden',
-    about: 'A companion for in-person D&D: a TV at the table, phones in hand, and a DM console that remembers everything.',
+    blurb: 'D&D at the table',
+    about:
+      'A companion for in-person D&D: a TV at the table, phones in hand, and a DM console that remembers everything.',
+    status: 'budding',
+    type: 'project',
     href: 'https://dungeon.garden',
     hostLabel: 'dungeon.garden',
-    kind: 'herbs',
-    wide: { x: 0.12, y: 0.25, w: 0.3, h: 0.28 },
-    tall: { x: 0.08, y: 0.24, w: 0.5, h: 0.18 },
+    image: {
+      src: '/projects/candlefair.jpg',
+      alt: 'Candlefair on the table TV: a town map with the party tokens on it',
+      width: 2000,
+      height: 1125,
+    },
+    tags: ['Cloudflare Workers', 'Durable Objects', 'Real-time rooms'],
   },
   {
     id: 'madtown',
     name: 'madtown.today',
-    blurb: 'madtown.today',
+    blurb: '',
     about: '',
+    status: 'evergreen',
+    type: 'project',
     href: 'https://madtown.today',
     hostLabel: 'madtown.today',
-    kind: 'sunflowers',
-    wide: { x: 0.6, y: 0.2, w: 0.27, h: 0.27 },
-    tall: { x: 0.56, y: 0.44, w: 0.38, h: 0.17 },
   },
   {
     id: 'case-studies',
     name: 'Case studies',
     blurb: 'how they were built',
     about: 'Engineering write-ups: the decisions, the dead ends and the architecture behind each project.',
+    status: 'seedling',
+    type: 'section',
     href: '/case-studies/',
-    kind: 'greenhouse',
-    wide: { x: 0.5, y: 0.6, w: 0.26, h: 0.27 },
-    tall: { x: 0.1, y: 0.67, w: 0.46, h: 0.17 },
   },
   {
     id: 'seedlings',
     name: 'Seedlings',
     blurb: 'planting soon',
     about: 'Whatever comes next.',
-    kind: 'seedlings',
-    wide: { x: 0.08, y: 0.72, w: 0.24, h: 0.16 },
-    tall: { x: 0.62, y: 0.73, w: 0.3, h: 0.12 },
+    status: 'seedling',
+    type: 'empty',
   },
 ];
+
+export const statusLabel: Record<Status, string> = {
+  seedling: 'Seedling',
+  budding: 'Budding',
+  evergreen: 'Evergreen',
+};
+
+/** Where a click on a project's name should go inside a theme. */
+export function projectLink(p: Project): string | undefined {
+  if (p.type === 'project') return `#${p.id}`;
+  return p.href;
+}

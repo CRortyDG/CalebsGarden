@@ -9,15 +9,15 @@ export const metadata: Metadata = {
 // Placeholder until the first case study lands at /case-studies/candlefair.
 export default function CaseStudies() {
   return (
-    <main className="growing">
+    <main className="plain">
       <p className="back">
         <Link href="/">← calebs.garden</Link>
       </p>
-      <h2>Case studies</h2>
-      <ul>
+      <h1>Case studies</h1>
+      <ul className="project-list">
         <li>
           <span className="name">Candlefair</span>
-          <span className="host">being written</span>
+          <span className="blurb">being written</span>
           <p>How Candlefair, a companion for D&amp;D at the table, was built.</p>
         </li>
       </ul>

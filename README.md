@@ -1,12 +1,11 @@
 # calebs.garden
 
-My personal site: a top-down garden where each project is a raised bed with a
-wooden stake. At night (by the visitor's clock) the pointer is a lantern,
-Candlefair's bed has candles and fireflies follow the light. By day it's sunny
-and still. Below the garden is a plain list of the same links.
+My personal site. The content is one list of projects; around it the site
+wears a **theme**, picked at random for each visit or chosen with
+`?theme=<id>`. Whatever the theme, every project name opens the same project
+sheet, and the Index and Scenery buttons sit in the same corner.
 
-Built with Next.js (App Router), React and one plain-TypeScript canvas script.
-Every page is static.
+Built with Next.js (App Router) and React. Every page is static.
 
 ## Run it
 
@@ -16,27 +15,42 @@ npm run dev      # http://localhost:3000
 npm run build    # production build
 ```
 
+## Themes
+
+| `?theme=` | What it is | In the random pick |
+| --- | --- | --- |
+| `plot` | A garden map from above. At night the pointer is a lantern | yes |
+| `plain` | No scenery, just the list | no |
+| `random` | Forces a fresh random pick | |
+
+A visit keeps its theme until the tab is closed. The Scenery button switches
+themes and puts the choice in the address bar so it can be shared.
+
+Rules every theme has to pass, and how to add one: [docs/house-rules.md](docs/house-rules.md).
+
 ## Add a project
 
-Add an entry to [`src/projects.ts`](src/projects.ts). It gets a bed, a stake and
-a line in the list. Each project has two bed positions (fractions of the
-garden): `wide` for landscape screens and `tall` for portrait phones. The bed
-`kind` sets what grows there (`herbs`, `sunflowers`, `greenhouse`,
-`seedlings`); new kinds are drawn in [`src/garden/engine.ts`](src/garden/engine.ts).
+Add an entry to [`src/projects.ts`](src/projects.ts). Every theme, the project
+sheet and the Index pick it up. For The Plot, also give it a bed in
+[`src/themes/plot/layout.ts`](src/themes/plot/layout.ts).
 
 ## Where things live
 
 | Path | What |
 | --- | --- |
-| `app/page.tsx` | Home page: the garden plus the "What's growing" list |
+| `src/projects.ts` | The content: projects, status, links, screenshots |
+| `app/page.tsx` | Home page: the plain list from the server, then the theme on top |
+| `src/site/ThemeHost.tsx` | Picks and loads the theme; Index, Scenery menu, sheet and `#project` links |
+| `src/site/ProjectSheet.tsx` | The shared project sheet |
+| `src/site/PlainIndex.tsx` | The plain list (server page, Index panel, "No scenery") |
+| `src/themes/registry.ts` | The list of themes and the pick logic |
+| `src/themes/plot/` | The Plot theme: markup, canvas engine, bed layout, CSS |
 | `app/case-studies/` | Case studies (the Candlefair one goes at `/case-studies/candlefair`) |
-| `src/garden/Garden.tsx` | The garden's markup: canvas, stakes, Day/Night button |
-| `src/garden/engine.ts` | The canvas drawing, lantern, fireflies and hover/tap |
-| `public/og.jpg` | Link preview image |
 
-## Behaviour notes
+## How a visit works
 
-- Night is 7pm to 7am on the visitor's clock. The Day/Night button overrides it and is remembered.
-- The beds grow in from bare soil on someone's first visit only.
-- With reduced motion turned on, the garden is a still daytime picture.
-- Touch: the first tap on a bed shows its label, a second tap opens it. The stakes are always plain links.
+1. The server sends the plain page: the name and every project as a real link.
+   That is what search engines, link previews and browsers without scripts get.
+2. `ThemeHost` picks the theme (`?theme=`, else this tab's earlier pick, else
+   random) and downloads only that theme's code.
+3. The theme replaces the plain page. If it fails to load, the plain page stays.

@@ -1,25 +1,14 @@
-import { Garden } from '@/garden/Garden';
 import { projects } from '@/projects';
+import { PlainIndex } from '@/site/PlainIndex';
+import { ThemeHost } from '@/site/ThemeHost';
 
+// The server sends the plain page: the name and every project as a real link.
+// ThemeHost then picks this visit's theme and puts its scenery on top.
 export default function Home() {
   return (
     <main>
-      <Garden />
-
-      <section className="growing" id="growing" aria-labelledby="growing-title">
-        <h2 id="growing-title">What&apos;s growing</h2>
-        <ul>
-          {projects.map((p) => (
-            <li key={p.id}>
-              {p.href ? <a href={p.href}>{p.name}</a> : <span className="name">{p.name}</span>}
-              {p.hostLabel && p.hostLabel !== p.name && <span className="host">{p.hostLabel}</span>}
-              {!p.href && <span className="host">{p.blurb}</span>}
-              {p.about && <p>{p.about}</p>}
-            </li>
-          ))}
-        </ul>
-        <footer>© {new Date().getFullYear()} Caleb · calebs.garden</footer>
-      </section>
+      <PlainIndex id="plain" projects={projects} mode="direct" />
+      <ThemeHost />
     </main>
   );
 }

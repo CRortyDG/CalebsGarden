@@ -4,12 +4,13 @@
 // still and sunny. Everything readable or clickable lives in the DOM on top
 // (the stakes), so this file is pure decoration plus hover and click on beds.
 
-import type { BedKind, BedRect } from '@/projects';
+import type { BedKind, BedRect } from './layout';
 
 export interface GardenBed {
   id: string;
   kind: BedKind;
-  href?: string;
+  /** false for a bed with nothing to open */
+  clickable: boolean;
   wide: BedRect;
   tall: BedRect;
 }
@@ -68,7 +69,7 @@ interface Candle { x: number; y: number; ph: number }
 interface Fly { x: number; y: number; vx: number; vy: number; ph: number }
 interface Pad { x: number; y: number; r: number; a: number }
 
-export function plantGarden(stage: HTMLElement, beds: GardenBed[]): () => void {
+export function plantGarden(stage: HTMLElement, beds: GardenBed[], onOpen: (id: string) => void): () => void {
   const canvas = stage.querySelector('canvas');
   if (!canvas) return () => {};
   const ctx = canvas.getContext('2d');
@@ -76,11 +77,9 @@ export function plantGarden(stage: HTMLElement, beds: GardenBed[]): () => void {
 
   const reduceMq = matchMedia('(prefers-reduced-motion: reduce)');
   const portraitMq = matchMedia(PORTRAIT);
-  const coarse = matchMedia('(pointer: coarse)').matches; // only picks the hint wording
   const stakes = new Map<string, HTMLElement>();
   stage.querySelectorAll<HTMLElement>('[data-bed]').forEach((el) => stakes.set(el.dataset.bed!, el));
   const timeBtn = stage.querySelector<HTMLButtonElement>('.time');
-  const hint = stage.querySelector<HTMLElement>('.hint');
 
   // ---- time of day -------------------------------------------------------
   const hour = new Date().getHours();
@@ -402,7 +401,6 @@ export function plantGarden(stage: HTMLElement, beds: GardenBed[]): () => void {
   // ---- pointer / lantern -------------------------------------------------
   const lamp = { x: 0, y: 0, tx: 0, ty: 0, active: false, last: 0, placed: false };
   let hovered: GardenBed | null = null;
-  let interacted = false;
 
   function bedAt(x: number, y: number): GardenBed | null {
     for (const b of beds) {
@@ -421,10 +419,6 @@ export function plantGarden(stage: HTMLElement, beds: GardenBed[]): () => void {
     lamp.ty = y;
     lamp.active = true;
     lamp.last = performance.now();
-    if (!interacted) {
-      interacted = true;
-      hint?.classList.add('is-gone');
-    }
     if (e.pointerType === 'mouse') setHover(bedAt(x, y));
     kick();
   }
@@ -450,13 +444,13 @@ export function plantGarden(stage: HTMLElement, beds: GardenBed[]): () => void {
     if (e.pointerType !== 'mouse') {
       if (!b || hovered !== b) return setHover(b);
     }
-    if (b?.href) window.location.href = b.href;
+    if (b?.clickable) onOpen(b.id);
   }
   function setHover(b: GardenBed | null) {
     if (hovered === b) return;
     hovered = b;
     stakes.forEach((el, id) => el.classList.toggle('is-on', b?.id === id));
-    canvas!.style.cursor = b?.href ? 'pointer' : '';
+    canvas!.style.cursor = b?.clickable ? 'pointer' : '';
   }
   // keyboard focus on a stake lights its bed
   function onFocus(e: FocusEvent) {
@@ -618,10 +612,6 @@ export function plantGarden(stage: HTMLElement, beds: GardenBed[]): () => void {
       timeBtn.textContent = night ? 'Day' : 'Night';
       timeBtn.setAttribute('aria-label', night ? 'Switch the garden to daytime' : 'Switch the garden to night');
     }
-    if (hint) {
-      hint.hidden = !night || interacted;
-      hint.textContent = coarse ? 'tap to carry the lantern' : 'move to carry the lantern';
-    }
     stage.dataset.time = night ? 'night' : 'day';
     kick();
   }
@@ -636,7 +626,6 @@ export function plantGarden(stage: HTMLElement, beds: GardenBed[]): () => void {
 
   build();
   setNight(night, false);
-  if (hint && !hint.hidden) window.setTimeout(() => hint.classList.add('is-gone'), 7000);
   const ro = new ResizeObserver(onResize);
   ro.observe(stage);
   io.observe(stage);

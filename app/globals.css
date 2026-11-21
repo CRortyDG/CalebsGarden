@@ -1,15 +1,26 @@
-/* calebs.garden — one dark, night-garden palette. */
+/* calebs.garden: base styles and the parts every theme shares
+   (plain page, Index, Scenery menu, project sheet).
+   Theme scenery lives with each theme in src/themes/<id>/. */
 :root {
   --night: #0b120e;
   --ink: #eef2e8;
   --muted: #a9b8a6;
   --line: #26352b;
-  --wood: #e8d3a5;
-  --wood-edge: #8a6a3a;
   --lamp: #ffd27a;
   --display: var(--font-display), 'Avenir Next', system-ui, sans-serif;
   --body: var(--font-body), system-ui, -apple-system, 'Segoe UI', sans-serif;
   --mono: var(--font-mono), ui-monospace, 'SF Mono', Menlo, monospace;
+
+  /* A theme can restyle the shared parts by setting these on .site[data-theme]. */
+  --chrome-bg: rgba(10, 14, 10, 0.72);
+  --chrome-fg: #f4ead2;
+  --chrome-line: rgba(244, 234, 210, 0.3);
+  --sheet-bg: #121b15;
+  --sheet-fg: var(--ink);
+  --sheet-muted: var(--muted);
+  --sheet-line: var(--line);
+  --sheet-accent: var(--lamp);
+  --sheet-accent-ink: #1d1503;
   color-scheme: dark;
 }
 *,
@@ -26,10 +37,11 @@ body {
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
 }
-html {
-  scroll-behavior: smooth;
-}
 a {
+  color: inherit;
+}
+button {
+  font: inherit;
   color: inherit;
 }
 :focus-visible {
@@ -40,9 +52,6 @@ a {
   display: none !important;
 }
 @media (prefers-reduced-motion: reduce) {
-  html {
-    scroll-behavior: auto;
-  }
   *,
   *::before,
   *::after {
@@ -50,226 +59,88 @@ a {
   }
 }
 
-/* ---------- the garden ---------- */
-.garden {
-  position: relative;
-  height: 100svh;
-  min-height: 520px;
-  overflow: hidden;
-  touch-action: pan-y;
-  user-select: none;
-  -webkit-user-select: none;
-  /* shown until the canvas paints, and when scripts are off */
-  background: radial-gradient(ellipse at 50% 45%, #2a3f25 0%, #17241a 60%, #0b120e 100%);
-}
-.garden canvas {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  display: block;
-}
-.gate {
-  position: absolute;
-  z-index: 3;
-  left: max(20px, env(safe-area-inset-left, 0px));
-  top: calc(env(safe-area-inset-top, 0px) + 18px);
-  pointer-events: none;
-  text-shadow: 0 2px 14px rgba(0, 0, 0, 0.7);
-}
-.gate h1 {
-  margin: 0;
-  font-family: var(--display);
-  font-weight: 800;
-  font-size: clamp(1.7rem, 4.2vw, 3rem);
-  letter-spacing: -0.02em;
-  line-height: 1;
-  color: #f4ead2;
-}
-.gate p {
-  margin: 6px 0 0;
-  font: 500 0.72rem var(--mono);
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: #cbbf9f;
-}
-
-.stake {
-  --x: var(--wx);
-  --y: var(--wy);
-  position: absolute;
-  left: var(--x);
-  top: var(--y);
-  transform: translate(-50%, -100%);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-decoration: none;
-  color: #2b1d10;
-  z-index: 2;
-}
-@media (orientation: portrait) and (max-width: 820px) {
-  .stake {
-    --x: var(--tx);
-    --y: var(--ty);
-  }
-  .stake em {
-    white-space: normal;
-    width: max-content;
-    max-width: 60vw;
-    text-align: center;
-  }
-}
-.stake b {
-  background: var(--wood);
-  border: 1px solid var(--wood-edge);
-  border-radius: 3px;
-  padding: 3px 10px;
-  font: 600 clamp(0.76rem, 1.1vw, 0.92rem) var(--mono);
-  white-space: nowrap;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
-  transition: transform 0.2s;
-}
-.stake i {
-  width: 3px;
-  height: 14px;
-  background: #7a5a30;
-}
-.stake em {
-  font: 400 0.74rem var(--mono);
-  font-style: normal;
-  color: #f4ead2;
-  background: rgba(10, 14, 10, 0.82);
-  border-radius: 4px;
-  padding: 2px 8px;
-  margin-bottom: 5px;
-  white-space: nowrap;
-  opacity: 0;
-  transform: translateY(4px);
-  transition: opacity 0.2s, transform 0.2s;
-  pointer-events: none;
-}
-.stake.is-on em,
-.stake:hover em,
-.stake:focus-visible em {
-  opacity: 1;
-  transform: none;
-}
-a.stake:hover b,
-a.stake.is-on b,
-a.stake:focus-visible b {
-  transform: translateY(-2px) rotate(-1.5deg);
-}
-.stake.is-empty b {
-  opacity: 0.85;
-}
-
-.time {
-  position: absolute;
-  z-index: 3;
-  top: calc(env(safe-area-inset-top, 0px) + 18px);
-  right: max(18px, env(safe-area-inset-right, 0px));
-  font: 500 0.75rem var(--mono);
-  color: #f4ead2;
-  background: rgba(10, 14, 10, 0.6);
-  border: 1px solid rgba(244, 234, 210, 0.3);
-  border-radius: 999px;
-  padding: 7px 14px;
-  cursor: pointer;
-}
-.hint {
-  position: absolute;
-  z-index: 3;
-  left: 50%;
-  bottom: calc(env(safe-area-inset-bottom, 0px) + 60px);
-  transform: translateX(-50%);
-  margin: 0;
-  font: 400 0.74rem var(--mono);
-  letter-spacing: 0.04em;
-  color: #e8dcc0;
-  background: rgba(0, 0, 0, 0.5);
-  padding: 4px 10px;
-  border-radius: 6px;
-  pointer-events: none;
-  white-space: nowrap;
-  transition: opacity 1s;
-}
-.hint.is-gone {
-  opacity: 0;
-}
-.down {
-  position: absolute;
-  z-index: 3;
-  left: 50%;
-  bottom: calc(env(safe-area-inset-bottom, 0px) + 18px);
-  transform: translateX(-50%);
-  font: 500 0.74rem var(--mono);
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  text-decoration: none;
-  color: #f4ead2;
-  background: rgba(10, 14, 10, 0.6);
-  border: 1px solid rgba(244, 234, 210, 0.25);
-  border-radius: 999px;
-  padding: 6px 14px;
-  white-space: nowrap;
-}
-
-/* ---------- the plain list ---------- */
-.growing {
+/* ---------- the plain page (also the Index list and "No scenery") ---------- */
+.plain {
   max-width: 720px;
   margin: 0 auto;
-  padding-block: 72px 48px;
+  padding-block: 88px 48px;
   padding-left: max(20px, env(safe-area-inset-left, 0px));
   padding-right: max(20px, env(safe-area-inset-right, 0px));
 }
-.growing h2 {
-  margin: 0 0 24px;
+/* With scripts on, hold the server's plain page back while the theme loads.
+   It shows by itself after 3s, or at once if the theme fails. */
+.js #plain {
+  animation: cg-hold 3s step-end both;
+}
+.js.no-theme #plain {
+  animation: none;
+}
+@keyframes cg-hold {
+  from {
+    visibility: hidden;
+  }
+  to {
+    visibility: visible;
+  }
+}
+.plain h1 {
+  margin: 0;
   font-family: var(--display);
   font-weight: 800;
-  font-size: clamp(1.6rem, 3.5vw, 2.2rem);
-  letter-spacing: -0.01em;
+  font-size: clamp(2rem, 6vw, 3.2rem);
+  letter-spacing: -0.02em;
+  line-height: 1.05;
   text-wrap: balance;
 }
-.growing ul {
+.plain .tagline {
+  margin: 8px 0 40px;
+  font: 500 0.75rem var(--mono);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.plain > footer {
+  margin-top: 56px;
+  font: 400 0.75rem var(--mono);
+  color: var(--muted);
+}
+.project-list {
   list-style: none;
   margin: 0;
   padding: 0;
-  display: flex;
-  flex-direction: column;
 }
-.growing li {
+.project-list li {
   display: flex;
   flex-wrap: wrap;
   align-items: baseline;
   gap: 4px 12px;
   padding: 18px 0;
-  border-top: 1px solid var(--line);
+  border-top: 1px solid var(--sheet-line);
 }
-.growing li > a,
-.growing li > .name {
+.project-list .name {
   font-family: var(--display);
   font-weight: 500;
   font-size: 1.25rem;
   text-decoration: none;
 }
-.growing li > a:hover {
-  color: var(--lamp);
+.project-list a.name {
+  text-decoration: underline;
+  text-decoration-color: var(--sheet-line);
+  text-underline-offset: 5px;
 }
-.growing .host {
+.project-list a.name:hover {
+  color: var(--sheet-accent);
+  text-decoration-color: currentColor;
+}
+.project-list .blurb {
   font: 400 0.8rem var(--mono);
-  color: var(--muted);
+  color: var(--sheet-muted);
 }
-.growing li p {
+.project-list p {
   flex-basis: 100%;
   margin: 0;
-  color: var(--muted);
+  color: var(--sheet-muted);
   max-width: 60ch;
-}
-.growing footer {
-  margin-top: 56px;
-  font: 400 0.75rem var(--mono);
-  color: var(--muted);
 }
 .back {
   margin: 0 0 24px;
@@ -281,4 +152,241 @@ a.stake:focus-visible b {
 }
 .back a:hover {
   color: var(--lamp);
+}
+
+/* growth stage: seedling, budding, evergreen */
+.status {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0;
+  font: 500 0.68rem var(--mono);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--sheet-muted);
+}
+.status::before {
+  content: '';
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #8dbb62;
+}
+.status.is-seedling::before {
+  background: transparent;
+  box-shadow: inset 0 0 0 1.5px #8dbb62;
+}
+.status.is-evergreen::before {
+  background: #3f8f5a;
+  box-shadow: 0 0 0 2px rgba(63, 143, 90, 0.35);
+}
+
+/* ---------- chrome: Index and Scenery, same corner in every theme ---------- */
+.chrome {
+  position: fixed;
+  z-index: 20;
+  top: calc(env(safe-area-inset-top, 0px) + 16px);
+  right: max(16px, env(safe-area-inset-right, 0px));
+  display: flex;
+  gap: 8px;
+}
+.chrome > button,
+.scenery > button {
+  font: 500 0.75rem var(--mono);
+  color: var(--chrome-fg);
+  background: var(--chrome-bg);
+  border: 1px solid var(--chrome-line);
+  border-radius: 999px;
+  padding: 7px 14px;
+  cursor: pointer;
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+}
+.chrome > button:hover,
+.scenery > button:hover,
+.scenery > button[aria-expanded='true'] {
+  border-color: var(--chrome-fg);
+}
+.scenery {
+  position: relative;
+}
+.scenery-menu {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  width: min(280px, calc(100vw - 32px));
+  display: flex;
+  flex-direction: column;
+  padding: 6px;
+  background: var(--sheet-bg);
+  border: 1px solid var(--sheet-line);
+  border-radius: 12px;
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.5);
+}
+.scenery-menu button {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  text-align: left;
+  background: none;
+  border: 0;
+  border-radius: 8px;
+  padding: 9px 10px;
+  cursor: pointer;
+  color: var(--sheet-fg);
+}
+.scenery-menu button:hover {
+  background: rgba(255, 255, 255, 0.06);
+}
+.scenery-menu b {
+  font: 500 0.95rem var(--display);
+}
+.scenery-menu span {
+  font-size: 0.8rem;
+  color: var(--sheet-muted);
+}
+.scenery-menu button[aria-pressed='true'] b::after {
+  content: ' ✓';
+  color: var(--sheet-accent);
+}
+
+/* ---------- dialogs: the project sheet and the Index ---------- */
+.sheet,
+.index-panel {
+  width: min(560px, calc(100% - 32px));
+  max-height: min(88svh, 760px);
+  margin: auto;
+  padding: 0;
+  overflow: auto;
+  color: var(--sheet-fg);
+  background: var(--sheet-bg);
+  border: 1px solid var(--sheet-line);
+  border-radius: 14px;
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.6);
+}
+.sheet::backdrop,
+.index-panel::backdrop {
+  background: rgba(4, 8, 6, 0.62);
+  -webkit-backdrop-filter: blur(3px);
+  backdrop-filter: blur(3px);
+}
+.sheet[open],
+.index-panel[open] {
+  animation: cg-rise 0.22s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+@keyframes cg-rise {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.985);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .sheet[open],
+  .index-panel[open] {
+    animation: none;
+  }
+}
+.sheet article {
+  position: relative;
+}
+.sheet-close {
+  position: absolute;
+  z-index: 1;
+  top: 10px;
+  right: 10px;
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  font-size: 1.3rem;
+  line-height: 1;
+  color: var(--chrome-fg);
+  background: var(--chrome-bg);
+  border: 1px solid var(--chrome-line);
+  border-radius: 50%;
+  cursor: pointer;
+}
+.sheet-image {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  border-bottom: 1px solid var(--sheet-line);
+}
+.sheet-body {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 24px;
+}
+.sheet h2,
+.index-panel h2 {
+  margin: 0;
+  font-family: var(--display);
+  font-weight: 800;
+  font-size: clamp(1.6rem, 5vw, 2.1rem);
+  letter-spacing: -0.015em;
+  line-height: 1.1;
+}
+.sheet-blurb {
+  margin: -6px 0 0;
+  font: 400 0.85rem var(--mono);
+  color: var(--sheet-muted);
+}
+.sheet-about {
+  margin: 0;
+  max-width: 60ch;
+}
+.sheet-tags {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+}
+.sheet-tags li {
+  font: 400 0.72rem var(--mono);
+  color: var(--sheet-muted);
+  border: 1px solid var(--sheet-line);
+  border-radius: 999px;
+  padding: 2px 10px;
+}
+.sheet-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 8px;
+}
+.button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font: 600 0.9rem var(--body);
+  text-decoration: none;
+  color: var(--sheet-fg);
+  border: 1px solid var(--sheet-line);
+  border-radius: 10px;
+  padding: 10px 16px;
+}
+.button:hover {
+  border-color: var(--sheet-fg);
+}
+.button.is-primary {
+  color: var(--sheet-accent-ink);
+  background: var(--sheet-accent);
+  border-color: var(--sheet-accent);
+}
+.button.is-primary:hover {
+  filter: brightness(1.08);
+}
+.index-panel {
+  padding: 24px;
+}
+.index-panel h2 {
+  margin-bottom: 12px;
+}
+.index-panel .project-list li:last-child {
+  padding-bottom: 4px;
 }
