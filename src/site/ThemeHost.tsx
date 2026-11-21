@@ -25,6 +25,8 @@ export function ThemeHost() {
   const pushed = useRef(false);
   // inline themes lay projects out on the page, so `#project` links just scroll there
   const inline = theme?.sheets === 'inline';
+  // only themes without their own way of showing a project get the shared sheet
+  const sharedSheet = !theme?.sheets || theme.sheets === 'dialog';
   const inlineRef = useRef(false);
   useEffect(() => {
     inlineRef.current = inline;
@@ -146,7 +148,9 @@ export function ThemeHost() {
 
   return (
     <div className="site" data-theme={theme?.id}>
-      {Scene && !failed && <Scene projects={projects} openProject={openProject} />}
+      {Scene && !failed && (
+        <Scene projects={projects} openProject={openProject} openId={openId} closeProject={closeProject} />
+      )}
 
       {theme && (
         <nav className="chrome" aria-label="Site">
@@ -177,7 +181,7 @@ export function ThemeHost() {
         </nav>
       )}
 
-      <ProjectSheet project={openId && !inline ? sheetFor(openId) : null} onClose={closeProject} />
+      <ProjectSheet project={openId && sharedSheet ? sheetFor(openId) : null} onClose={closeProject} />
 
       <dialog
         ref={indexRef}

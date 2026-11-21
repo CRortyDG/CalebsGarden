@@ -31,11 +31,17 @@ export interface Project {
   image?: { src: string; alt: string; width: number; height: number };
   /** Three to five short "built with" tags. */
   tags?: string[];
+  /** Who or where it is for, in a few words. Themes with a label use it. */
+  habitat?: string;
+  /** The year it went live. */
+  year?: number;
 }
 
 export const site = {
   name: 'calebs.garden',
   tagline: "a garden of things I've made",
+  /** A few sentences about you. Themes with an about page show it once it is filled in. */
+  about: '',
   /** Ways to reach you, shown in the footer of themes that have one. */
   links: [] as { label: string; href: string }[],
 };

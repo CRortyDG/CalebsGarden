@@ -16,7 +16,10 @@ Until then it can still be opened with `?theme=<id>`.
    sheet, so its content and buttons are the same in every theme. A theme
    that is itself a scrolling page can set `sheets: 'inline'` in the registry
    and render `ProjectDetails` in a section with `id={p.id}` instead: the same
-   links then scroll to the project, and nothing opens on top of it.
+   links then scroll to the project, and nothing opens on top of it. A theme
+   can also draw the sheet in its own style (`sheets: 'theme'`, from the
+   `openId` it is given, inside `SheetDialog`), as long as it shows everything
+   `ProjectDetails` shows and keeps the button order.
 5. **Always a way out.** The Index and Scenery buttons sit in the top right
    corner in every theme; keep that corner clear. Esc and Back close whatever
    is open.

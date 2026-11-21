@@ -14,6 +14,15 @@ export const themes: ThemeDef[] = [
     load: () => import('./overgrowth'),
   },
   {
+    id: 'herbarium',
+    name: 'Herbarium',
+    blurb: 'A field journal of pressed specimens',
+    enabled: true,
+    weight: 1,
+    sheets: 'theme',
+    load: () => import('./herbarium'),
+  },
+  {
     id: 'plot',
     name: 'The Plot',
     blurb: 'A garden map, lit by lantern at night',

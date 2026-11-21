@@ -21,6 +21,7 @@ npm run build    # production build
 | `?theme=` | What it is | In the random pick |
 | --- | --- | --- |
 | `overgrowth` | A scrolling page. A stem grows down it as you scroll and each project flowers off it | yes |
+| `herbarium` | A field journal with tabs. Each project is a pressed plant on a sheet, and picking one up opens it as a botanical plate | yes |
 | `plot` | A garden map from above. At night the pointer is a lantern | yes |
 | `plain` | No scenery, just the list | no |
 | `random` | Forces a fresh random pick | |
@@ -34,7 +35,8 @@ Rules every theme has to pass, and how to add one: [docs/house-rules.md](docs/ho
 
 Add an entry to [`src/projects.ts`](src/projects.ts). Every theme, the project
 sheet and the Index pick it up. For The Plot, also give it a bed in
-[`src/themes/plot/layout.ts`](src/themes/plot/layout.ts).
+[`src/themes/plot/layout.ts`](src/themes/plot/layout.ts). Herbarium draws its
+plant from the project's name, so there is nothing to add there.
 
 ## Where things live
 
@@ -48,6 +50,7 @@ sheet and the Index pick it up. For The Plot, also give it a bed in
 | `src/site/PlainIndex.tsx` | The plain list (server page, Index panel, "No scenery") |
 | `src/themes/registry.ts` | The list of themes and the pick logic |
 | `src/themes/overgrowth/` | Overgrowth theme: page, stem that grows with scroll, vines, flowers, CSS |
+| `src/themes/herbarium/` | Herbarium theme: journal and tabs, the plate, the plant generator, CSS |
 | `src/themes/plot/` | The Plot theme: markup, canvas engine, bed layout, CSS |
 | `app/case-studies/` | Case studies (the Candlefair one goes at `/case-studies/candlefair`) |
 
