@@ -1,8 +1,9 @@
 // The garden: a top-down canvas scene of raised beds, one per project.
-// At night (by the visitor's clock) the pointer is a lantern that lights the garden,
-// Candlefair's bed has candles and fireflies drift after the light. By day it is
+// At night (by the visitor's clock) every bed has a lamp, the pointer is a
+// lantern that adds to them, Candlefair's bed has candles and fireflies drift
+// after the light. By day it is
 // still and sunny. Everything readable or clickable lives in the DOM on top
-// (the stakes), so this file is pure decoration plus hover and click on beds.
+// (the stakes and the key), so this file is pure decoration plus hover and click on beds.
 
 import type { BedKind, BedRect } from './layout';
 
@@ -77,8 +78,8 @@ export function plantGarden(stage: HTMLElement, beds: GardenBed[], onOpen: (id: 
 
   const reduceMq = matchMedia('(prefers-reduced-motion: reduce)');
   const portraitMq = matchMedia(PORTRAIT);
-  const stakes = new Map<string, HTMLElement>();
-  stage.querySelectorAll<HTMLElement>('[data-bed]').forEach((el) => stakes.set(el.dataset.bed!, el));
+  // every element that names a bed: its stake on the map and its entry in the key
+  const marks = [...stage.querySelectorAll<HTMLElement>('[data-bed]')];
   const timeBtn = stage.querySelector<HTMLButtonElement>('.time');
 
   // ---- time of day -------------------------------------------------------
@@ -419,7 +420,17 @@ export function plantGarden(stage: HTMLElement, beds: GardenBed[], onOpen: (id: 
     lamp.ty = y;
     lamp.active = true;
     lamp.last = performance.now();
-    if (e.pointerType === 'mouse') setHover(bedAt(x, y));
+    if (e.pointerType === 'mouse') {
+      // pointing at a bed's stake or its entry in the key lights that bed
+      const mark = (e.target as HTMLElement).closest?.<HTMLElement>('[data-bed]');
+      const named = mark ? beds.find((b) => b.id === mark.dataset.bed) : null;
+      if (named && mark!.closest('.key')) {
+        const r = rect(named);
+        lamp.tx = r.x + r.w / 2;
+        lamp.ty = r.y + r.h / 2;
+      }
+      setHover(named ?? bedAt(x, y));
+    }
     kick();
   }
   function onLeave(e: PointerEvent) {
@@ -428,8 +439,7 @@ export function plantGarden(stage: HTMLElement, beds: GardenBed[], onOpen: (id: 
       setHover(null);
     }
   }
-  // Mouse: click a bed to open it. Touch: the first tap on a bed shows its
-  // label and lights it, a second tap opens it (the stake is always a link too).
+  // Click or tap a bed to open it (its stake and its key entry are links too).
   let down = { x: 0, y: 0, t: 0 };
   function onDown(e: PointerEvent) {
     down = { x: e.clientX, y: e.clientY, t: performance.now() };
@@ -441,15 +451,13 @@ export function plantGarden(stage: HTMLElement, beds: GardenBed[], onOpen: (id: 
     if ((e.target as HTMLElement).closest('a, button')) return;
     const box = stage.getBoundingClientRect();
     const b = bedAt(e.clientX - box.left, e.clientY - box.top);
-    if (e.pointerType !== 'mouse') {
-      if (!b || hovered !== b) return setHover(b);
-    }
+    if (e.pointerType !== 'mouse') setHover(b);
     if (b?.clickable) onOpen(b.id);
   }
   function setHover(b: GardenBed | null) {
     if (hovered === b) return;
     hovered = b;
-    stakes.forEach((el, id) => el.classList.toggle('is-on', b?.id === id));
+    for (const el of marks) el.classList.toggle('is-on', b?.id === el.dataset.bed);
     canvas!.style.cursor = b?.clickable ? 'pointer' : '';
   }
   // keyboard focus on a stake lights its bed
@@ -462,6 +470,7 @@ export function plantGarden(stage: HTMLElement, beds: GardenBed[], onOpen: (id: 
     lamp.ty = r.y + r.h / 2;
     lamp.active = true;
     lamp.last = performance.now();
+    setHover(b);
     kick();
   }
 
@@ -538,6 +547,11 @@ export function plantGarden(stage: HTMLElement, beds: GardenBed[], onOpen: (id: 
       };
       const reach = unit * 0.46;
       hole(lamp.x, lamp.y, reach, 1);
+      // every bed has its own lamp, so the whole map reads without the lantern
+      for (const b of beds) {
+        const r = rect(b);
+        hole(r.x + r.w / 2, r.y + r.h * 0.4, Math.max(r.w, r.h) * 0.78, hovered === b ? 0.95 : 0.72);
+      }
       for (const k of candles) {
         const fl = reduce ? 1 : 0.75 + 0.25 * Math.sin(t * 0.011 + k.ph) * Math.sin(t * 0.0047 + k.ph * 2);
         hole(k.x, k.y, unit * 0.05 * fl + 10, 0.9);
@@ -559,6 +573,10 @@ export function plantGarden(stage: HTMLElement, beds: GardenBed[], onOpen: (id: 
         c.fill();
       };
       glow(lamp.x, lamp.y, reach * 0.75, 'rgba(255,170,70,.16)');
+      for (const b of beds) {
+        const r = rect(b);
+        glow(r.x + r.w / 2, r.y, unit * 0.11, 'rgba(255,196,110,.20)');
+      }
       // moon glint on the pond
       glow(pond.x - pond.rx * 0.35, pond.y - pond.ry * 0.35, pond.rx * 0.35, 'rgba(170,200,255,.18)');
       for (const k of candles) {

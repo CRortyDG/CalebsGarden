@@ -22,7 +22,7 @@ npm run build    # production build
 | --- | --- | --- |
 | `overgrowth` | A scrolling page. A stem grows down it as you scroll and each project flowers off it | yes |
 | `herbarium` | A field journal with tabs. Each project is a pressed plant on a sheet, and picking one up opens it as a botanical plate | yes |
-| `plot` | A garden map from above. At night the pointer is a lantern | yes |
+| `plot` | A garden map from above with a numbered key, like a park map. Opening a project glides the map to its bed | yes |
 | `plain` | No scenery, just the list | no |
 | `random` | Forces a fresh random pick | |
 
