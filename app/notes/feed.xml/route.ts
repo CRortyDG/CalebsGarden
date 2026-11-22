@@ -1,13 +1,13 @@
-import { posts, postUrl } from '../_parts/posts';
+import { livePosts, postUrl } from '../_parts/posts';
 
-export const dynamic = 'force-static';
+export const revalidate = 3600; // hourly, so a scheduled note appears within the hour of its day
 
 const SITE = 'https://calebs.garden';
 const esc = (s: string) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 
 /** RSS 2.0 feed of the notes. */
 export function GET() {
-  const items = posts
+  const items = livePosts()
     .map(
       (p) => `    <item>
       <title>${esc(p.title)}</title>

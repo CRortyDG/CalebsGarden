@@ -1,12 +1,13 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import { notFound } from 'next/navigation';
 import '../../case-studies/_shared/case-study.css';
-import { formatDate, posts, postUrl } from './posts';
+import { allPosts, formatDate, isLive, livePosts, postUrl } from './posts';
 
 const SITE = 'https://calebs.garden';
 
 export function noteMetadata(slug: string): Metadata {
-  const p = posts.find((x) => x.slug === slug)!;
+  const p = allPosts.find((x) => x.slug === slug)!;
   const url = postUrl(slug);
   return {
     title: p.title,
@@ -19,7 +20,8 @@ export function noteMetadata(slug: string): Metadata {
 
 /** The frame for one note: date, title, the summary as a standalone "In short", the post, and other notes. */
 export function Note({ slug, kind, children }: { slug: string; kind: 'idea' | 'working' | 'note'; children: React.ReactNode }) {
-  const p = posts.find((x) => x.slug === slug)!;
+  const p = allPosts.find((x) => x.slug === slug)!;
+  if (!isLive(p)) notFound();
   const label = { idea: 'An idea, not built', working: 'Working it out', note: 'Note' }[kind];
   const jsonLd = {
     '@context': 'https://schema.org',
@@ -51,7 +53,7 @@ export function Note({ slug, kind, children }: { slug: string; kind: 'idea' | 'w
       <nav className="cs-series" aria-label="More notes">
         <h2>More notes</h2>
         <ol>
-          {posts
+          {livePosts()
             .filter((x) => x.slug !== slug)
             .map((x) => (
               <li key={x.slug}>

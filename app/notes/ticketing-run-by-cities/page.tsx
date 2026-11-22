@@ -3,6 +3,7 @@ import { Note, noteMetadata } from '../_parts/Note';
 
 const SLUG = 'ticketing-run-by-cities';
 export const metadata = noteMetadata(SLUG);
+export const revalidate = 3600; // a scheduled note goes live within the hour of its day
 
 export default function Page() {
   return (
