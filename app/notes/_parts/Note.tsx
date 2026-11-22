@@ -66,7 +66,7 @@ export function Note({ slug, kind, children }: { slug: string; kind: 'idea' | 'w
             ))}
           <li>
             <Link href="/case-studies">Small software</Link>
-            <span>The case studies: how madtown.today and Candlefair are built.</span>
+            <span>The case studies: how madtown.today and Dungeon Garden are built.</span>
           </li>
         </ol>
       </nav>

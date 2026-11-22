@@ -3,7 +3,7 @@ import { Essay, essayMetadata } from '../_shared/Essay';
 
 const SLUG = 'built-for-one-place';
 const dek =
-  'madtown.today is a homepage for one city. Candlefair is a companion for one group’s game. Knowing exactly who something is for changes what you build, and when a second place wants it, the answer is a second copy, not a bigger site.';
+  'madtown.today is a homepage for one city. Dungeon Garden is a companion for one group’s game. Knowing exactly who something is for changes what you build, and when a second place wants it, the answer is a second copy, not a bigger site.';
 
 export const metadata = essayMetadata(SLUG, dek);
 const IMG = '/case-studies/candlefair';
@@ -15,13 +15,13 @@ export default function Page() {
       dek={dek}
       about={[
         { name: 'madtown.today', url: 'https://madtown.today' },
-        { name: 'Candlefair', url: 'https://dnd.calebs.garden' },
+        { name: 'Dungeon Garden', url: 'https://dnd.calebs.garden' },
       ]}
       inShort={
         <>
           <p>
             Building for one specific place or group lets the details carry the product. madtown.today names its puzzles after Madison&apos;s lakes and the Memorial
-            Union Terrace chairs. Candlefair is shaped around how a DM actually runs a night and remembers months of play.
+            Union Terrace chairs. Dungeon Garden is shaped around how a DM actually runs a night and remembers months of play.
           </p>
           <p>
             When another city or group wants the same thing, both projects make a copy with its own content and its own data rather than one generic platform: a
@@ -47,17 +47,17 @@ export default function Page() {
 
       <h2>A tool shaped like one group&apos;s game</h2>
       <p>
-        Candlefair is the same idea for a game night. It&apos;s built around the frustrations I had as a player (who has how much gold, what that merchant said four
+        Dungeon Garden is the same idea for a game night. It&apos;s built around the frustrations I had as a player (who has how much gold, what that merchant said four
         sessions ago) and what I knew I&apos;d forget as a DM. It&apos;s shaped like a real game: a TV view everyone watches, whether that&apos;s a TV in the room or a
         screen shared on a Discord call, each player&apos;s phone, and the DM&apos;s console.
       </p>
       <figure>
-        <img src={`${IMG}/dm.jpg`} width={2000} height={1250} alt="The Candlefair DM console: a sidebar of pages, a first-night checklist, the Bank with pay buttons for each player, and a small copy of what is on the TV" loading="lazy" />
+        <img src={`${IMG}/dm.jpg`} width={2000} height={1250} alt="The Dungeon Garden DM console: a sidebar of pages, a first-night checklist, the Bank with pay buttons for each player, and a small copy of what is on the TV" loading="lazy" />
         <figcaption>The DM console. The right-hand column is a live copy of the TV view.</figcaption>
       </figure>
       <p>
         It&apos;s also shaped around how I want to run my world. My best friend can play about once a month, so several groups share one world and one storyline.
-        Candlefair keeps track of what each group has found and been paid, so the world stays consistent between them.
+        Dungeon Garden keeps track of what each group has found and been paid, so the world stays consistent between them.
       </p>
 
       <h2>A second place gets a second copy</h2>
@@ -85,7 +85,7 @@ export const madtown: CityConfig = {
         uses exactly as it is, so no one&apos;s streak resets. Each city keeps its own voice and its own content. What they share is code.
       </p>
       <p>
-        Candlefair does the same thing at a smaller size. Every D&amp;D group gets its own room: its own small server and its own storage, named by its campaign
+        Dungeon Garden does the same thing at a smaller size. Every D&amp;D group gets its own room: its own small server and its own storage, named by its campaign
         code. Nothing is shared between groups except the code that runs them. A group that stops playing for 180 days is cleaned up, and nobody else notices.
       </p>
 

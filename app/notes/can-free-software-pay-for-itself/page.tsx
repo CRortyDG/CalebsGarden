@@ -30,7 +30,7 @@ export default function Page() {
         keeps it going.
       </p>
       <p>
-        That changes when money is needed at all. A finished app that runs on its own, like Candlefair could, needs almost nothing from its users. Money starts to
+        That changes when money is needed at all. A finished app that runs on its own, like Dungeon Garden could, needs almost nothing from its users. Money starts to
         matter in two cases: when the costs go up because more people use it, or when people want new things built. Both are easy to explain, and both are easy to
         say yes to.
       </p>
@@ -54,7 +54,7 @@ export default function Page() {
       </p>
       <p>
         I&apos;d like to build that way for the browser: treat it as the platform, write for a version of JavaScript, keep dependencies few, and ship something
-        that keeps running without me. That&apos;s a claim about the code, not the hosting. Candlefair runs on Cloudflare, so it lives by their prices and their
+        that keeps running without me. That&apos;s a claim about the code, not the hosting. Dungeon Garden runs on Cloudflare, so it lives by their prices and their
         changes, and a missed security fix is always possible. But the less an app needs from its maintainer, the less it matters whether they&apos;re paid this
         month.
       </p>

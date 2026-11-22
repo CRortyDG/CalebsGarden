@@ -15,7 +15,7 @@ export default function Page() {
       dek={dek}
       about={[
         { name: 'madtown.today', url: 'https://madtown.today' },
-        { name: 'Candlefair', url: 'https://dnd.calebs.garden' },
+        { name: 'Dungeon Garden', url: 'https://dnd.calebs.garden' },
       ]}
       inShort={
         <>
@@ -25,7 +25,7 @@ export default function Page() {
             community wants it, they get their own copy instead of a corner of one giant platform.
           </p>
           <p>
-            I build this way on purpose. madtown.today, a daily homepage for Madison, Wisconsin, and Candlefair, a companion for D&amp;D groups, are the two examples
+            I build this way on purpose. madtown.today, a daily homepage for Madison, Wisconsin, and Dungeon Garden, a companion for D&amp;D groups, are the two examples
             behind this series.
           </p>
         </>
@@ -72,7 +72,7 @@ export default function Page() {
         from the same code with its own content, rather than by adding Rochester to madtown.today.
       </p>
       <p>
-        <strong>Candlefair</strong> runs a game of D&amp;D: a TV view everyone can see, whether that&apos;s a TV in the room or a screen shared on a Discord call,
+        <strong>Dungeon Garden</strong> runs a game of D&amp;D: a TV view everyone can see, whether that&apos;s a TV in the room or a screen shared on a Discord call,
         each player&apos;s phone, and a console for the person running the game. Every group gets its own small server, which costs close to nothing while nobody is
         playing. Nobody makes an account.
       </p>
@@ -84,7 +84,7 @@ export default function Page() {
       <p>This way of building gives things up, and I&apos;d rather say so than pretend it doesn&apos;t.</p>
       <ul>
         <li>
-          <strong>No accounts means no easy move between devices.</strong> A madtown.today streak lives in one browser. A Candlefair player on a second device has to
+          <strong>No accounts means no easy move between devices.</strong> A madtown.today streak lives in one browser. A Dungeon Garden player on a second device has to
           copy a sign-in link from the first.
         </li>
         <li>
@@ -107,7 +107,7 @@ export default function Page() {
           <Link href={pieceUrl('the-browser-is-the-account')}>The browser is the account</Link>: how both projects know who you are without a sign-up.
         </li>
         <li>
-          <Link href={pieceUrl('cheap-enough-to-give-away')}>Cheap enough to give away</Link>: what decides the bill, and how Candlefair moved to a design where an
+          <Link href={pieceUrl('cheap-enough-to-give-away')}>Cheap enough to give away</Link>: what decides the bill, and how Dungeon Garden moved to a design where an
           idle group costs close to nothing.
         </li>
         <li>

@@ -9,14 +9,14 @@ export default function Page() {
   return (
     <Note slug={SLUG} kind="note">
       <p>
-        I use AI for nearly everything I make. Claude Code wrote almost all of Candlefair&apos;s code under my direction, and I use AI for graphics, for writing,
+        I use AI for nearly everything I make. Claude Code wrote almost all of Dungeon Garden&apos;s code under my direction, and I use AI for graphics, for writing,
         for networking and for running my computer. But open either of my apps and you won&apos;t find a chatbot, an &ldquo;Ask AI&rdquo; button or a sparkle icon.
         That&apos;s on purpose.
       </p>
 
       <h2>People using them don&apos;t care</h2>
       <p>
-        Someone opening madtown.today wants today&apos;s puzzle. A D&amp;D group opening Candlefair wants the game to start. Neither came to talk to anything. If
+        Someone opening madtown.today wants today&apos;s puzzle. A D&amp;D group opening Dungeon Garden wants the game to start. Neither came to talk to anything. If
         you&apos;re already looking at the buttons that do the thing, a chat box that can also do the thing is a slower way to do it, and one more thing to learn.
       </p>
       <p>
@@ -35,13 +35,13 @@ export default function Page() {
         cost is added to the month&apos;s total, and past a cap ($40 by default) Claude switches off until the month turns. The editor works the same without it.
       </p>
       <p>
-        <strong>From outside, by choice.</strong> Candlefair has no AI in it either. What it has is a Worldbuilder: a small MCP server that lets a DM point their own
+        <strong>From outside, by choice.</strong> Dungeon Garden has no AI in it either. What it has is a Worldbuilder: a small MCP server that lets a DM point their own
         Claude, in Claude Desktop or Claude Code, at their own campaign.
       </p>
 
       <h2>Bring your own AI</h2>
       <p>
-        MCP (Model Context Protocol) is a way for an AI assistant to use an app&apos;s tools from a chat. Candlefair&apos;s Worldbuilder is built around it:
+        MCP (Model Context Protocol) is a way for an AI assistant to use an app&apos;s tools from a chat. Dungeon Garden&apos;s Worldbuilder is built around it:
       </p>
       <ul>
         <li>It&apos;s off for every campaign until the DM turns it on, and turning it off stops every key at once.</li>
@@ -58,7 +58,7 @@ export default function Page() {
         </li>
       </ul>
       <p>
-        The DM pays for their own AI, because it&apos;s theirs. Candlefair pays nothing for it, and doesn&apos;t need a business model to cover it. That matters for
+        The DM pays for their own AI, because it&apos;s theirs. Dungeon Garden pays nothing for it, and doesn&apos;t need a business model to cover it. That matters for
         software I want to keep{' '}
         <Link href="/case-studies/cheap-enough-to-give-away">cheap enough to give away</Link>.
       </p>
@@ -66,7 +66,7 @@ export default function Page() {
       <h2>I&apos;m not going to build a better agent than Anthropic</h2>
       <p>
         The AI labs spend more on their assistants than I ever could, and those assistants get better every few months without me doing anything. Anything I bolted
-        into Candlefair would be a worse copy of what a DM already has open in another window.
+        into Dungeon Garden would be a worse copy of what a DM already has open in another window.
       </p>
       <p>
         But Anthropic isn&apos;t going to build software for one D&amp;D table or one city&apos;s morning puzzle. That&apos;s my part. So the split I&apos;ve landed
@@ -81,7 +81,7 @@ export default function Page() {
       <h2>Where I might be wrong</h2>
       <ul>
         <li>
-          Some features would be fine as a plain AI call. A &ldquo;give me a quick NPC&rdquo; button in Candlefair wouldn&apos;t be bad. I&apos;d just have to pay for
+          Some features would be fine as a plain AI call. A &ldquo;give me a quick NPC&rdquo; button in Dungeon Garden wouldn&apos;t be bad. I&apos;d just have to pay for
           every press, and decide what happens when the money runs out.
         </li>
         <li>

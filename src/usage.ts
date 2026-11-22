@@ -1,5 +1,5 @@
 // What the projects cost to run and how many people use them, for the home page.
-// Each project with numbers gets an entry; Candlefair joins once groups are playing it.
+// Each project with numbers gets an entry; Dungeon Garden joins once groups are playing it.
 
 import { getMadtownStats, MADTOWN_CAPACITY_PER_DAY, MADTOWN_COST_FOOTNOTE, MADTOWN_MONTHLY_USD } from '@/madtown-stats';
 

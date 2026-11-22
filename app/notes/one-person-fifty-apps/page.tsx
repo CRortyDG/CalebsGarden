@@ -28,7 +28,7 @@ export default function Page() {
 
       <h2>Where I&apos;m the bottleneck today</h2>
       <p>
-        I have two apps, so it&apos;s a small sample, but it&apos;s telling. If I disappeared for two weeks, Candlefair would keep running. madtown.today would
+        I have two apps, so it&apos;s a small sample, but it&apos;s telling. If I disappeared for two weeks, Dungeon Garden would keep running. madtown.today would
         run out of puzzles, and only because I write them a week or two ahead. The code isn&apos;t the bottleneck. Daily content is, and that&apos;s a different
         job.
       </p>
@@ -55,7 +55,7 @@ export default function Page() {
       <p>
         If an app nobody uses costs nothing to run, it never needs to be switched off. A group can drift away and come back a year later to find it where they left
         it. That&apos;s the opposite of how big companies treat small products, which is why lists like Killed by Google exist. It&apos;s also only true for apps
-        whose hosting really drops to zero when idle. Candlefair&apos;s does. madtown.today&apos;s doesn&apos;t yet, which is part of why{' '}
+        whose hosting really drops to zero when idle. Dungeon Garden&apos;s does. madtown.today&apos;s doesn&apos;t yet, which is part of why{' '}
         <Link href="/notes/what-madtown-today-actually-costs">it&apos;s being rewritten</Link>.
       </p>
 

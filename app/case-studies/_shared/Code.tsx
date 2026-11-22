@@ -1,4 +1,4 @@
-/* A code excerpt copied from the Candlefair repository. Lines that start with // are dimmed.
+/* A code excerpt copied from the Dungeon Garden repository. Lines that start with // are dimmed.
    "// …" marks where lines were left out. */
 export function Code({ file, at, note, children }: { file: string; at: string; note?: string; children: string }) {
   const lines = children.replace(/^\n/, '').replace(/\n\s*$/, '').split('\n');

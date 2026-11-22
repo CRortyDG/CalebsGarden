@@ -1,6 +1,6 @@
 import { permanentRedirect } from 'next/navigation';
 
-// The Candlefair case study became part of the "Small software" series.
-export default function Candlefair() {
+// The Dungeon Garden case study became part of the "Small software" series.
+export default function DungeonGarden() {
   permanentRedirect('/case-studies/cheap-enough-to-give-away');
 }

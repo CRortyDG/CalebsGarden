@@ -3,8 +3,8 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 
 /*
-  A toy copy of how one Candlefair room handles a change. It runs only in this
-  page: no network, no Candlefair code. The rules it follows are the real ones,
+  A toy copy of how one Dungeon Garden room handles a change. It runs only in this
+  page: no network, no Dungeon Garden code. The rules it follows are the real ones,
   cut down: a write carries the version it read, the room refuses a stale one
   and the caller retries, and after every save each open screen is sent the
   whole view it may see (not a diff). A screen that was offline asks for its
