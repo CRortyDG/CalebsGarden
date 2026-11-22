@@ -5,6 +5,7 @@ import { useEffect, useRef, useState } from 'react';
 import { about, experience, site, type Project } from '@/projects';
 import { ProjectDetails } from '@/site/ProjectDetails';
 import { ProjectList } from '@/site/ProjectList';
+import type { Usage } from '@/usage';
 import { Flower } from './Flower';
 import { growStem } from './stem';
 import { growVines } from './vines';
@@ -15,7 +16,9 @@ import { growVines } from './vines';
  * each project is a section branching off it; the page ends below ground.
  * All the text is real page text. The stem and vines are decoration on top.
  */
-export function Overgrowth({ projects }: { projects: Project[] }) {
+const fmt = (n: number) => n.toLocaleString('en-US');
+
+export function Overgrowth({ projects, usage }: { projects: Project[]; usage?: Usage }) {
   const ref = useRef<HTMLDivElement>(null);
   const indexRef = useRef<HTMLDialogElement>(null);
   const regrowRef = useRef<() => void>(() => {});
@@ -68,6 +71,17 @@ export function Overgrowth({ projects }: { projects: Project[] }) {
           </a>
           <h1>{site.headline}</h1>
           <p className="og-tagline">{site.intro}</p>
+          {usage && (
+            <p className="og-ledger">
+              {usage.perDay !== null && (
+                <>
+                  <b>{fmt(usage.perDay)}</b> people a day
+                  <span aria-hidden="true"> · </span>
+                </>
+              )}
+              <b>${fmt(usage.monthlyUsd)}</b> a month to run it all
+            </p>
+          )}
           <nav className="og-buds" aria-label="Projects">
             {projects.map(
               (p) =>
@@ -89,7 +103,8 @@ export function Overgrowth({ projects }: { projects: Project[] }) {
             <section
               key={p.id}
               id={p.id}
-              className={`og-row ${i % 2 ? 'is-left' : 'is-right'}`}
+              className="og-row"
+              style={{ '--i': i } as React.CSSProperties}
               aria-labelledby={`og-${p.id}`}
             >
               <span className="og-flower">
@@ -97,7 +112,7 @@ export function Overgrowth({ projects }: { projects: Project[] }) {
               </span>
               <div className={`og-card ${p.type === 'project' ? '' : 'is-small'}`}>
                 {p.type === 'project' ? (
-                  <ProjectDetails project={p} titleId={`og-${p.id}`} />
+                  <ProjectDetails project={p} titleId={`og-${p.id}`} usage={usage?.projects.find((u) => u.id === p.id)} />
                 ) : (
                   <div className="sheet-body">
                     <h2 id={`og-${p.id}`}>{p.name}</h2>
