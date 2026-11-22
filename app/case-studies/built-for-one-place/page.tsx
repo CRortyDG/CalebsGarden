@@ -33,7 +33,7 @@ export default function Page() {
       <h2>The details are the product</h2>
       <p>
         A generic daily puzzle site is easy to find. What makes madtown.today worth opening is that it&apos;s about Madison. The grouping puzzle is called Four Lakes,
-        and its solved groups are named after the lakes instead of colours. The sorting puzzle has you stack the Memorial Union Terrace chairs. The word game&apos;s
+        and its solved groups are named after the lakes instead of colors. The sorting puzzle has you stack the Memorial Union Terrace chairs. The word game&apos;s
         answers are Madison words, each with a note about why. Madison Asks puts one question to the whole city each day, like the best way to eat a fried cheese
         curd. The hill card counts plastic flamingos planted on Bascom Hill toward 1,008, after the 1979 prank.
       </p>

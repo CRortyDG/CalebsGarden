@@ -127,6 +127,9 @@ export function Overgrowth({ projects }: { projects: Project[] }) {
             <a className="og-root-tip" href="/case-studies/">
               Case studies
             </a>
+            <a className="og-root-tip" href="/notes">
+              Notes
+            </a>
             <a className="og-root-tip" href="#top" onClick={(e) => (e.preventDefault(), window.scrollTo({ top: 0 }))}>
               Back to the top
             </a>
