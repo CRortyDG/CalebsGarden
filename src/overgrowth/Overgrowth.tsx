@@ -53,15 +53,31 @@ export function Overgrowth({ projects }: { projects: Project[] }) {
 
         <header className="og-hero">
           <canvas aria-hidden="true" />
-          <h1>{site.name}</h1>
-          <p className="og-tagline">{site.tagline}</p>
+          <a className="og-mark" href="/" aria-label={`${site.name}, home`}>
+            <svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true">
+              <path
+                d="M8 15V7M8 9C8 5 5 4 2 4c0 3 2 5 6 5M8 7c0-3 2.5-5 6-5 0 3.5-2.5 5-6 5"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.6"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+            {site.name}
+          </a>
+          <h1>{site.headline}</h1>
+          <p className="og-tagline">{site.intro}</p>
           <nav className="og-buds" aria-label="Projects">
             {projects.map(
-              (p, i) =>
+              (p) =>
                 p.type !== 'empty' && (
                   <a key={p.id} className="og-bud" href={`#${p.id}`}>
-                    <Flower status={p.status} tone={i} size={22} />
-                    {p.name}
+                    <span className="og-bud-name">{p.name}</span>
+                    {p.blurb && <span className="og-bud-note">{p.blurb}</span>}
+                    <span className="og-bud-arrow" aria-hidden="true">
+                      ↓
+                    </span>
                   </a>
                 ),
             )}
