@@ -41,6 +41,10 @@ export interface Project {
 export const site = {
   name: 'calebs.garden',
   tagline: "a garden of things I've made",
+  /** The big line on the first screen. */
+  headline: "A garden of things I've made.",
+  /** The line under it. */
+  intro: 'Projects for my city and my table, tended slowly. Pick one to see it up close.',
   /** A few sentences about you. Not shown anywhere yet. */
   about: '',
   /** Ways to reach you, shown among the roots in the footer. */
