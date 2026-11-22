@@ -58,7 +58,7 @@ export const projects: Project[] = [
     name: 'Candlefair',
     blurb: 'D&D at the table',
     about:
-      'A companion for in-person D&D. The TV becomes the table, every player plays from their phone, and the DM runs the night from one console that remembers every name, place and loose thread so nobody has to keep the books.',
+      'A companion for D&D game night, around a real table or on a call with the TV view screen-shared. The TV becomes the table, every player plays from their phone, and the DM runs the night from one console that remembers every name, place and loose thread so nobody has to keep the books.',
     highlights: [
       'The TV shows the map, the fights and every dice roll, live',
       'Players keep their character sheet, gold and journal on their phone',
