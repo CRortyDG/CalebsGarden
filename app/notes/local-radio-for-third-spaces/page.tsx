@@ -1,10 +1,12 @@
 import Link from 'next/link';
 import { Note, noteMetadata } from '../_parts/Note';
+import { BITRATES, INCLUDED_GB, mbPerHour as mbPerHourAt, monthlyCost, SERVER_USD, transferGb } from './maths';
+import RadioCalc from './RadioCalc';
 
 const SLUG = 'local-radio-for-third-spaces';
 export const metadata = noteMetadata(SLUG);
 
-// The maths, so the numbers on the page can't drift from each other.
+// The defaults on the page. The formulas live in maths.ts, shared with the calculator.
 const KBPS = 192;
 const SHOPS = 50;
 const HOURS = 8;
@@ -12,18 +14,22 @@ const DAYS = 30;
 const bytesPerHour = (KBPS * 1000 * 3600) / 8; // bits per second → bytes per hour
 const mbPerHour = bytesPerHour / 1e6; // 86.4
 const listenerHours = SHOPS * HOURS * DAYS; // 12,000
-const gbPerMonth = (listenerHours * bytesPerHour) / 1e9; // ≈ 1,036.8
-const INCLUDED_GB = 1000; // Nanode 1 GB: 1 TB a month included
-const OVERAGE_PER_GB = 0.005;
-const overage = Math.max(0, gbPerMonth - INCLUDED_GB) * OVERAGE_PER_GB;
+const gbPerMonth = transferGb(KBPS, SHOPS, HOURS, DAYS); // ≈ 1,036.8
+const overage = monthlyCost(gbPerMonth) - SERVER_USD;
 const concurrentMbps = (SHOPS * KBPS) / 1000; // 9.6
 
 const fmt = (n: number, d = 0) => n.toLocaleString('en-US', { minimumFractionDigits: d, maximumFractionDigits: d });
 
 export default function Page() {
-  const rows = [96, 128, 192, 320].map((kbps) => {
-    const gb = (listenerHours * ((kbps * 1000 * 3600) / 8)) / 1e9;
-    return { kbps, gb, cost: 5 + Math.max(0, gb - INCLUDED_GB) * OVERAGE_PER_GB };
+  const LABEL: Record<number, string> = {
+    128: 'Fine for talk, thin for music',
+    192: 'Good background music',
+    256: 'Hard to tell from the original',
+    320: 'The most MP3 allows',
+  };
+  const rows = BITRATES.map((kbps) => {
+    const gb = transferGb(kbps, SHOPS, HOURS, DAYS);
+    return { kbps, gb, cost: monthlyCost(gb), peak: (SHOPS * kbps) / 1000 };
   });
   return (
     <Note slug={SLUG} kind="working">
@@ -64,13 +70,19 @@ export default function Page() {
       </p>
 
       <h3>At other bitrates</h3>
+      <p>
+        192 kbps is a sensible floor for music in a shop. 320 kbps is the ceiling for MP3, and few people can hear the difference over a café speaker. Other
+        formats, like AAC and Opus, sound as good at lower bitrates, which would make every number here smaller.
+      </p>
       <div className="cs-table-wrap">
         <table>
           <thead>
             <tr>
               <th scope="col">Bitrate</th>
+              <th scope="col">Roughly</th>
               <th scope="col">Per listener-hour</th>
-              <th scope="col">50 shops, 8h × 30 days</th>
+              <th scope="col">{SHOPS} shops, {HOURS}h × {DAYS} days</th>
+              <th scope="col">Peak</th>
               <th scope="col">Monthly cost</th>
             </tr>
           </thead>
@@ -78,14 +90,20 @@ export default function Page() {
             {rows.map((r) => (
               <tr key={r.kbps}>
                 <td>{r.kbps} kbps</td>
-                <td>{fmt((r.kbps * 1000 * 3600) / 8 / 1e6, 1)} MB</td>
+                <td>{LABEL[r.kbps]}</td>
+                <td>{fmt(mbPerHourAt(r.kbps), 1)} MB</td>
                 <td>{fmt(r.gb)} GB</td>
+                <td>{fmt(r.peak, 1)} Mbps</td>
                 <td>${fmt(r.cost, 2)}</td>
               </tr>
             ))}
           </tbody>
         </table>
       </div>
+      <p>
+        Even at 320 kbps, 50 shops come to about ${fmt(rows[rows.length - 1].cost, 2)} a month. Try other sizes:
+      </p>
+      <RadioCalc />
       <p>
         Prices are from Akamai&apos;s <a href="https://www.akamai.com/cloud/pricing/cpu">shared CPU pricing page</a>, checked on 22 November 2026. The page says prices
         vary by region, so check yours. Bandwidth only; the table leaves out everything else.

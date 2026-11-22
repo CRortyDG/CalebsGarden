@@ -953,3 +953,63 @@ button.cs-cell:hover {
   color: var(--cs-moss);
   margin-bottom: 4px;
 }
+
+/* ---------- calculator (radio note) ---------- */
+.cs-calc-row {
+  display: grid;
+  grid-template-columns: 7.5rem minmax(0, 1fr) 5.5rem;
+  align-items: center;
+  gap: 10px;
+  margin: 0 0 10px;
+  font-size: 0.9rem;
+}
+.cs-calc-row input[type='range'] {
+  width: 100%;
+  accent-color: var(--cs-moss);
+}
+.cs-calc-row output {
+  font: 500 0.85rem var(--mono);
+  text-align: right;
+}
+.cs-calc-out {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin: 16px 0 0;
+}
+@media (min-width: 700px) {
+  .cs-calc-out {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+.cs-calc-out div {
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--cs-raised);
+  min-width: 0;
+}
+.cs-calc-out dt {
+  font: 500 0.68rem var(--mono);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.cs-calc-out dd {
+  margin: 4px 0 0;
+  font: 600 1.15rem var(--display);
+}
+.cs-calc-note {
+  margin: 12px 0 0;
+  font-size: 0.82rem;
+  color: var(--muted);
+}
+@media (max-width: 420px) {
+  .cs-calc-row {
+    grid-template-columns: 1fr auto;
+  }
+  .cs-calc-row input[type='range'] {
+    grid-column: 1 / -1;
+    grid-row: 2;
+  }
+}
