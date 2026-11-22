@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import { Code } from '../_shared/Code';
 import { AfterDiagram, BeforeDiagram, NamespaceDiagram } from '../_shared/Diagrams';
 import { Essay, essayMetadata, Src } from '../_shared/Essay';
@@ -200,6 +201,10 @@ async publish(_game: string, _version: number) {
         through two cases: a launch spike of 200 people for three hours comes to about 290,000 commands, and a steady 20 people around the clock for a month to
         about 6.9 million. Its advice if that gets tight is one setting: send the heartbeat every 60 seconds instead of 30, which halves the cost and only makes the
         online count update more slowly.
+      </p>
+      <p>
+        That README note turned out to be out of date. When I read the real bill, the heartbeat was a small part of it. The rest, and the plan to fix it, is in{' '}
+        <Link href="/notes/what-madtown-today-actually-costs">What madtown.today actually costs</Link>.
       </p>
       <p>
         The rest leans on free things used gently. The weather comes from Open-Meteo, free for non-commercial use, fetched at most once every 10 minutes for
