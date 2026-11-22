@@ -11,18 +11,19 @@ export const REVALIDATE_SECONDS = 43200;
 /** What madtown.today costs a month, in dollars, as c pays it (November 2026). */
 export const MADTOWN_COSTS = [
   { item: 'Upstash Redis', note: 'counters, presence, the guestbook', usd: 15 },
-  { item: 'Vercel', note: 'hosting', usd: 20 },
+  { item: 'Vercel', note: 'hosting: $20 Pro plan plus usage, Oct 24 to Nov 21', usd: 29 },
   { item: 'GitHub Actions', note: 'tests on every change, budgeted', usd: 15 },
 ] as const;
 export const MADTOWN_MONTHLY_USD = MADTOWN_COSTS.reduce((s, c) => s + c.usd, 0);
 
 /**
- * Roughly how many people a day the same monthly bill would carry before a plan has to go up.
- * An estimate, not a measurement: the Vercel Pro allowance (1 TB transfer, 10M edge requests a
- * month) divided by what a visit costs (about 50 requests, a couple of MB), with headroom.
- * Redis and CI are flat. Change it here if the real numbers say otherwise.
+ * Roughly how many people a day the same monthly bill would carry before a plan has to go up,
+ * or null for no claim. It was 5,000, from Vercel Pro's included allowance, but the real bill
+ * (Oct 24 to Nov 21) was already past Pro's $20 credit at ~376 a day, and most of it grows with
+ * traffic (polling, function calls, Observability events). See the note
+ * /notes/what-madtown-today-actually-costs. Put a number back once the Cloudflare move ships.
  */
-export const MADTOWN_CAPACITY_PER_DAY = 5000;
+export const MADTOWN_CAPACITY_PER_DAY: number | null = null;
 
 function valid(x: unknown): x is MadtownStats {
   const s = x as MadtownStats;

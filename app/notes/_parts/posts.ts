@@ -6,6 +6,13 @@ export type Post = { slug: string; title: string; date: string; summary: string 
 // day; pages under /notes re-check every hour, so it appears within an hour of midnight.
 export const allPosts: Post[] = [
   {
+    slug: 'who-comes-back',
+    title: 'Who comes back to madtown.today',
+    date: '2026-11-25',
+    summary:
+      'Visitors a day is the number people ask about. The one I watch is who comes back. About 300 regulars stayed put through every spike, half of new visitors leave without playing, and a lost game brings people back almost as well as a won one. A game they get stuck in doesn’t.',
+  },
+  {
     slug: 'build-the-meter-first',
     title: 'Build the meter first',
     date: '2026-11-24',
