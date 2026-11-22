@@ -46,13 +46,13 @@ export function ProjectDetails({ project, titleId, usage }: { project: Project; 
             </div>
           </dl>
         )}
+        {usage?.costNote && <p className="sheet-stats-note">{usage.costNote}</p>}
         {usage?.capacityPerDay && (
           <p className="sheet-stats-note">
-            Most of that is flat plan pricing, not traffic. The same ${fmt(usage.monthlyUsd)} would carry
-            about {fmt(usage.capacityPerDay)} people a day before anything has to go up.
+            At today&apos;s usage, that ${fmt(usage.monthlyUsd)} plan carries about{' '}
+            {fmt(usage.capacityPerDay)} people a day before it needs an upgrade.
           </p>
         )}
-        {usage?.costNote && <p className="sheet-stats-note">{usage.costNote}</p>}
         {project.highlights && project.highlights.length > 0 && (
           <ul className="sheet-highlights" aria-label="What's there">
             {project.highlights.map((h) => (

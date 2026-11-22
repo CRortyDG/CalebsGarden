@@ -82,12 +82,12 @@ export function Overgrowth({ projects, usage }: { projects: Project[]; usage?: U
               <b>${fmt(usage.monthlyUsd)}</b> a month to run it all
             </p>
           )}
+          {usage?.projects[0]?.costNote && <p className="og-ledger-note">{usage.projects[0].costNote}</p>}
           {usage?.projects[0]?.capacityPerDay && (
             <p className="og-ledger-note">
-              Mostly fixed costs: the same ${fmt(usage.monthlyUsd)} would carry about {fmt(usage.projects[0].capacityPerDay)} people a day.
+              At today&apos;s usage, that ${fmt(usage.monthlyUsd)} plan carries about {fmt(usage.projects[0].capacityPerDay)} people a day before it needs an upgrade.
             </p>
           )}
-          {usage?.projects[0]?.costNote && <p className="og-ledger-note">{usage.projects[0].costNote}</p>}
           <nav className="og-buds" aria-label="Projects">
             {projects.map(
               (p) =>
