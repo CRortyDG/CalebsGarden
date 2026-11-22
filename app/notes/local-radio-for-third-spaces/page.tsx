@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { Note, noteMetadata } from '../_parts/Note';
 import { BITRATES, INCLUDED_GB, mbPerHour as mbPerHourAt, monthlyCost, SERVER_USD, transferGb } from './maths';
+import CafeScreen from './CafeScreen';
 import RadioCalc from './RadioCalc';
 
 const SLUG = 'local-radio-for-third-spaces';
@@ -35,8 +36,8 @@ export default function Page() {
     <Note slug={SLUG} kind="working">
       <p>
         Third spaces are the places that aren&apos;t home or work: coffee shops, record stores, bars, bookshops. Many of them play music all day, usually from a
-        streaming service, and I&apos;d guess very little of it comes from the town they&apos;re in. The idea, which grew out of giggly, is a stream made for those places: good
-        background music, with local bands mixed in.
+        streaming service, and I&apos;d guess very little of it comes from the town they&apos;re in. The idea is giggly radio: a free stream made for those places, of music by
+        local bands, where every song points to that band&apos;s next show in town.
       </p>
       <p>
         Audio streaming has a reputation for expensive bandwidth, so before anything else I wanted to know whether it could be cheap enough to give away. It can.
@@ -122,6 +123,29 @@ export default function Page() {
       <p>
         Every shop hears the same thing at the same time, which is the point of radio: a band played at 3pm is played in every shop in town at 3pm. If it grew past
         one server, a second cheap server in front could relay the stream, and the bill would still be around $10 a month.
+      </p>
+
+      <h2>What a shop would see</h2>
+      <p>The stream is half of it. The other half is a screen, so &ldquo;who is this?&rdquo; has an answer. The loop I&apos;ve prototyped goes like this:</p>
+      <ol>
+        <li>
+          <strong>Bands opt in</strong> and give giggly songs to play.
+        </li>
+        <li>
+          <strong>Cafés stream it for free</strong> on their speakers, with a TV or tablet showing what&apos;s on.
+        </li>
+        <li>
+          <strong>Someone in the room wonders who it is.</strong> The screen shows the band, their next show and a code to scan.
+        </li>
+        <li>
+          <strong>The scan opens the venue&apos;s own ticket page.</strong> No app and no account. If each code is unique to a café and a show, a venue could see
+          which shops send people its way.
+        </li>
+      </ol>
+      <CafeScreen />
+      <p>
+        That last step is what makes it more than background music: the shop gets music that&apos;s actually from here, the band gets heard in its own city, and the
+        venue gets people through the door.
       </p>
 
       <h2>The part that isn&apos;t cheap: rights, and people</h2>
