@@ -76,14 +76,14 @@ export const projects: Project[] = [
   {
     id: 'madtown',
     name: 'madtown.today',
-    blurb: 'a daily puzzle game for Madison, WI',
+    blurb: 'a homepage for the isthmus',
     about:
-      'Four daily puzzles themed around Madison, Wisconsin, on a site that feels like the old-school internet. Around the puzzles are the things that make a town page worth coming back to: stories, a guestbook and the useful odds and ends.',
+      "Madison's daily homepage, made like the old-school internet and with no ad networks. Four daily puzzles to play, a question for the whole town, and the small things that make it a place people come back to.",
     highlights: [
-      'Four new puzzles every day',
-      'Articles and comedy pieces, now and then',
-      'A guestbook, like the old web',
-      'City parking structure info and other Madison odds and ends',
+      'Four daily puzzles: Chair Stack, Four Lakes, Word and Lap',
+      'Madison Asks, a daily poll for the whole city',
+      'The Madtown Gazette: articles and comedy pieces, now and then',
+      'A guestbook, the weather, good causes and city parking info',
     ],
     status: 'evergreen',
     type: 'project',
@@ -91,7 +91,7 @@ export const projects: Project[] = [
     hostLabel: 'madtown.today',
     image: {
       src: '/projects/madtown.png',
-      alt: 'madtown.today: a daily puzzle game for Madison, WI, drawn like an old web page',
+      alt: 'madtown.today: a homepage for the isthmus, with the Chair Stack, Four Lakes and Madison Asks cards',
       width: 1200,
       height: 630,
     },
