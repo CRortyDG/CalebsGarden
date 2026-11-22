@@ -19,7 +19,7 @@ ${live.map((p) => `- [${p.name}](${p.href}): ${p.about || p.blurb}`).join('\n')}
 
 ## Experience
 
-- [Experience](${SITE}/experience): Caleb's jobs (infrastructure engineer at N3XT; sole developer at Civic Media; hosting and full-stack at Design.Garden; ISP field and data center work at 5NINES), what he owned at each, and the tests, CI, security audit, deploys, backups and incidents behind his own apps. He loves full-stack product work; contact caleb@madtown.today.
+- [Experience](${SITE}/experience): Caleb's jobs (infrastructure engineer at N3XT; sole developer at Civic Media; hosting and full-stack at Design.Garden; ISP field and data center work at 5NINES), what he owned at each, and the tests, CI, security audit, deploys, backups and incidents behind his own apps. He loves full-stack product work; contact hello@calebs.garden.
 
 ## Case studies: ${SERIES_NAME}
 
