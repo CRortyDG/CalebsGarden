@@ -51,7 +51,7 @@ export function ProjectDetails({ project, titleId, usage }: { project: Project; 
           <p className="sheet-stats-note">
             At today&apos;s usage, that ${fmt(usage.monthlyUsd)} plan carries about{' '}
             {fmt(usage.capacityPerDay)} people a day before it needs an upgrade.{' '}
-            <a href="/notes/what-madtown-today-actually-costs">Read the migration plan</a>.
+            Does it need to cost this much? No. <a href="/notes/what-madtown-today-actually-costs">Here’s my plan to cut it</a>.
           </p>
         )}
         {project.highlights && project.highlights.length > 0 && (
