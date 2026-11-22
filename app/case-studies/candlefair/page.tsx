@@ -301,8 +301,8 @@ export default function CandlefairCaseStudy() {
               <h2 id="free-h">Free, on purpose</h2>
             </header>
             <p>
-              Most of what I build follows one idea: make free, or nearly free, software that people actually want and will use. madtown.today is one example.
-              Candlefair is another.
+              Most of what I build follows one idea: make free, or nearly free, software that people actually want and will use. madtown.today, a daily homepage for
+              Madison with no ad networks, is one example. Candlefair is another.
             </p>
             <p>
               That idea comes with a trade most software doesn&apos;t make. Candlefair isn&apos;t trying to be a platform, and it isn&apos;t built for a scale it

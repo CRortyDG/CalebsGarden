@@ -1,6 +1,5 @@
-// The content of the site. Themes are scenery around this list and never own
-// content: add an entry here and every theme, the project sheet and the Index
-// pick it up.
+// The content of the site. Add an entry here and the page, its bud on the first
+// screen and the Index all pick it up.
 
 /** Digital-garden growth stages. */
 export type Status = 'seedling' | 'budding' | 'evergreen';
@@ -10,11 +9,13 @@ export interface Project {
   name: string;
   /** One short line shown beside the name. */
   blurb: string;
-  /** Two or three sentences for the project sheet. */
+  /** Two or three sentences for the project card. */
   about: string;
+  /** Three or four short lines on what's there, shown as a list in the card. */
+  highlights?: string[];
   status: Status;
   /**
-   * project: opens the shared project sheet.
+   * project: gets a full card on the page.
    * section: a part of this site (goes straight to `href`).
    * empty:   nothing to open yet.
    */
@@ -27,11 +28,11 @@ export interface Project {
   caseStudy?: string;
   /** Public source code, if any. */
   source?: string;
-  /** Screenshot under /public, with its real pixel size. */
+  /** Card image under /public (1200×630, like a link preview), with its real pixel size. */
   image?: { src: string; alt: string; width: number; height: number };
   /** Three to five short "built with" tags. */
   tags?: string[];
-  /** Who or where it is for, in a few words. Themes with a label use it. */
+  /** Who or where it is for, in a few words. */
   habitat?: string;
   /** The year it went live. */
   year?: number;
@@ -40,9 +41,9 @@ export interface Project {
 export const site = {
   name: 'calebs.garden',
   tagline: "a garden of things I've made",
-  /** A few sentences about you. Themes with an about page show it once it is filled in. */
+  /** A few sentences about you. Not shown anywhere yet. */
   about: '',
-  /** Ways to reach you, shown in the footer of themes that have one. */
+  /** Ways to reach you, shown among the roots in the footer. */
   links: [] as { label: string; href: string }[],
 };
 
@@ -52,29 +53,50 @@ export const projects: Project[] = [
     name: 'Candlefair',
     blurb: 'D&D at the table',
     about:
-      'A companion for in-person D&D: a TV at the table, phones in hand, and a DM console that remembers everything.',
+      'A companion for in-person D&D. The TV becomes the table, every player plays from their phone, and the DM runs the night from one console that remembers every name, place and loose thread so nobody has to keep the books.',
+    highlights: [
+      'The TV shows the map, the fights and every dice roll, live',
+      'Players keep their character sheet, gold and journal on their phone',
+      'The DM console remembers people, places, clues and past sessions',
+      'Invites, recaps and downtime between game nights',
+    ],
     status: 'budding',
     type: 'project',
     href: 'https://dungeon.garden',
     hostLabel: 'dungeon.garden',
     image: {
-      src: '/projects/candlefair.jpg',
-      alt: 'Candlefair on the table TV: a town map with the party tokens on it',
-      width: 2000,
-      height: 1125,
+      src: '/projects/candlefair.png',
+      alt: 'Candlefair: D&D at the table, with a TV map, a phone and a candle',
+      width: 1200,
+      height: 630,
     },
     tags: ['Cloudflare Workers', 'Durable Objects', 'Real-time rooms'],
+    habitat: 'Your table, on game night',
     caseStudy: '/case-studies/candlefair',
   },
   {
     id: 'madtown',
     name: 'madtown.today',
-    blurb: '',
-    about: '',
+    blurb: 'a homepage for the isthmus',
+    about:
+      "Madison's daily homepage, made like the old-school internet and with no ad networks. Four daily puzzles to play, a question for the whole town, and the small things that make it a place people come back to.",
+    highlights: [
+      'Four daily puzzles: Chair Stack, Four Lakes, Word and Lap',
+      'Madison Asks, a daily poll for the whole city',
+      'The Madtown Gazette: articles and comedy pieces, now and then',
+      'A guestbook, the weather, good causes and city parking info',
+    ],
     status: 'evergreen',
     type: 'project',
     href: 'https://madtown.today',
     hostLabel: 'madtown.today',
+    image: {
+      src: '/projects/madtown.png',
+      alt: 'madtown.today: a homepage for the isthmus, with the Chair Stack, Four Lakes and Madison Asks cards',
+      width: 1200,
+      height: 630,
+    },
+    habitat: 'Madison, WI',
   },
   {
     id: 'case-studies',
@@ -101,7 +123,7 @@ export const statusLabel: Record<Status, string> = {
   evergreen: 'Evergreen',
 };
 
-/** Where a click on a project's name should go inside a theme. */
+/** Where a project's name links to: its card on the page, or straight to a section. */
 export function projectLink(p: Project): string | undefined {
   if (p.type === 'project') return `#${p.id}`;
   return p.href;

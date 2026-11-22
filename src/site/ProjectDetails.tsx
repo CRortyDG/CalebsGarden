@@ -1,9 +1,8 @@
 import { statusLabel, type Project } from '@/projects';
 
 /**
- * What the site says about one project. The dialog sheet and any theme that
- * lays projects out on the page both use this, so the content and the order of
- * the buttons are the same everywhere: Visit, Read how it was built, Source.
+ * What the site says about one project, in its card on the page. Buttons go
+ * in this order: Visit, Read how it was built, Source.
  */
 export function ProjectDetails({ project, titleId }: { project: Project; titleId: string }) {
   return (
@@ -24,6 +23,13 @@ export function ProjectDetails({ project, titleId }: { project: Project; titleId
         <h2 id={titleId}>{project.name}</h2>
         {project.blurb && <p className="sheet-blurb">{project.blurb}</p>}
         {project.about && <p className="sheet-about">{project.about}</p>}
+        {project.highlights && project.highlights.length > 0 && (
+          <ul className="sheet-highlights" aria-label="What's there">
+            {project.highlights.map((h) => (
+              <li key={h}>{h}</li>
+            ))}
+          </ul>
+        )}
         {project.tags && project.tags.length > 0 && (
           <ul className="sheet-tags" aria-label="Built with">
             {project.tags.map((t) => (

@@ -307,3 +307,8 @@ html:has(.og) {
     opacity: 1;
   }
 }
+/* without scripts the stem never reaches the flowers, so just show them */
+html:not(.js) .og-flower {
+  transform: none;
+  opacity: 1;
+}
