@@ -11,7 +11,7 @@
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import type { MadtownEvent } from '@/madtown-events';
 import { EVENT_KINDS } from '@/madtown-events';
-import type { MadtownTimeline, Source, TimelineDay } from '@/madtown-timeline';
+import type { MadtownArticle, MadtownTimeline, Source, TimelineDay } from '@/madtown-timeline';
 import { SOURCES } from '@/madtown-timeline';
 import './timeline.css';
 
@@ -74,6 +74,8 @@ function segmentsFor(day: TimelineDay, lens: Lens): Segment[] {
     return [
       { key: 'back', value: back, cls: 'tl-back' },
       { key: 'new', value: fresh, cls: 'tl-new' },
+      // Readers who landed on a story and never opened the homepage: in no visitor count.
+      { key: 'read', value: day.articleOnly ?? 0, cls: 'tl-read' },
     ];
   }
   if (lens === 'sources') {
@@ -256,7 +258,7 @@ export default function Timeline({ data, events }: TimelineProps) {
   const yMax = useMemo(() => {
     const m =
       lens === 'visitors'
-        ? Math.max(...days.map((d) => Math.max(d.visitors ?? 0, d.newBrowsers)))
+        ? Math.max(...days.map((d) => Math.max(d.visitors ?? 0, d.newBrowsers) + (d.articleOnly ?? 0)))
         : Math.max(...days.map((d) => d.newBrowsers));
     return Math.max(10, m) * 1.06;
   }, [days, lens]);
@@ -501,7 +503,7 @@ export default function Timeline({ data, events }: TimelineProps) {
       </div>
 
       <div className="tl-panels">
-        <EventCard mark={activeMark} onDay={onEventDay} days={days} />
+        <EventCard mark={activeMark} onDay={onEventDay} days={days} articles={data.articles} />
         <Funnel day={day} />
       </div>
 
@@ -518,6 +520,7 @@ export default function Timeline({ data, events }: TimelineProps) {
                 <th scope="col">Played on day one</th>
                 <th scope="col">Back next day</th>
                 <th scope="col">Back a week later</th>
+                <th scope="col">Read a story only</th>
                 <th scope="col">Regulars</th>
               </tr>
             </thead>
@@ -531,6 +534,7 @@ export default function Timeline({ data, events }: TimelineProps) {
                   <td>{d.newStarted === null ? '—' : fmt(d.newStarted)}</td>
                   <td>{d.back1 === null ? '—' : fmt(d.back1)}</td>
                   <td>{d.back7 === null ? '—' : fmt(d.back7)}</td>
+                  <td>{d.articleOnly ? fmt(d.articleOnly) : '—'}</td>
                   <td>{d.regulars === null ? '—' : fmt(d.regulars)}</td>
                 </tr>
               ))}
@@ -548,6 +552,7 @@ function Legend({ lens }: { lens: Lens }) {
       ? [
           { cls: 'tl-back', label: 'Been before' },
           { cls: 'tl-new', label: 'First time' },
+          { cls: 'tl-read', label: 'Read a Gazette story, never opened the homepage' },
         ]
       : lens === 'sources'
         ? [...SOURCES.map((s) => ({ cls: `tl-src-${s}`, label: SOURCE_LABELS[s] })), { cls: 'tl-src-unknown', label: SOURCE_LABELS.unknown }]
@@ -568,7 +573,7 @@ function Legend({ lens }: { lens: Lens }) {
         </li>
       ))}
       <li className="tl-legend-buds">
-        {(['post', 'feature', 'test'] as const).map((k) => (
+        {(['post', 'story', 'feature', 'test'] as const).map((k) => (
           <span key={k} className={`tl-kind-${k}`}>
             <svg width="12" height="12" viewBox="-6 -6 12 12" aria-hidden="true">
               <circle className="tl-petal" r="5" />
@@ -582,7 +587,17 @@ function Legend({ lens }: { lens: Lens }) {
 }
 
 /** What happened, and that day's numbers: for traffic, who stuck; for a change, before vs after. */
-function EventCard({ mark, onDay, days }: { mark: (MadtownEvent & { i: number }) | null; onDay: boolean; days: TimelineDay[] }) {
+function EventCard({
+  mark,
+  onDay,
+  days,
+  articles,
+}: {
+  mark: (MadtownEvent & { i: number }) | null;
+  onDay: boolean;
+  days: TimelineDay[];
+  articles: MadtownArticle[];
+}) {
   if (!mark) {
     return (
       <section className="tl-card is-empty">
@@ -593,8 +608,27 @@ function EventCard({ mark, onDay, days }: { mark: (MadtownEvent & { i: number })
   const d = days[mark.i];
   const next = days[mark.i + 1];
   let stat: React.ReactNode = null;
-  if (mark.kind === 'post' || mark.kind === 'press') {
-    const two = next && mark.kind === 'post' ? [d, next] : [d];
+  const story = mark.article ? articles.find((a) => a.slug === mark.article) : undefined;
+  if (story && story.readers > 0) {
+    const ft = story.firstTimers;
+    stat = (
+      <>
+        <p className="tl-card-stat">
+          madtown counted <strong>{fmt(story.readers)}</strong> browsers landing on the story from outside
+          {story.sources.reddit > 0 ? <>, {pct(story.sources.reddit, story.readers)}% from Reddit</> : null}. <strong>{fmt(story.onlyRead)}</strong> (
+          {pct(story.onlyRead, story.readers)}%) read it and never opened the homepage; <strong>{fmt(story.openedSite)}</strong> went on to open it, and{' '}
+          {fmt(story.knewSite)} already knew the site.
+        </p>
+        {ft.total >= 20 && (
+          <p className="tl-card-stat">
+            Of the {fmt(ft.total)} for whom it was their first madtown page, <strong>{pct(ft.played, ft.total)}%</strong> played a puzzle under it and{' '}
+            <strong>{pct(ft.sameDay + ft.week, ft.total)}%</strong> opened the homepage within a week.
+          </p>
+        )}
+      </>
+    );
+  } else if (mark.kind === 'post' || mark.kind === 'press' || mark.kind === 'story') {
+    const two = next && mark.kind !== 'press' ? [d, next] : [d];
     const fresh = two.reduce((s, x) => s + x.newBrowsers, 0);
     const reddit = two.reduce((s, x) => s + (x.sources?.reddit ?? 0), 0);
     const b1 = two.every((x) => x.back1 !== null) ? two.reduce((s, x) => s + (x.back1 ?? 0), 0) : null;
