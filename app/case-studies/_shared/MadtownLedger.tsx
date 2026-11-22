@@ -14,7 +14,7 @@ export default async function MadtownLedger() {
   return (
     <section className="cs-demo" aria-labelledby="madtown-ledger">
       <div className="cs-demo-head">
-        <h3 id="madtown-ledger">madtown.today&apos;s bill, and what it pays for</h3>
+        <h3 id="madtown-ledger">What madtown.today costs to run</h3>
         <span className="cs-demo-tag">{stats ? 'Live counts' : 'Costs only'}</span>
       </div>
       <div className="cs-table-wrap">

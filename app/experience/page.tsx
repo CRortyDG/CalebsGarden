@@ -216,7 +216,7 @@ export default function Experience() {
           <dl>
             <dt>Tests and CI</dt>
             <dd>
-              110 unit test files and 31 Playwright end-to-end specs. CI runs lint, unit tests and a build on every ready pull request, and the end-to-end suite
+              111 unit test files and 31 Playwright end-to-end specs. CI runs lint, unit tests and a build on every ready pull request, and the end-to-end suite
               on pull requests into main, against a throwaway Redis behind the same REST emulator I use locally. It&apos;s budgeted around the 2,000 Actions
               minutes a month the plan includes.
             </dd>

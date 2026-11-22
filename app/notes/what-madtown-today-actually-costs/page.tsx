@@ -24,8 +24,8 @@ const perDay = INVOCATIONS / DAYS;
 const perVisitor = perDay / VISITORS_A_DAY;
 
 const PLAN = [
-  { step: 'Today', what: 'Next.js on Vercel Pro, Upstash Redis', usd: 'about $45 to $50', effort: '' },
-  { step: '1. Settings', what: 'Observability Plus off, previews only for pull requests, shorter retention', usd: 'about $30', effort: 'an evening' },
+  { step: 'Today', what: 'Next.js on Vercel Pro, Upstash Redis', usd: 'about $45', effort: '' },
+  { step: '1. Settings', what: 'Observability Plus off, previews only for pull requests, shorter retention', usd: 'about $35', effort: 'an evening' },
   { step: '2. Durable Object', what: 'Who’s here, presence and live tallies over WebSockets; Upstash dropped', usd: 'about $20', effort: 'about a week' },
   { step: '3. Off Vercel', what: 'The Next.js site on Cloudflare Workers, beside the Durable Object', usd: 'about $5', effort: 'two to three more weeks' },
 ];
@@ -44,8 +44,10 @@ export default function Page() {
 
       <h2>The bill</h2>
       <p>
-        madtown.today costs about $45 to $50 a month for about {fmt(VISITORS_A_DAY)} visitors a day: Vercel Pro, Upstash Redis at $15, and a $15 budget for GitHub Actions. Vercel
-        Pro is a $20 fee that includes $20 of usage, so anything past $20 of usage is extra. One billing cycle, 24 October to 21 November, looked like this:
+        What madtown.today costs to run is the $15 Upstash Redis database, for about {fmt(VISITORS_A_DAY)} visitors a day. The site itself is on Vercel Pro,
+        which is my own choice: I upgraded when my build and test runners went past the free plan&apos;s CPU time, and nobody using the site pays for it. Pro is a
+        $20 fee that includes $20 of usage, so anything past $20 of usage is extra. Counting it all, I pay about $45 a month. One Vercel billing cycle, 24 October
+        to 21 November, looked like this:
       </p>
       <div className="cs-table-wrap">
         <table>
@@ -124,7 +126,7 @@ export default function Page() {
             <tr>
               <th scope="col">Step</th>
               <th scope="col">What changes</th>
-              <th scope="col">Monthly cost</th>
+              <th scope="col">What I pay a month</th>
               <th scope="col">Effort</th>
             </tr>
           </thead>

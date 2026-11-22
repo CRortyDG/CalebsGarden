@@ -104,7 +104,7 @@ export default function Page() {
         </table>
       </div>
       <p>
-        Half of new visitors look and leave without playing anything, and almost none of them come back. People who play all three puzzles on day one come back
+        Half of new visitors look and leave without playing anything, and almost none of them come back. People who play all three of Chair Stack, Four Lakes and Word on day one (Lap isn&apos;t counted) come back
         about nine times as often. That&apos;s correlation, not cause: someone who plays all three may just be the kind of person who&apos;d come back anyway. I tried
         to find out with three A/B tests that changed what a new visitor sees first, and none of them moved next-day returns. That story is in{' '}
         <Link href="/notes/three-tests-that-didnt-win">Three tests on madtown.today that didn&apos;t win</Link>.
