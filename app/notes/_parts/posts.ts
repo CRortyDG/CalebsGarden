@@ -6,6 +6,20 @@ export type Post = { slug: string; title: string; date: string; summary: string 
 // day; pages under /notes re-check every hour, so it appears within an hour of midnight.
 export const allPosts: Post[] = [
   {
+    slug: 'one-person-fifty-apps',
+    title: 'Can one person look after fifty community apps?',
+    date: '2026-11-27',
+    summary:
+      'I think so, if they’re built to be left alone. With no growth target there’s no emergency, so the work is upkeep, not new features. The apps that need a support desk, like ticketing, only get built when the people who need them commit to backing them.',
+  },
+  {
+    slug: 'can-free-software-pay-for-itself',
+    title: 'Can free community software pay a person?',
+    date: '2026-11-26',
+    summary:
+      'Hosting is the easy part. The real question is someone’s time. I think it can work the way Patreon does: people back the person keeping something going, not the code. That works best when the code can be left alone and the ongoing work is content and people.',
+  },
+  {
     slug: 'who-comes-back',
     title: 'Who comes back to madtown.today',
     date: '2026-11-25',
