@@ -1,6 +1,5 @@
-/* calebs.garden: base styles and the parts every theme shares
-   (plain page, Index, Scenery menu, project sheet).
-   Theme scenery lives with each theme in src/themes/<id>/. */
+/* calebs.garden: base styles, the Index panel, the project details and the
+   plain pages (case studies). The garden itself is in src/overgrowth/. */
 :root {
   --night: #0b120e;
   --ink: #eef2e8;
@@ -11,7 +10,6 @@
   --body: var(--font-body), system-ui, -apple-system, 'Segoe UI', sans-serif;
   --mono: var(--font-mono), ui-monospace, 'SF Mono', Menlo, monospace;
 
-  /* A theme can restyle the shared parts by setting these on .site[data-theme]. */
   --chrome-bg: rgba(10, 14, 10, 0.72);
   --chrome-fg: #f4ead2;
   --chrome-line: rgba(244, 234, 210, 0.3);
@@ -59,29 +57,13 @@ button {
   }
 }
 
-/* ---------- the plain page (also the Index list and "No scenery") ---------- */
+/* ---------- plain pages (case studies) and the Index list ---------- */
 .plain {
   max-width: 720px;
   margin: 0 auto;
   padding-block: 88px 48px;
   padding-left: max(20px, env(safe-area-inset-left, 0px));
   padding-right: max(20px, env(safe-area-inset-right, 0px));
-}
-/* With scripts on, hold the server's plain page back while the theme loads.
-   It shows by itself after 3s, or at once if the theme fails. */
-.js #plain {
-  animation: cg-hold 3s step-end both;
-}
-.js.no-theme #plain {
-  animation: none;
-}
-@keyframes cg-hold {
-  from {
-    visibility: hidden;
-  }
-  to {
-    visibility: visible;
-  }
 }
 .plain h1 {
   margin: 0;
@@ -181,7 +163,7 @@ button {
   box-shadow: 0 0 0 2px rgba(63, 143, 90, 0.35);
 }
 
-/* ---------- chrome: Index and Scenery, same corner in every theme ---------- */
+/* ---------- chrome: Index and Regrow, top right ---------- */
 .chrome {
   position: fixed;
   z-index: 20;
@@ -190,8 +172,10 @@ button {
   display: flex;
   gap: 8px;
 }
-.chrome > button,
-.scenery > button {
+.chrome > button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
   font: 500 0.75rem var(--mono);
   color: var(--chrome-fg);
   background: var(--chrome-bg);
@@ -202,56 +186,11 @@ button {
   -webkit-backdrop-filter: blur(6px);
   backdrop-filter: blur(6px);
 }
-.chrome > button:hover,
-.scenery > button:hover,
-.scenery > button[aria-expanded='true'] {
+.chrome > button:hover {
   border-color: var(--chrome-fg);
 }
-.scenery {
-  position: relative;
-}
-.scenery-menu {
-  position: absolute;
-  top: calc(100% + 8px);
-  right: 0;
-  width: min(280px, calc(100vw - 32px));
-  display: flex;
-  flex-direction: column;
-  padding: 6px;
-  background: var(--sheet-bg);
-  border: 1px solid var(--sheet-line);
-  border-radius: 12px;
-  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.5);
-}
-.scenery-menu button {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  text-align: left;
-  background: none;
-  border: 0;
-  border-radius: 8px;
-  padding: 9px 10px;
-  cursor: pointer;
-  color: var(--sheet-fg);
-}
-.scenery-menu button:hover {
-  background: rgba(255, 255, 255, 0.06);
-}
-.scenery-menu b {
-  font: 500 0.95rem var(--display);
-}
-.scenery-menu span {
-  font-size: 0.8rem;
-  color: var(--sheet-muted);
-}
-.scenery-menu button[aria-pressed='true'] b::after {
-  content: ' ✓';
-  color: var(--sheet-accent);
-}
 
-/* ---------- dialogs: the project sheet and the Index ---------- */
-.sheet,
+/* ---------- the Index panel and project details ---------- */
 .index-panel {
   width: min(560px, calc(100% - 32px));
   max-height: min(88svh, 760px);
@@ -264,13 +203,11 @@ button {
   border-radius: 14px;
   box-shadow: 0 30px 80px rgba(0, 0, 0, 0.6);
 }
-.sheet::backdrop,
 .index-panel::backdrop {
   background: rgba(4, 8, 6, 0.62);
   -webkit-backdrop-filter: blur(3px);
   backdrop-filter: blur(3px);
 }
-.sheet[open],
 .index-panel[open] {
   animation: cg-rise 0.22s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
@@ -281,13 +218,9 @@ button {
   }
 }
 @media (prefers-reduced-motion: reduce) {
-  .sheet[open],
   .index-panel[open] {
     animation: none;
   }
-}
-.sheet article {
-  position: relative;
 }
 .sheet-close {
   position: absolute;
@@ -320,7 +253,6 @@ button {
   gap: 12px;
   padding: 24px;
 }
-.sheet h2,
 .index-panel h2 {
   margin: 0;
   font-family: var(--display);
@@ -389,4 +321,29 @@ button {
 }
 .index-panel .project-list li:last-child {
   padding-bottom: 4px;
+}
+.sheet-highlights {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.sheet-highlights li {
+  position: relative;
+  padding-left: 20px;
+  font-size: 0.95rem;
+  color: var(--sheet-fg);
+}
+.sheet-highlights li::before {
+  content: '';
+  position: absolute;
+  left: 3px;
+  top: 0.6em;
+  width: 7px;
+  height: 7px;
+  border-radius: 50% 0;
+  background: #8dbb62;
+  transform: rotate(-20deg);
 }

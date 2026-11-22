@@ -1,14 +1,12 @@
 import { projects } from '@/projects';
-import { PlainIndex } from '@/site/PlainIndex';
-import { ThemeHost } from '@/site/ThemeHost';
+import { Overgrowth } from '@/overgrowth/Overgrowth';
 
-// The server sends the plain page: the name and every project as a real link.
-// ThemeHost then picks this visit's theme and puts its scenery on top.
+// The whole page is rendered on the server as real text and links; the stem,
+// vines and flowers are drawn on top once scripts run.
 export default function Home() {
   return (
     <main>
-      <PlainIndex id="plain" projects={projects} mode="direct" />
-      <ThemeHost />
+      <Overgrowth projects={projects} />
     </main>
   );
 }

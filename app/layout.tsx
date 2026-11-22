@@ -25,7 +25,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" suppressHydrationWarning className={`${display.variable} ${body.variable} ${mono.variable}`}>
       <head>
-        {/* Lets the stylesheet hold the plain page back for a moment while a theme loads. */}
+        {/* Lets the stylesheet tell when scripts are off, so the flowers show without them. */}
         <script dangerouslySetInnerHTML={{ __html: "document.documentElement.classList.add('js')" }} />
       </head>
       <body>{children}</body>
