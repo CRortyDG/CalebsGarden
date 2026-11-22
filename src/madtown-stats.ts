@@ -9,19 +9,18 @@ export const MADTOWN_STATS_URL = process.env.MADTOWN_STATS_URL ?? 'https://madto
 export const REVALIDATE_SECONDS = 43200;
 
 /**
- * What madtown.today costs a month to run, in dollars (November 2026): what it takes to serve
- * players. Not counted: Vercel's Observability Plus add-on ($13.45 in the Oct 24 to Nov 21
+ * What madtown.today costs a month, as c chose to show it (November 2026): the Upstash database.
+ * Not counted, and said so in MADTOWN_COST_FOOTNOTE: the $20 Vercel Pro plan (c's choice), and Vercel's Observability Plus add-on ($13.45 in the Oct 24 to Nov 21
  * cycle), a logging tool only c uses, and GitHub Actions, which runs within its free minutes.
  * Without that add-on, that cycle's Vercel usage was $15.84, inside the $20 the Pro plan includes.
  * The note /notes/what-madtown-today-actually-costs has the whole bill.
  */
 export const MADTOWN_COSTS = [
   { item: 'Upstash Redis', note: 'counters, presence, the guestbook', usd: 15 },
-  { item: 'Vercel', note: 'hosting: the Pro plan, which covers the site’s usage', usd: 20 },
 ] as const;
 /** Shown under every madtown.today cost on the site, so the number says what it leaves out. */
 export const MADTOWN_COST_FOOTNOTE =
-  'Running costs. Not counted: a $13 a month logging add-on on Vercel that only I use, and tests on GitHub, which fit in its free minutes.';
+  'The database. Not counted: the $20 Vercel plan the site runs on, which I chose, and a logging add-on only I use.';
 export const MADTOWN_MONTHLY_USD = MADTOWN_COSTS.reduce((s, c) => s + c.usd, 0);
 
 /**

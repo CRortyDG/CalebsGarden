@@ -81,9 +81,9 @@ export default function Page() {
         could share for free.
       </p>
       <p>
-        Elsewhere on this site, madtown.today&apos;s cost is shown as about $35 a month: Upstash and the Vercel Pro plan. That figure leaves out Observability Plus,
-        which is a logging tool for me rather than something players use, and GitHub Actions, which stays within its free minutes. Without Observability Plus, this
-        cycle&apos;s Vercel usage was $15.84, inside the $20 the plan includes. The table above is the whole bill.
+        Elsewhere on this site, madtown.today&apos;s cost is shown as $15 a month: the Upstash database. That leaves out the $20 Vercel plan, which I moved to by
+        choice, and Observability Plus, a logging tool for me rather than something players use. Without Observability Plus, this cycle&apos;s Vercel usage was
+        $15.84. The table above is the whole bill.
       </p>
 
       <h2>What I got wrong</h2>
