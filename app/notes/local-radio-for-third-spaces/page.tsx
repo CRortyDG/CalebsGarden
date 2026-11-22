@@ -1,0 +1,131 @@
+import Link from 'next/link';
+import { Note, noteMetadata } from '../_parts/Note';
+
+const SLUG = 'local-radio-for-third-spaces';
+export const metadata = noteMetadata(SLUG);
+
+// The maths, so the numbers on the page can't drift from each other.
+const KBPS = 192;
+const SHOPS = 50;
+const HOURS = 8;
+const DAYS = 30;
+const bytesPerHour = (KBPS * 1000 * 3600) / 8; // bits per second → bytes per hour
+const mbPerHour = bytesPerHour / 1e6; // 86.4
+const listenerHours = SHOPS * HOURS * DAYS; // 12,000
+const gbPerMonth = (listenerHours * bytesPerHour) / 1e9; // ≈ 1,036.8
+const INCLUDED_GB = 1000; // Nanode 1 GB: 1 TB a month included
+const OVERAGE_PER_GB = 0.005;
+const overage = Math.max(0, gbPerMonth - INCLUDED_GB) * OVERAGE_PER_GB;
+const concurrentMbps = (SHOPS * KBPS) / 1000; // 9.6
+
+const fmt = (n: number, d = 0) => n.toLocaleString('en-US', { minimumFractionDigits: d, maximumFractionDigits: d });
+
+export default function Page() {
+  const rows = [96, 128, 192, 320].map((kbps) => {
+    const gb = (listenerHours * ((kbps * 1000 * 3600) / 8)) / 1e9;
+    return { kbps, gb, cost: 5 + Math.max(0, gb - INCLUDED_GB) * OVERAGE_PER_GB };
+  });
+  return (
+    <Note slug={SLUG} kind="working">
+      <p>
+        Third spaces are the places that aren&apos;t home or work: coffee shops, record stores, bars, bookshops. Many of them play music all day, usually from a
+        streaming service, and I&apos;d guess very little of it comes from the town they&apos;re in. The idea, which grew out of giggly, is a stream made for those places: good
+        background music, with local bands mixed in.
+      </p>
+      <p>
+        Audio streaming has a reputation for expensive bandwidth, so before anything else I wanted to know whether it could be cheap enough to give away. It can.
+      </p>
+
+      <h2>The maths</h2>
+      <p>Assume 50 coffee shops, each playing the stream 8 hours a day, 30 days a month, at {KBPS} kbps.</p>
+      <ul>
+        <li>
+          {KBPS} kbps is {KBPS} thousand bits a second, or {fmt(bytesPerHour / 3600 / 1000)} kilobytes a second, which is <strong>{fmt(mbPerHour, 1)} MB an hour</strong> for
+          one listener.
+        </li>
+        <li>
+          {SHOPS} shops × {HOURS} hours × {DAYS} days is <strong>{fmt(listenerHours)} listening hours</strong> a month.
+        </li>
+        <li>
+          {fmt(listenerHours)} × {fmt(mbPerHour, 1)} MB is about <strong>{fmt(gbPerMonth)} GB</strong>, just over 1 TB a month.
+        </li>
+        <li>
+          At the busiest moment that&apos;s {SHOPS} streams at once: <strong>{fmt(concurrentMbps, 1)} Mbps</strong> of outgoing bandwidth. A home internet connection
+          could almost do it.
+        </li>
+      </ul>
+      <p>
+        Akamai&apos;s smallest Linode server, the Nanode 1 GB, is $5 a month and includes 1 TB of outgoing transfer. Beyond that, transfer is $0.005 per GB, which is
+        $5 per extra terabyte. So the whole month comes to about <strong>${fmt(5 + overage, 2)}</strong>: the $5 server plus {fmt(gbPerMonth - INCLUDED_GB)} GB over
+        the allowance.
+      </p>
+      <p>
+        (I&apos;d remembered this as &ldquo;10 GB per $5&rdquo;. It&apos;s a hundred times better than that: 1 TB per $5.)
+      </p>
+
+      <h3>At other bitrates</h3>
+      <div className="cs-table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th scope="col">Bitrate</th>
+              <th scope="col">Per listener-hour</th>
+              <th scope="col">50 shops, 8h × 30 days</th>
+              <th scope="col">Monthly cost</th>
+            </tr>
+          </thead>
+          <tbody>
+            {rows.map((r) => (
+              <tr key={r.kbps}>
+                <td>{r.kbps} kbps</td>
+                <td>{fmt((r.kbps * 1000 * 3600) / 8 / 1e6, 1)} MB</td>
+                <td>{fmt(r.gb)} GB</td>
+                <td>${fmt(r.cost, 2)}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <p>
+        Prices are from Akamai&apos;s <a href="https://www.akamai.com/cloud/pricing/cpu">shared CPU pricing page</a>, checked on 22 November 2026. The page says prices
+        vary by region, so check yours. Bandwidth only; the table leaves out everything else.
+      </p>
+      <p>
+        One more way to see it: past the included terabyte, every extra hour of listening costs about {fmt(mbPerHour * 0.005 / 1000 * 100, 3)} cents in transfer. A shop open 8 hours
+        a day for a month costs about {fmt(mbPerHour * HOURS * DAYS / 1000 * 0.005 * 100, 0)} cents. Bandwidth isn&apos;t the problem.
+      </p>
+
+      <h2>How it would run</h2>
+      <p>
+        One small server running a streaming server (Icecast is the usual open-source choice) sends the same stream to every shop. Each shop opens a link on
+        whatever already plays music: a laptop, a phone, a cheap speaker. No accounts, in the same spirit as{' '}
+        <Link href="/case-studies/the-browser-is-the-account">madtown.today and Candlefair</Link>.
+      </p>
+      <p>
+        Every shop hears the same thing at the same time, which is the point of radio: a band played at 3pm is played in every shop in town at 3pm. If it grew past
+        one server, a second cheap server in front could relay the stream, and the bill would still be around $10 a month.
+      </p>
+
+      <h2>The part that isn&apos;t cheap: rights</h2>
+      <p>
+        In the US, playing music in a business is a public performance, and that needs a license. Businesses usually get it from the performing rights
+        organizations, such as ASCAP, BMI, SESAC and GMR, which collect for songwriters and publishers. Streams online can also owe for the recordings themselves.
+        The commonly cited small-business exemption is for FCC-licensed radio and TV broadcasts, and, as I understand it, it doesn&apos;t cover internet streams.
+      </p>
+      <p>
+        So the honest version of this idea is that bandwidth costs about $5 and rights are the real work. The way through that I&apos;d explore is music licensed
+        directly from the bands who want to be played: local acts who agree, in writing, that the stream and the shops can play their songs. That only works for
+        music whose rights the bands control themselves, and if a band&apos;s songs are registered with a rights organization, the shop may still need that
+        organization&apos;s license. This needs a music lawyer before it needs code. I&apos;m not one, and none of this is legal advice.
+      </p>
+
+      <h2>Open questions</h2>
+      <ul>
+        <li>What fills the hours between local bands, and who has the rights to it?</li>
+        <li>Do shops want a say in the mix, or is the shared stream the appeal?</li>
+        <li>How do bands get something back: a credit on screen, a link to their next show, a cut of anything shops pay?</li>
+        <li>Does one stream per city make sense, like the copies in <Link href="/case-studies/built-for-one-place">Built for one place</Link>?</li>
+      </ul>
+    </Note>
+  );
+}

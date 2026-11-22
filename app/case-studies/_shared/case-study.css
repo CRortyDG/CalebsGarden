@@ -944,3 +944,12 @@ button.cs-cell:hover {
   margin: 6px 0 0;
   color: var(--muted);
 }
+.cs-notes-list li::before {
+  content: none;
+}
+.cs-notes-list time {
+  display: block;
+  font: 500 0.72rem var(--mono);
+  color: var(--cs-moss);
+  margin-bottom: 4px;
+}
