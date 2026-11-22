@@ -346,12 +346,18 @@ html:has(.og) {
   color: #d9c7ad;
   text-align: right;
 }
+.og-job-what {
+  grid-column: 2 / -1;
+  font: 400 0.88rem/1.5 var(--body);
+  color: #b8a284;
+}
 
 @media (max-width: 760px) {
   .og-job {
     grid-template-columns: 1fr auto;
   }
-  .og-job-when {
+  .og-job-when,
+  .og-job-what {
     grid-column: 1 / -1;
   }
   .og-hero {

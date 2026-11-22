@@ -141,13 +141,35 @@ export interface Job {
   org: string;
   /** e.g. '2025 – now' */
   when: string;
+  /** One short line on the work. */
+  what: string;
 }
 
 export const experience: Job[] = [
-  { role: 'Infrastructure Engineer', org: 'N3XT', when: '2025 – now' },
-  { role: 'Software Engineer', org: 'Civic Media', when: '2024 – 2025' },
-  { role: 'Software Engineer', org: 'Design.Garden', when: '2021 – 2024' },
-  { role: 'IT Specialist', org: '5NINES', when: '2018 – 2020' },
+  {
+    role: 'Infrastructure Engineer',
+    org: 'N3XT',
+    when: '2025 – now',
+    what: 'Cloud infrastructure on GCP with Kubernetes and Terraform; deployments, CI/CD and developer tooling.',
+  },
+  {
+    role: 'Software Engineer',
+    org: 'Civic Media',
+    when: '2024 – 2025',
+    what: 'Sole developer for a regional radio network: 25 Next.js apps and the GCP and Terraform under them.',
+  },
+  {
+    role: 'Software Engineer',
+    org: 'Design.Garden',
+    when: '2021 – 2024',
+    what: 'Full-stack developer and hosting operator for a web agency with 150+ client sites.',
+  },
+  {
+    role: 'IT Specialist',
+    org: '5NINES',
+    when: '2018 – 2020',
+    what: 'Rooftop point-to-point radios, data center buildouts and network support for a regional ISP.',
+  },
 ];
 
 export const statusLabel: Record<Status, string> = {

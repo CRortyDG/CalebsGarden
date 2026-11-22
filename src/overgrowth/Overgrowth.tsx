@@ -146,6 +146,7 @@ export function Overgrowth({ projects }: { projects: Project[] }) {
                   <span className="og-job-when">{j.when}</span>
                   <span className="og-job-role">{j.role}</span>
                   <span className="og-job-org">{j.org}</span>
+                  <span className="og-job-what">{j.what}</span>
                 </li>
               ))}
             </ol>
