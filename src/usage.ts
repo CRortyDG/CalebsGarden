@@ -14,7 +14,7 @@ export interface ProjectUsage {
   monthlyUsd: number;
   /** Roughly how many people a day the same monthly cost would carry (an estimate). */
   capacityPerDay?: number;
-  /** What the monthly cost leaves out, if anything. */
+  /** A short line saying what the monthly cost is. */
   costNote?: string;
 }
 

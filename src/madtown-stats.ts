@@ -9,28 +9,33 @@ export const MADTOWN_STATS_URL = process.env.MADTOWN_STATS_URL ?? 'https://madto
 export const REVALIDATE_SECONDS = 43200;
 
 /**
- * What madtown.today costs a month, as c chose to show it (November 2026): the Upstash database.
- * Not counted, and said so in MADTOWN_COST_FOOTNOTE: the $20 Vercel Pro plan (c's choice), and Vercel's Observability Plus add-on ($13.45 in the Oct 24 to Nov 21
- * cycle), a logging tool only c uses, and GitHub Actions, which runs within its free minutes.
- * Without that add-on, that cycle's Vercel usage was $15.84, inside the $20 the Pro plan includes.
- * The note /notes/what-madtown-today-actually-costs has the whole bill.
+ * What madtown.today costs a month, as c chose to show it (November 2026): the 5 GB Upstash
+ * Redis database, $15. Hosting the site itself is c's own choice and isn't tied to how many
+ * people use it, so it isn't shown here (c, 22 Nov 2026).
  */
 export const MADTOWN_COSTS = [
-  { item: 'Upstash Redis', note: 'counters, presence, the guestbook', usd: 15 },
+  { item: 'Upstash Redis, 5 GB', note: 'counters, presence, the guestbook', usd: 15 },
 ] as const;
-/** Shown under every madtown.today cost on the site, so the number says what it leaves out. */
-export const MADTOWN_COST_FOOTNOTE =
-  'The database. Not counted: the $20 Vercel plan the site runs on, which I chose, and a logging add-on only I use.';
+/** Shown under every madtown.today cost on the site, so the number says what it is. */
+export const MADTOWN_COST_FOOTNOTE = 'The 5 GB Upstash Redis database that holds everything.';
 export const MADTOWN_MONTHLY_USD = MADTOWN_COSTS.reduce((s, c) => s + c.usd, 0);
 
 /**
- * Roughly how many people a day the same monthly bill would carry before a plan has to go up,
- * or null for no claim. It was 5,000, from Vercel Pro's included allowance, but the real bill
- * (Oct 24 to Nov 21) was already past Pro's $20 credit at ~376 a day, and most of it grows with
- * traffic (polling, function calls, Observability events). See the note
- * /notes/what-madtown-today-actually-costs. Put a number back once the Cloudflare move ships.
+ * Roughly how many people a day the $15 plan carries before it needs an upgrade, at the way
+ * people use the site now, or null for no claim. Estimated 22 Nov 2026, not measured:
+ * - Fixed Upstash plans don't bill per command; the limits that bite are monthly bandwidth
+ *   (500 GB on the 5 GB plan), 5 GB of data and 10,000 commands a second.
+ * - Bandwidth is the first to run out. Almost all of it is the Who's here card polling
+ *   /api/room every 4 s while 2+ people are online; each poll reads the day's canvas, the
+ *   last 40 events and the online list, about 10 KB. Oct 24 to Nov 21 had 4.56M function
+ *   calls for ~376 visitors a day, so about 3.7 MB of Redis traffic per visitor a day, or
+ *   about 110 MB a month for each daily visitor. 500 GB / 110 MB is about 4,500; rounded
+ *   down because the online list grows with the crowd.
+ * - Data is small (the per-day canvases and counters, tens of MB), and commands peak in the
+ *   tens a second, so neither is close.
+ * Re-check against the Upstash usage tab (monthly bandwidth and data size) when it changes.
  */
-export const MADTOWN_CAPACITY_PER_DAY: number | null = null;
+export const MADTOWN_CAPACITY_PER_DAY: number | null = 4000;
 
 function valid(x: unknown): x is MadtownStats {
   const s = x as MadtownStats;

@@ -380,6 +380,11 @@ button {
   line-height: 1.45;
   color: var(--sheet-muted);
 }
+.sheet-stats-note a {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
 .sheet-stats div {
   display: flex;
   flex-direction: column-reverse;
