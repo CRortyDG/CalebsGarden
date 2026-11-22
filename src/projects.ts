@@ -131,6 +131,47 @@ export const projects: Project[] = [
   },
 ];
 
+/** A few sentences on where Caleb comes from, shown above the job list in Roots. */
+export const about =
+  "Before the garden, I spent years on the parts of the internet people don't see. I aimed point-to-point radios on downtown Madison rooftops for a local ISP and data center, ran hosting for an agency with 150+ client sites, and was the sole developer behind the web side of a regional radio network. Today I'm an infrastructure engineer running Kubernetes and Terraform for a living, which is exactly why I keep these projects small: I know what scale costs, and most community software doesn't need it.";
+
+/** Where Caleb has worked, newest first. */
+export interface Job {
+  role: string;
+  org: string;
+  /** e.g. '2025 – now' */
+  when: string;
+  /** One short line on the work. */
+  what: string;
+}
+
+export const experience: Job[] = [
+  {
+    role: 'Infrastructure Engineer',
+    org: 'N3XT',
+    when: '2025 – now',
+    what: 'Cloud infrastructure on GCP with Kubernetes and Terraform; deployments, CI/CD and developer tooling.',
+  },
+  {
+    role: 'Software Engineer',
+    org: 'Civic Media',
+    when: '2024 – 2025',
+    what: 'Sole developer for a regional radio network: 25 Next.js apps and the GCP and Terraform under them.',
+  },
+  {
+    role: 'Software Engineer',
+    org: 'Design.Garden',
+    when: '2021 – 2024',
+    what: 'Full-stack developer and hosting operator for a web agency with 150+ client sites.',
+  },
+  {
+    role: 'IT Specialist',
+    org: '5NINES',
+    when: '2018 – 2020',
+    what: 'Rooftop point-to-point radios, data center buildouts and network support for a regional ISP.',
+  },
+];
+
 export const statusLabel: Record<Status, string> = {
   seedling: 'Seedling',
   budding: 'Budding',

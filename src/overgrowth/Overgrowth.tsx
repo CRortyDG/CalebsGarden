@@ -2,7 +2,7 @@
 
 import './overgrowth.css';
 import { useEffect, useRef, useState } from 'react';
-import { site, type Project } from '@/projects';
+import { about, experience, site, type Project } from '@/projects';
 import { ProjectDetails } from '@/site/ProjectDetails';
 import { ProjectList } from '@/site/ProjectList';
 import { Flower } from './Flower';
@@ -130,10 +130,27 @@ export function Overgrowth({ projects }: { projects: Project[] }) {
             <a className="og-root-tip" href="/notes">
               Notes
             </a>
+            <a className="og-root-tip" href="#experience">
+              Experience
+            </a>
             <a className="og-root-tip" href="#top" onClick={(e) => (e.preventDefault(), window.scrollTo({ top: 0 }))}>
               Back to the top
             </a>
           </nav>
+          <section id="experience" className="og-jobs" aria-labelledby="og-jobs-title">
+            <h2 id="og-jobs-title">Roots</h2>
+            <p className="og-jobs-about">{about}</p>
+            <ol>
+              {experience.map((j) => (
+                <li key={j.org + j.when} className="og-job">
+                  <span className="og-job-when">{j.when}</span>
+                  <span className="og-job-role">{j.role}</span>
+                  <span className="og-job-org">{j.org}</span>
+                  <span className="og-job-what">{j.what}</span>
+                </li>
+              ))}
+            </ol>
+          </section>
           <p>
             © {new Date().getFullYear()} Caleb · {site.name}
           </p>
