@@ -15,7 +15,7 @@ export const posts: Post[] = [
     title: 'Local radio for third spaces, for about $5 a month',
     date: '2026-11-21',
     summary:
-      'An internet radio stream for coffee shops and other third spaces, with local bands mixed in. The bandwidth turns out to cost about $5 a month for 50 shops. The licensing is the hard part.',
+      'An internet radio stream for coffee shops and other third spaces, with local bands mixed in. The bandwidth turns out to cost about $5 a month for 50 shops. The hard part is people: giggly plays bands who give it permission directly, so it needs no licenses, just a lot of conversations.',
   },
   {
     slug: 'ticketing-run-by-cities',

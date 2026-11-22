@@ -106,24 +106,33 @@ export default function Page() {
         one server, a second cheap server in front could relay the stream, and the bill would still be around $10 a month.
       </p>
 
-      <h2>The part that isn&apos;t cheap: rights</h2>
+      <h2>The part that isn&apos;t cheap: rights, and people</h2>
       <p>
         In the US, playing music in a business is a public performance, and that needs a license. Businesses usually get it from the performing rights
         organizations, such as ASCAP, BMI, SESAC and GMR, which collect for songwriters and publishers. Streams online can also owe for the recordings themselves.
         The commonly cited small-business exemption is for FCC-licensed radio and TV broadcasts, and, as I understand it, it doesn&apos;t cover internet streams.
       </p>
       <p>
-        So the honest version of this idea is that bandwidth costs about $5 and rights are the real work. The way through that I&apos;d explore is music licensed
-        directly from the bands who want to be played: local acts who agree, in writing, that the stream and the shops can play their songs. That only works for
-        music whose rights the bands control themselves, and if a band&apos;s songs are registered with a rights organization, the shop may still need that
-        organization&apos;s license. This needs a music lawyer before it needs code. I&apos;m not one, and none of this is legal advice.
+        giggly&apos;s answer is to not need those licenses at all. It plays music from bands who give it permission directly: local acts who agree, in writing,
+        that the stream and the shops can play their songs. giggly makes no money, so it isn&apos;t taking anything from them. It&apos;s the same idea as the rest of
+        what I build: free or nearly free software, given away.
+      </p>
+      <p>
+        Every band I&apos;ve talked to so far has been for it. Streaming services pay them close to nothing anyway, and being played in a local coffee shop, with a
+        nudge toward their next show at a nearby venue, can only help.
+      </p>
+      <p>
+        That makes the bandwidth the easy part and the relationships the heavy lift. Each band is a conversation, and the stream is only as big as the number of
+        bands who say yes. One catch to get right: a band can only give permission for songs whose rights it controls. If its songs are registered with a rights
+        organization, or it&apos;s signed to a label, the shop may still need that organization&apos;s license. That needs a music lawyer to check before it grows. I&apos;m
+        not one, and none of this is legal advice.
       </p>
 
       <h2>Open questions</h2>
       <ul>
-        <li>What fills the hours between local bands, and who has the rights to it?</li>
+        <li>How many bands does it take before the stream doesn&apos;t repeat itself every afternoon?</li>
         <li>Do shops want a say in the mix, or is the shared stream the appeal?</li>
-        <li>How do bands get something back: a credit on screen, a link to their next show, a cut of anything shops pay?</li>
+        <li>How does a shop show what&apos;s playing, and point people to the band&apos;s next show?</li>
         <li>Does one stream per city make sense, like the copies in <Link href="/case-studies/built-for-one-place">Built for one place</Link>?</li>
       </ul>
     </Note>
