@@ -1,0 +1,451 @@
+/* madtown.today, day by day (src/timeline/Timeline.tsx). Scoped under .tl. */
+.tl {
+  --tl-new: var(--lamp);
+  --tl-back: #8dbb62;
+  --tl-reg: #8fc3d9;
+  --tl-reddit: #e08a5b;
+  --tl-search: #8fc3d9;
+  --tl-social: #d99ac0;
+  --tl-other: #b9a7e0;
+  --tl-shared: #8dbb62;
+  --tl-posted: var(--lamp);
+  --tl-direct: #56705b;
+  --tl-unknown: #3a4a3e;
+  --tl-feature: #9bd077;
+  --tl-test: #b9a7e0;
+  --tl-post: #e08a5b;
+  --tl-press: #8fc3d9;
+  --tl-panel: #121b15;
+  --tl-line: var(--line);
+  margin: 0;
+  padding: 20px;
+  border: 1px solid var(--tl-line);
+  border-radius: 18px;
+  background: linear-gradient(180deg, #101913, #0d150f);
+  max-width: 100%;
+}
+@media (max-width: 560px) {
+  .tl {
+    padding: 14px 12px;
+    border-radius: 14px;
+  }
+}
+
+/* ---- head: kicker, the day's date and its numbers ---- */
+.tl-kicker {
+  margin: 0;
+  font: 500 0.72rem var(--mono);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--tl-back);
+}
+.tl-readout {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 6px 22px;
+  margin: 6px 0 14px;
+}
+.tl-date {
+  margin: 0;
+  font: 800 clamp(1.5rem, 5vw, 2.2rem) / 1.1 var(--display);
+  letter-spacing: -0.02em;
+  min-width: 8.5ch;
+  font-variant-numeric: tabular-nums;
+}
+.tl-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 18px;
+  margin: 0;
+}
+@media (max-width: 560px) {
+  .tl-chips {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    width: 100%;
+  }
+}
+.tl-chips div {
+  display: flex;
+  flex-direction: column;
+}
+.tl-chips dt {
+  font: 500 0.68rem var(--mono);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.tl-chips dd {
+  margin: 0;
+  font: 600 1.15rem var(--mono);
+  font-variant-numeric: tabular-nums;
+}
+.tl-chips .is-new {
+  color: var(--tl-new);
+}
+.tl-chips .is-back {
+  color: var(--tl-back);
+}
+.tl-chips .is-reg {
+  color: var(--tl-reg);
+}
+
+/* ---- lens tabs ---- */
+.tl-lenses {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.tl-lens {
+  border: 1px solid var(--tl-line);
+  background: transparent;
+  border-radius: 999px;
+  padding: 5px 12px;
+  font-size: 0.85rem;
+  color: var(--muted);
+  cursor: pointer;
+}
+.tl-lens:hover {
+  color: var(--ink);
+}
+.tl-lens[aria-checked='true'] {
+  background: var(--tl-back);
+  border-color: var(--tl-back);
+  color: #0b120e;
+  font-weight: 600;
+}
+.tl-hint {
+  margin: 8px 0 6px;
+  font-size: 0.85rem;
+  color: var(--muted);
+  min-height: 2.6em;
+}
+
+/* ---- the chart ---- */
+.tl-stage {
+  position: relative;
+  width: 100%;
+}
+.tl-chart,
+.tl-regulars {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  overflow: visible;
+}
+.tl-chart {
+  touch-action: pan-y;
+  cursor: crosshair;
+  user-select: none;
+  -webkit-user-select: none;
+}
+.tl-grid line {
+  stroke: var(--tl-line);
+  stroke-dasharray: 2 4;
+}
+.tl-grid text,
+.tl-axis {
+  font: 500 10px var(--mono);
+  fill: var(--muted);
+}
+.tl-bar {
+  transition: opacity 0.15s;
+}
+.tl-bar.is-dim {
+  opacity: 0.45;
+}
+.tl-new {
+  fill: var(--tl-new);
+}
+.tl-back {
+  fill: var(--tl-back);
+}
+.tl-src-reddit {
+  fill: var(--tl-reddit);
+}
+.tl-src-search {
+  fill: var(--tl-search);
+}
+.tl-src-social {
+  fill: var(--tl-social);
+}
+.tl-src-otherSite {
+  fill: var(--tl-other);
+}
+.tl-src-sharedResult {
+  fill: var(--tl-shared);
+}
+.tl-src-postedLink {
+  fill: var(--tl-posted);
+}
+.tl-src-direct {
+  fill: var(--tl-direct);
+}
+.tl-src-unknown {
+  fill: var(--tl-unknown);
+}
+.tl-st-new {
+  fill: var(--tl-new);
+  opacity: 0.28;
+}
+.tl-st-played {
+  fill: var(--tl-new);
+}
+.tl-st-back1 {
+  fill: var(--tl-back);
+}
+.tl-st-back7 {
+  fill: var(--tl-reg);
+}
+
+.tl-vine {
+  fill: none;
+  stroke: #5f8a43;
+  stroke-width: 2.4;
+  stroke-linecap: round;
+}
+.tl-leaf {
+  fill: #4d6a3a;
+}
+.tl-cursor {
+  stroke: var(--ink);
+  stroke-opacity: 0.35;
+  stroke-width: 1;
+  pointer-events: none;
+}
+.tl-bud {
+  cursor: pointer;
+}
+.tl-bud-hit {
+  fill: transparent;
+}
+.tl-bud-closed {
+  fill: #2f4426;
+  stroke: #5f8a43;
+  stroke-width: 1.2;
+}
+.tl-bud-heart {
+  fill: #fff4d6;
+}
+.tl-petal {
+  fill: var(--tl-kind, var(--tl-feature));
+}
+.tl-kind-post {
+  --tl-kind: var(--tl-post);
+}
+.tl-kind-press {
+  --tl-kind: var(--tl-press);
+}
+.tl-kind-feature {
+  --tl-kind: var(--tl-feature);
+}
+.tl-kind-test {
+  --tl-kind: var(--tl-test);
+}
+.tl-bud.is-on .tl-petal {
+  filter: drop-shadow(0 0 4px var(--tl-kind));
+}
+
+.tl-reg-line {
+  fill: none;
+  stroke: var(--tl-reg);
+  stroke-width: 2;
+  stroke-linejoin: round;
+}
+.tl-reg-dot {
+  fill: var(--tl-reg);
+}
+.tl-reg-label {
+  font-weight: 600;
+  fill: var(--tl-reg);
+}
+.tl-grid-base {
+  stroke: var(--tl-line);
+}
+
+/* ---- legend ---- */
+.tl-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 14px;
+  list-style: none;
+  margin: 10px 0 0;
+  padding: 0;
+  font-size: 0.78rem;
+  color: var(--muted);
+}
+.tl-legend li,
+.tl-legend-buds span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.tl-legend-buds {
+  gap: 12px !important;
+}
+
+/* ---- controls ---- */
+.tl-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 14px;
+}
+.tl-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-width: 40px;
+  height: 40px;
+  padding: 0 12px;
+  border: 1px solid var(--tl-line);
+  border-radius: 999px;
+  background: var(--tl-panel);
+  cursor: pointer;
+  font-size: 1rem;
+}
+.tl-btn:hover {
+  border-color: var(--tl-back);
+}
+.tl-btn.is-play {
+  background: var(--lamp);
+  border-color: var(--lamp);
+  color: #1d1503;
+  font-weight: 600;
+  padding: 0 16px;
+}
+.tl-btn-text {
+  font-size: 0.9rem;
+}
+.tl-scrub {
+  flex: 1;
+  min-width: 0;
+  accent-color: var(--tl-back);
+  height: 40px;
+}
+
+/* ---- the event card and the day's funnel ---- */
+.tl-panels {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: 12px;
+  margin-top: 14px;
+}
+@media (max-width: 720px) {
+  .tl-panels {
+    grid-template-columns: 1fr;
+  }
+}
+.tl-card {
+  border: 1px solid var(--tl-line);
+  border-left: 3px solid var(--tl-kind, var(--tl-line));
+  border-radius: 12px;
+  padding: 12px 14px;
+  background: var(--tl-panel);
+  font-size: 0.92rem;
+  min-height: 9.5em;
+}
+.tl-card.is-empty {
+  color: var(--muted);
+}
+.tl-card:not(.is-on):not(.tl-funnel):not(.is-empty) {
+  opacity: 0.8;
+}
+.tl-card p {
+  margin: 0 0 6px;
+}
+.tl-card h3 {
+  margin: 2px 0 4px;
+  font: 800 1.15rem var(--display);
+  letter-spacing: -0.01em;
+}
+.tl-card-kicker {
+  font: 500 0.68rem var(--mono) !important;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--tl-kind, var(--muted));
+}
+.tl-card-stat strong {
+  color: var(--lamp);
+  font-family: var(--mono);
+}
+.tl-funnel {
+  border-left-color: var(--tl-new);
+}
+.tl-funnel ul {
+  list-style: none;
+  margin: 6px 0 0;
+  padding: 0;
+  display: grid;
+  gap: 8px;
+}
+.tl-funnel li {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  grid-template-areas: 'label n' 'track track';
+  gap: 2px 8px;
+}
+.tl-funnel-label {
+  grid-area: label;
+  font-size: 0.82rem;
+}
+.tl-funnel-n {
+  grid-area: n;
+  font: 600 0.8rem var(--mono);
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+.tl-funnel-track {
+  grid-area: track;
+  display: block;
+  height: 10px;
+  border-radius: 3px;
+  background: #0b120e;
+}
+.tl-funnel-track svg {
+  display: block;
+}
+.tl-funnel .tl-st-new {
+  opacity: 0.45;
+}
+
+/* ---- the table ---- */
+.tl-table {
+  margin-top: 14px;
+  font-size: 0.85rem;
+}
+.tl-table summary {
+  cursor: pointer;
+  color: var(--muted);
+}
+.tl-table-wrap {
+  overflow-x: auto;
+  max-height: 360px;
+  margin-top: 8px;
+}
+.tl-table table {
+  border-collapse: collapse;
+  width: 100%;
+  font-variant-numeric: tabular-nums;
+}
+.tl-table th,
+.tl-table td {
+  padding: 4px 8px;
+  border-bottom: 1px solid var(--tl-line);
+  text-align: right;
+  white-space: nowrap;
+}
+.tl-table th[scope='row'],
+.tl-table thead th:first-child {
+  text-align: left;
+}
+.tl-table thead th {
+  position: sticky;
+  top: 0;
+  background: #101913;
+  font: 500 0.7rem var(--mono);
+  text-transform: uppercase;
+  color: var(--muted);
+}
