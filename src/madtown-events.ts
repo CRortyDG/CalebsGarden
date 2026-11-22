@@ -55,6 +55,12 @@ export const MADTOWN_EVENTS: MadtownEvent[] = [
     body: 'A fourth daily puzzle, Lap, and an archive of every Gazette story.',
   },
   {
+    date: '2026-10-19',
+    kind: 'post',
+    title: 'Shared on Reddit',
+    body: 'A Reddit link brought about a hundred new people over two days, starting the day Lap launched.',
+  },
+  {
     date: '2026-10-20',
     kind: 'test',
     title: 'Test: Chair Stack first',
@@ -83,6 +89,12 @@ export const MADTOWN_EVENTS: MadtownEvent[] = [
     kind: 'post',
     title: 'Posted on Reddit again',
     body: 'Another Reddit link, the start of a week of steady arrivals from it.',
+  },
+  {
+    date: '2026-10-29',
+    kind: 'post',
+    title: 'Reddit, once more',
+    body: 'One more Reddit link, the last of the October run, bringing about 80 new people in a day.',
   },
   {
     date: '2026-11-03',
