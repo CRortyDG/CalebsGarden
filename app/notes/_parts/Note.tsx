@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import '../../case-studies/_shared/case-study.css';
-import { allPosts, formatDate, isLive, livePosts, postUrl } from './posts';
+import { allPosts, formatDate, isDue, isLive, livePosts, postUrl } from './posts';
 
 const SITE = 'https://calebs.garden';
 
@@ -41,7 +41,7 @@ export function Note({ slug, kind, children }: { slug: string; kind: 'idea' | 'w
       </p>
       <header className="cs-head">
         <p className="cs-kicker">
-          <time dateTime={p.date}>{formatDate(p.date)}</time> · {label}
+          {isDue(p) ? '' : 'Scheduled for '}<time dateTime={p.date}>{formatDate(p.date)}</time> · {label}
         </p>
         <h1>{p.title}</h1>
       </header>

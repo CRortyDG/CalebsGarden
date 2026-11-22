@@ -6,6 +6,20 @@ export type Post = { slug: string; title: string; date: string; summary: string 
 // day; pages under /notes re-check every hour, so it appears within an hour of midnight.
 export const allPosts: Post[] = [
   {
+    slug: 'build-the-meter-first',
+    title: 'Build the meter first',
+    date: '2026-11-24',
+    summary:
+      'Before I put a number on how many groups Candlefair can host for free, I had it count what each game actually uses and price it against Cloudflare’s limits. The meter came first; the claim waits for real games.',
+  },
+  {
+    slug: 'three-tests-that-didnt-win',
+    title: 'Three tests on madtown.today that didn’t win',
+    date: '2026-11-23',
+    summary:
+      'I ran three A/B tests on what a first-time visitor sees on madtown.today. One looked like a win on 124 people and disappeared on 840. None moved the number I cared about: whether people came back the next day.',
+  },
+  {
     slug: 'what-madtown-today-actually-costs',
     title: 'What madtown.today actually costs, and the plan to cut it',
     date: '2026-11-22',
@@ -38,7 +52,11 @@ export const allPosts: Post[] = [
 /** Today's date in Madison, YYYY-MM-DD. */
 export const centralToday = (now: Date = new Date()) => now.toLocaleDateString('en-CA', { timeZone: 'America/Chicago' });
 
-export const isLive = (p: Post, now: Date = new Date()) => p.date <= centralToday(now);
+/** Vercel preview deployments show scheduled posts early, so they can be read before they go out. */
+export const showsScheduled = () => process.env.VERCEL_ENV === 'preview';
+
+export const isDue = (p: Post, now: Date = new Date()) => p.date <= centralToday(now);
+export const isLive = (p: Post, now: Date = new Date()) => isDue(p, now) || showsScheduled();
 
 /** The posts that are out, newest first. */
 export const livePosts = (now: Date = new Date()) => allPosts.filter((p) => isLive(p, now)).sort((a, b) => b.date.localeCompare(a.date));
