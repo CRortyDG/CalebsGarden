@@ -49,7 +49,7 @@ export const site = {
   /** A few sentences about you. Not shown anywhere yet. */
   about: '',
   /** Ways to reach you, shown among the roots in the footer and on /experience. */
-  links: [{ label: 'Email', href: 'mailto:caleb@madtown.today' }] as { label: string; href: string }[],
+  links: [{ label: 'Email', href: 'mailto:hello@calebs.garden' }] as { label: string; href: string }[],
   /**
    * One or two sentences on the kind of role you want next, shown at the top of
    * /experience. Hidden while empty. Only Caleb fills this in.
