@@ -72,7 +72,7 @@ export const projects: Project[] = [
     },
     tags: ['Cloudflare Workers', 'Durable Objects', 'Real-time rooms'],
     habitat: 'Your table, on game night',
-    caseStudy: '/case-studies/candlefair',
+    caseStudy: '/case-studies/cheap-enough-to-give-away',
   },
   {
     id: 'madtown',
