@@ -1,5 +1,7 @@
 # calebs.garden
 
+**Live:** [calebs.garden](https://calebs.garden). I build free software and give it away; this is where it all lives, along with [case studies](https://calebs.garden/case-studies/) on building small software and my [experience](https://calebs.garden/experience).
+
 My personal site: one scrolling page that grows. The name and a bud for each
 project are on the first screen. Scrolling grows a stem down the page, each
 project flowers off it in its own card, and the page ends below ground with
