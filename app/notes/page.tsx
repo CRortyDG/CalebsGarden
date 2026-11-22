@@ -1,7 +1,9 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import '../case-studies/_shared/case-study.css';
-import { formatDate, posts, postUrl } from './_parts/posts';
+import { formatDate, livePosts, postUrl } from './_parts/posts';
+
+export const revalidate = 3600; // hourly, so a scheduled note appears within the hour of its day
 
 const description = 'Dated notes from Caleb: ideas not built yet, opinions, and things being worked out. The finished write-ups are the case studies.';
 
@@ -27,7 +29,7 @@ export default function Notes() {
         </p>
       </header>
       <ol className="cs-index-list cs-notes-list">
-        {posts.map((p) => (
+        {livePosts().map((p) => (
           <li key={p.slug}>
             <time dateTime={p.date}>{formatDate(p.date)}</time>
             <Link href={postUrl(p.slug)}>{p.title}</Link>

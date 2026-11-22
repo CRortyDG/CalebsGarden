@@ -1,8 +1,10 @@
 /** Notes: dated, shorter posts. Ideas, opinions and things in progress, unlike the case studies. */
 export type Post = { slug: string; title: string; date: string; summary: string };
 
-// Newest first. date is the US Central date it was published (YYYY-MM-DD).
-export const posts: Post[] = [
+// Newest first. date is the US Central date it goes out (YYYY-MM-DD). A post dated in the
+// future stays hidden everywhere (index, feed, sitemap, llms.txt, its own page) until that
+// day; pages under /notes re-check every hour, so it appears within an hour of midnight.
+export const allPosts: Post[] = [
   {
     slug: 'why-i-dont-put-ai-in-my-apps',
     title: 'Why I don’t put AI in my apps',
@@ -25,6 +27,14 @@ export const posts: Post[] = [
       'An idea I haven’t built: open-source ticketing backed by a nonprofit, run as a separate copy in each city or state by a local chapter, with a shared layer so one city’s site can sell another city’s shows.',
   },
 ];
+
+/** Today's date in Madison, YYYY-MM-DD. */
+export const centralToday = (now: Date = new Date()) => now.toLocaleDateString('en-CA', { timeZone: 'America/Chicago' });
+
+export const isLive = (p: Post, now: Date = new Date()) => p.date <= centralToday(now);
+
+/** The posts that are out, newest first. */
+export const livePosts = (now: Date = new Date()) => allPosts.filter((p) => isLive(p, now)).sort((a, b) => b.date.localeCompare(a.date));
 
 export const postUrl = (slug: string) => `/notes/${slug}`;
 

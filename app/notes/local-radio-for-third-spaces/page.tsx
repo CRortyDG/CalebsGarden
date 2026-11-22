@@ -6,6 +6,7 @@ import RadioCalc from './RadioCalc';
 
 const SLUG = 'local-radio-for-third-spaces';
 export const metadata = noteMetadata(SLUG);
+export const revalidate = 3600; // a scheduled note goes live within the hour of its day
 
 // The defaults on the page. The formulas live in maths.ts, shared with the calculator.
 const KBPS = 192;

@@ -1,8 +1,8 @@
 import { pieces, pieceUrl, SERIES_NAME } from '../case-studies/_shared/series';
-import { posts, postUrl } from '../notes/_parts/posts';
+import { livePosts, postUrl } from '../notes/_parts/posts';
 import { projects } from '@/projects';
 
-export const dynamic = 'force-static';
+export const revalidate = 3600; // hourly, so a scheduled note appears within the hour of its day
 
 const SITE = 'https://calebs.garden';
 
@@ -23,7 +23,7 @@ ${pieces.map((p) => `- [${p.title}](${SITE}${pieceUrl(p.slug)}): ${p.blurb}`).jo
 
 ## Notes
 
-${posts.map((p) => `- [${p.title}](${SITE}${postUrl(p.slug)}) (${p.date}): ${p.summary}`).join('\n')}
+${livePosts().map((p) => `- [${p.title}](${SITE}${postUrl(p.slug)}) (${p.date}): ${p.summary}`).join('\n')}
 
 ## Optional
 
