@@ -1,6 +1,7 @@
 // The main stem: one SVG path down the whole page, revealed by scroll position,
 // with a branch to each project's flower, leaves along the way and roots at the
-// bottom. It is measured from the real layout, so it follows the content
+// bottom. regrow() puts out new leaves and grows it again from the top. It is
+// measured from the real layout, so it follows the content
 // wherever the content goes. Everything here is decoration: the page reads and
 // works the same with none of it.
 
@@ -12,9 +13,9 @@ interface Pt {
   y: number;
 }
 
-export function growStem(root: HTMLElement): () => void {
+export function growStem(root: HTMLElement): { stop: () => void; regrow: () => void } {
   const svg = root.querySelector<SVGSVGElement>('.og-stemlayer');
-  if (!svg) return () => {};
+  if (!svg) return { stop: () => {}, regrow: () => {} };
   const reduceMq = matchMedia('(prefers-reduced-motion: reduce)');
   const phoneMq = matchMedia(PHONE);
 
@@ -25,6 +26,9 @@ export function growStem(root: HTMLElement): () => void {
   let samples: { y: number; len: number }[] = [];
   let leaves: { len: number; el: SVGGElement }[] = [];
   let rows: { len: number; branch: SVGPathElement; row: HTMLElement }[] = [];
+  // while regrowing, the stem is held back to this share of where scroll puts it
+  let growing: { start: number; dur: number } | null = null;
+  let growFrame = 0;
 
   const make = <K extends keyof SVGElementTagNameMap>(tag: K, cls: string, d?: string) => {
     const el = document.createElementNS(NS, tag);
@@ -152,7 +156,12 @@ export function growStem(root: HTMLElement): () => void {
     if (!stem || !shine) return;
     const box = root.getBoundingClientRect();
     const tipY = -box.top + window.innerHeight * 0.72;
-    const len = reduceMq.matches ? total : Math.max(minLen, lenAtY(tipY));
+    let len = reduceMq.matches ? total : Math.max(minLen, lenAtY(tipY));
+    if (growing) {
+      const k = Math.min(1, (performance.now() - growing.start) / growing.dur);
+      len = minLen + (len - minLen) * (1 - (1 - k) ** 3);
+      if (k >= 1) growing = null;
+    }
     stem.style.strokeDashoffset = shine.style.strokeDashoffset = `${total - len}`;
     for (const l of leaves) l.el.classList.toggle('is-on', l.len <= len);
     for (const r of rows) {
@@ -180,6 +189,24 @@ export function growStem(root: HTMLElement): () => void {
     rebuild = requestAnimationFrame(build);
   });
 
+  function regrow() {
+    // new leaves, and every flower closes so it can open again as the stem reaches it
+    for (const r of rows) r.row.classList.remove('is-grown');
+    if (reduceMq.matches) return build();
+    growing = { start: performance.now(), dur: 1400 };
+    build();
+    // a longer stem (scrolled further down) takes a little longer to grow back
+    const box = root.getBoundingClientRect();
+    const reach = lenAtY(-box.top + window.innerHeight * 0.72) - minLen;
+    growing.dur = Math.min(2400, 800 + reach * 0.5);
+    cancelAnimationFrame(growFrame);
+    const tick = () => {
+      update();
+      if (growing) growFrame = requestAnimationFrame(tick);
+    };
+    tick();
+  }
+
   build();
   lastW = root.clientWidth;
   lastH = root.scrollHeight;
@@ -188,8 +215,9 @@ export function growStem(root: HTMLElement): () => void {
   window.addEventListener('resize', onScroll);
   reduceMq.addEventListener('change', update);
 
-  return () => {
+  const stop = () => {
     cancelAnimationFrame(frame);
+    cancelAnimationFrame(growFrame);
     cancelAnimationFrame(rebuild);
     ro.disconnect();
     window.removeEventListener('scroll', onScroll);
@@ -197,4 +225,5 @@ export function growStem(root: HTMLElement): () => void {
     reduceMq.removeEventListener('change', update);
     svg.replaceChildren();
   };
+  return { stop, regrow };
 }

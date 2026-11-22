@@ -1,6 +1,7 @@
 // Decorative vines that grow around the name on the first screen. They are
 // different on every visit, lean toward the pointer while they grow, and keep
-// clear of the text and the buds. Clicking bare ground plants a new sprout.
+// clear of the text and the buds. Clicking bare ground plants a new sprout, and
+// regrow() clears them and grows a fresh set.
 
 const TAU = Math.PI * 2;
 
@@ -19,10 +20,10 @@ interface Box {
   h: number;
 }
 
-export function growVines(hero: HTMLElement): () => void {
+export function growVines(hero: HTMLElement): { stop: () => void; regrow: () => void } {
   const canvas = hero.querySelector('canvas');
   const ctx = canvas?.getContext('2d');
-  if (!canvas || !ctx) return () => {};
+  if (!canvas || !ctx) return { stop: () => {}, regrow: () => {} };
   const reduceMq = matchMedia('(prefers-reduced-motion: reduce)');
 
   let w = 1, h = 1;
@@ -180,13 +181,24 @@ export function growVines(hero: HTMLElement): () => void {
   };
   // wait for the fonts so the keep-out boxes match the real text
   let cancelled = false;
-  (document.fonts?.ready ?? Promise.resolve()).then(() => !cancelled && start());
+  let started = false;
+  (document.fonts?.ready ?? Promise.resolve()).then(() => {
+    if (cancelled) return;
+    started = true;
+    start();
+  });
 
   hero.addEventListener('pointermove', onMove);
   hero.addEventListener('pointerleave', onLeave);
   hero.addEventListener('click', onClick);
 
-  return () => {
+  const regrow = () => {
+    if (!started) return;
+    plant();
+    run();
+  };
+
+  const stop = () => {
     cancelled = true;
     cancelAnimationFrame(raf);
     ro.disconnect();
@@ -195,4 +207,5 @@ export function growVines(hero: HTMLElement): () => void {
     hero.removeEventListener('pointerleave', onLeave);
     hero.removeEventListener('click', onClick);
   };
+  return { stop, regrow };
 }
