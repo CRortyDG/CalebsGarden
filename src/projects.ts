@@ -55,7 +55,7 @@ export const site = {
    * /experience. Hidden while empty. Only Caleb fills this in.
    */
   lookingFor:
-    "I'm looking for full-stack work again. I miss making products, which is why I made madtown.today and Candlefair. If you're building something people use and want someone who can take it from the screen down to the servers, I'd like to hear from you.",
+    "The work I love most is full-stack product work: making something people use, from the screen down to the servers. It's why I made madtown.today and Candlefair. If you're making something like that, say hello.",
   /** Public code. */
   github: 'https://github.com/CRortyDG',
 };
