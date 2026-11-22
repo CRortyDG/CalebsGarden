@@ -41,6 +41,11 @@ export interface Project {
 export const site = {
   name: 'calebs.garden',
   tagline: "a garden of things I've made",
+  /** The big line on the first screen. */
+  headline: 'I build free software and give it away.',
+  /** The line under it. */
+  intro:
+    "I'm Caleb. I make small, free software that people actually want to use, like a daily homepage for Madison and a companion for D&D night. No ads, no paywalls.",
   /** A few sentences about you. Not shown anywhere yet. */
   about: '',
   /** Ways to reach you, shown among the roots in the footer. */
@@ -53,7 +58,7 @@ export const projects: Project[] = [
     name: 'Candlefair',
     blurb: 'D&D at the table',
     about:
-      'A companion for in-person D&D. The TV becomes the table, every player plays from their phone, and the DM runs the night from one console that remembers every name, place and loose thread so nobody has to keep the books.',
+      'A companion for D&D game night, around a real table or on a call with the TV view screen-shared. The TV becomes the table, every player plays from their phone, and the DM runs the night from one console that remembers every name, place and loose thread so nobody has to keep the books.',
     highlights: [
       'The TV shows the map, the fights and every dice roll, live',
       'Players keep their character sheet, gold and journal on their phone',
