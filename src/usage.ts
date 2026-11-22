@@ -32,7 +32,7 @@ export async function getUsage(): Promise<Usage> {
     perDay: week.length ? Math.round(week.reduce((s, d) => s + d.visitors, 0) / week.length) : null,
     sinceLaunch: stats?.visitorsSinceLaunch ?? null,
     monthlyUsd: MADTOWN_MONTHLY_USD,
-    capacityPerDay: MADTOWN_CAPACITY_PER_DAY,
+    capacityPerDay: MADTOWN_CAPACITY_PER_DAY ?? undefined,
   };
   const projects = [madtown];
   const counted = projects.filter((p) => p.perDay !== null);

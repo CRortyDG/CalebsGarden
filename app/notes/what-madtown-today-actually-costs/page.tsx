@@ -17,7 +17,9 @@ const VERCEL = [
 const VERCEL_TOTAL = 29.29;
 const DAYS = 29;
 const INVOCATIONS = 4_560_000;
-const VISITORS_A_DAY = 330; // roughly; madtown.today sees 280 to 380 a day
+// madtown.today's /admin/stats, the same 29 Madison days: unique browsers per day, added up.
+const VISITOR_DAYS = 10_914;
+const VISITORS_A_DAY = VISITOR_DAYS / DAYS; // about 376
 const perDay = INVOCATIONS / DAYS;
 const perVisitor = perDay / VISITORS_A_DAY;
 
@@ -42,7 +44,7 @@ export default function Page() {
 
       <h2>The bill</h2>
       <p>
-        madtown.today costs about $45 to $50 a month for 280 to 380 visitors a day: Vercel Pro, Upstash Redis at $15, and a $15 budget for GitHub Actions. Vercel
+        madtown.today costs about $45 to $50 a month for about {fmt(VISITORS_A_DAY)} visitors a day: Vercel Pro, Upstash Redis at $15, and a $15 budget for GitHub Actions. Vercel
         Pro is a $20 fee that includes $20 of usage, so anything past $20 of usage is extra. One billing cycle, 24 October to 21 November, looked like this:
       </p>
       <div className="cs-table-wrap">
@@ -73,6 +75,11 @@ export default function Page() {
           </tbody>
         </table>
       </div>
+      <p>
+        The site&apos;s own stats count {fmt(VISITOR_DAYS)} visitor-days in the same {DAYS} days, between 285 and 575 a day. So Vercel alone came to about{' '}
+        {fmt((VERCEL_TOTAL / VISITOR_DAYS) * 100, 2)}¢ per visitor per day, and almost all of that grows with traffic. It isn&apos;t a flat fee that more people
+        could share for free.
+      </p>
 
       <h2>What I got wrong</h2>
       <p>I&apos;d guessed the build and test runners were the expensive part. They&apos;re part of it, but three other things matter more.</p>
