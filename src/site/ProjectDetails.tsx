@@ -78,6 +78,11 @@ export function ProjectDetails({ project, titleId, usage }: { project: Project; 
               Read how it was built
             </a>
           )}
+          {project.numbers && (
+            <a className="button" href={project.numbers}>
+              Watch it grow, day by day
+            </a>
+          )}
           {project.source && (
             <a className="button" href={project.source}>
               Source

@@ -28,6 +28,8 @@ export interface Project {
   caseStudy?: string;
   /** Public source code, if any. */
   source?: string;
+  /** Path of a page on this site with its numbers over time, if it has one. */
+  numbers?: string;
   /** Card image under /public (1200×630, like a link preview), with its real pixel size. */
   image?: { src: string; alt: string; width: number; height: number };
   /** Three to five short "built with" tags. */
@@ -103,6 +105,7 @@ export const projects: Project[] = [
     type: 'project',
     href: 'https://madtown.today',
     hostLabel: 'madtown.today',
+    numbers: '/madtown',
     image: {
       src: '/projects/madtown.png',
       alt: 'madtown.today: a homepage for the isthmus, with the Chair Stack, Four Lakes and Madison Asks cards',
