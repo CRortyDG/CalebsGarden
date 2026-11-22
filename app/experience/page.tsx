@@ -42,7 +42,17 @@ export default function Experience() {
           network, and now a banking startup&apos;s cloud. Below is what each job was and what I personally owned, then the receipts from the two apps I run
           myself.
         </p>
-        {site.lookingFor && <p className="xp-looking">{site.lookingFor}</p>}
+        {site.lookingFor && (
+          <p className="xp-looking">
+            {site.lookingFor}
+            {contact[0] && (
+              <>
+                {' '}
+                <a href={contact[0].href}>{contact[0].href.replace(/^mailto:/, '')}</a>
+              </>
+            )}
+          </p>
+        )}
         <dl className="cs-facts">
           <div>
             <dt>Now</dt>
