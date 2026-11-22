@@ -172,7 +172,8 @@ button {
   display: flex;
   gap: 8px;
 }
-.chrome > button {
+.chrome > button,
+.chrome > a {
   display: inline-flex;
   align-items: center;
   gap: 6px;
@@ -186,7 +187,11 @@ button {
   -webkit-backdrop-filter: blur(6px);
   backdrop-filter: blur(6px);
 }
-.chrome > button:hover {
+.chrome > a {
+  text-decoration: none;
+}
+.chrome > button:hover,
+.chrome > a:hover {
   border-color: var(--chrome-fg);
 }
 

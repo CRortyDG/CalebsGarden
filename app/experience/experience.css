@@ -1,0 +1,134 @@
+/* /experience: the jobs list, receipts and incidents. Builds on case-study.css (.cs). */
+.xp-looking {
+  margin: 18px 0 0;
+  padding-left: 14px;
+  border-left: 3px solid var(--lamp);
+  font-size: 1.05rem;
+  color: var(--ink);
+}
+.xp-short {
+  margin: 0;
+  padding-left: 18px;
+}
+.xp-short li + li {
+  margin-top: 6px;
+}
+.xp-label {
+  margin: 14px 0 4px;
+  font: 500 0.68rem var(--mono);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--cs-moss);
+}
+.xp-jobs {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.xp-job {
+  max-width: none;
+  padding: 22px 0;
+  border-top: 1px solid var(--line);
+  scroll-margin-top: 24px;
+}
+.xp-job:last-child {
+  border-bottom: 1px solid var(--line);
+}
+.xp-job h3 {
+  margin: 0;
+}
+.xp-org {
+  font-weight: 500;
+  color: var(--muted);
+}
+.xp-when {
+  margin: 4px 0 10px;
+  font: 400 0.8rem var(--mono);
+  color: var(--muted);
+}
+.xp-job ul {
+  margin: 0;
+  padding-left: 20px;
+}
+.xp-job li + li {
+  margin-top: 4px;
+}
+.xp-systems {
+  margin: 14px 0 0;
+  font: 400 0.82rem var(--mono);
+  color: #d6dfd2;
+}
+.xp-systems .xp-label {
+  display: inline;
+  margin: 0 8px 0 0;
+}
+.xp-receipt,
+.xp-incident {
+  margin: 28px 0;
+  padding: 18px 20px 6px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--cs-paper);
+}
+.xp-receipt h3,
+.xp-incident h3 {
+  margin: 0 0 12px;
+}
+.xp-receipt h3 a {
+  margin-left: 8px;
+  font: 500 0.72rem var(--mono);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  vertical-align: 0.2em;
+}
+.xp-receipt dl,
+.xp-incident dl {
+  display: grid;
+  grid-template-columns: 11rem 1fr;
+  gap: 0 18px;
+  margin: 0;
+}
+.xp-receipt dt,
+.xp-incident dt {
+  padding: 10px 0;
+  border-top: 1px solid var(--line);
+  font: 500 0.72rem/1.6 var(--mono);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--cs-moss);
+}
+.xp-receipt dd,
+.xp-incident dd {
+  margin: 0;
+  padding: 10px 0;
+  border-top: 1px solid var(--line);
+  font-size: 0.97rem;
+  line-height: 1.55;
+}
+@media (max-width: 640px) {
+  .xp-receipt,
+  .xp-incident {
+    padding: 14px 14px 4px;
+  }
+  .xp-receipt dl,
+  .xp-incident dl {
+    grid-template-columns: 1fr;
+  }
+  .xp-receipt dd,
+  .xp-incident dd {
+    border-top: 0;
+    padding-top: 0;
+  }
+}
+/* Here the contents list sits above the text, not in a side column, so it mustn't stick. */
+.xp .cs-toc {
+  position: static;
+  margin-top: 24px;
+  padding: 16px 0;
+  border-block: 1px solid var(--line);
+}
+.xp .cs-toc ol {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  column-gap: 24px;
+}
