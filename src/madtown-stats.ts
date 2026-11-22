@@ -21,21 +21,13 @@ export const MADTOWN_COST_FOOTNOTE = 'The 250 MB Upstash Redis database that hol
 export const MADTOWN_MONTHLY_USD = MADTOWN_COSTS.reduce((s, c) => s + c.usd, 0);
 
 /**
- * Roughly how many people a day the $15 plan carries before it needs an upgrade, at the way
- * people use the site now, or null for no claim. Estimated 22 Nov 2026, not measured:
- * - Fixed Upstash plans don't bill per command; the limits that bite are monthly bandwidth
- *   (50 GB on the 250 MB plan) and 250 MB of data.
- * - Bandwidth is the first to run out. Almost all of it is the Who's here card polling
- *   /api/room every 4 s while 2+ people are online; each poll reads the day's canvas, the
- *   last 40 events and the online list, about 10 KB. Oct 24 to Nov 21 had 4.56M function
- *   calls for ~376 visitors a day, so about 3.7 MB of Redis traffic per visitor a day, or
- *   about 110 MB a month for each daily visitor. 50 GB / 110 MB is about 450; rounded
- *   down because the online list grows with the crowd. That's close to today's traffic,
- *   which is the point: the Durable Object move takes this polling off Redis.
- * - Data is small (the per-day canvases and counters, tens of MB), so it isn't close yet.
- * Re-check against the Upstash usage tab (monthly bandwidth and data size) when it changes.
+ * Roughly how many people a day the $15 plan carries before it needs an upgrade, or null for
+ * no claim. Null since 22 Nov 2026: the earlier ~400 was worked out from code (an assumed
+ * ~10 KB per /api/room poll), not measured, and c sees the real Upstash usage nowhere near the
+ * 250 MB plan's limits at ~350 a day with bigger spikes. Set it again from the Upstash usage
+ * tab: monthly bandwidth used vs the plan's allowance, scaled by visitors in the same days.
  */
-export const MADTOWN_CAPACITY_PER_DAY: number | null = 400;
+export const MADTOWN_CAPACITY_PER_DAY: number | null = null;
 
 function valid(x: unknown): x is MadtownStats {
   const s = x as MadtownStats;

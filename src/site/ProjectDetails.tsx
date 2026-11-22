@@ -47,10 +47,14 @@ export function ProjectDetails({ project, titleId, usage }: { project: Project; 
           </dl>
         )}
         {usage?.costNote && <p className="sheet-stats-note">{usage.costNote}</p>}
-        {usage?.capacityPerDay && (
+        {usage?.costNote && (
           <p className="sheet-stats-note">
-            At today&apos;s usage, that ${fmt(usage.monthlyUsd)} plan carries about{' '}
-            {fmt(usage.capacityPerDay)} people a day before it needs an upgrade.{' '}
+            {usage.capacityPerDay ? (
+              <>
+                At today&apos;s usage, that ${fmt(usage.monthlyUsd)} plan carries about {fmt(usage.capacityPerDay)} people a day before it needs an
+                upgrade.{' '}
+              </>
+            ) : null}
             Does it need to cost this much? No. <a href="/notes/what-madtown-today-actually-costs">Here’s my plan to cut it</a>.
           </p>
         )}
