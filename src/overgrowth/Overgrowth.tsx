@@ -87,6 +87,7 @@ export function Overgrowth({ projects, usage }: { projects: Project[]; usage?: U
               Mostly fixed costs: the same ${fmt(usage.monthlyUsd)} would carry about {fmt(usage.projects[0].capacityPerDay)} people a day.
             </p>
           )}
+          {usage?.projects[0]?.costNote && <p className="og-ledger-note">{usage.projects[0].costNote}</p>}
           <nav className="og-buds" aria-label="Projects">
             {projects.map(
               (p) =>

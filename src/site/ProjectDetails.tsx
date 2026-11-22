@@ -52,6 +52,7 @@ export function ProjectDetails({ project, titleId, usage }: { project: Project; 
             about {fmt(usage.capacityPerDay)} people a day before anything has to go up.
           </p>
         )}
+        {usage?.costNote && <p className="sheet-stats-note">{usage.costNote}</p>}
         {project.highlights && project.highlights.length > 0 && (
           <ul className="sheet-highlights" aria-label="What's there">
             {project.highlights.map((h) => (
