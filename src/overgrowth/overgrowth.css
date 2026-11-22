@@ -412,6 +412,15 @@ html:has(.og) {
     margin: 16px 0 32px;
     font-size: 1rem;
   }
+  /* the vines grow on behind the text here; a soft halo of sky keeps it crisp */
+  .og-hero h1,
+  .og-tagline,
+  .og-ledger,
+  .og-ledger-note {
+    text-shadow:
+      0 0 2px var(--og-sky),
+      0 0 8px var(--og-sky);
+  }
   .og-mark {
     left: 20px;
   }

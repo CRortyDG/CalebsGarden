@@ -1,6 +1,7 @@
 // Decorative vines that grow around the name on the first screen. They are
 // different on every visit, lean toward the pointer while they grow, and keep
-// clear of the text and the buds. Clicking bare ground plants a new sprout, and
+// clear of the text and the buds (on a phone they grow on behind the text,
+// faded, since there is no room around it). Clicking bare ground plants a new sprout, and
 // regrow() clears them and grows a fresh set.
 
 const TAU = Math.PI * 2;
@@ -29,6 +30,8 @@ export function growVines(hero: HTMLElement): { stop: () => void; regrow: () => 
   let w = 1, h = 1;
   let agents: Agent[] = [];
   let keepOut: Box[] = [];
+  // on a phone: lines of text the vines may pass behind, drawn faint there
+  let under: Box[] = [];
   const pointer = { x: 0, y: 0, on: false, overText: false };
   let raf = 0;
   let visible = true;
@@ -59,37 +62,46 @@ export function growVines(hero: HTMLElement): { stop: () => void; regrow: () => 
     ctx!.clearRect(0, 0, w, h);
 
     // On a phone the text fills the width and the hero runs past the first
-    // screen, so vines from the hero's foot would grow out of sight. There
-    // they keep out of each line of text rather than the whole block (so they
-    // can reach into the ragged ends of lines) and start on the first screen.
+    // screen, so vines from the hero's foot would grow out of sight, and
+    // vines that kept clear of the text would only have the bare edges. There
+    // they start on the first screen and grow right through, behind each line
+    // of text, drawn faint where they cross it so the words stay easy to read.
     const phone = matchMedia('(max-width: 760px)').matches;
-    const pad = phone ? 12 : 26;
-    const boxOf = (r: DOMRect) => ({ x: r.left - box.left - pad, y: r.top - box.top - pad, w: r.width + pad * 2, h: r.height + pad * 2 });
+    const boxOf = (r: DOMRect, pad: number) => ({ x: r.left - box.left - pad, y: r.top - box.top - pad, w: r.width + pad * 2, h: r.height + pad * 2 });
+    const text = 'h1, .og-tagline, .og-ledger, .og-ledger-note';
     // text and buds the vines must stay away from
-    keepOut = [...hero.querySelectorAll('h1, .og-tagline, .og-ledger, .og-ledger-note, .og-buds, .og-mark')].flatMap((el) => {
-      if (!phone || el.matches('.og-buds, .og-mark')) return [boxOf(el.getBoundingClientRect())];
-      const range = document.createRange();
-      range.selectNodeContents(el);
-      return [...range.getClientRects()].filter((r) => r.width > 0).map(boxOf);
-    });
+    keepOut = [...hero.querySelectorAll(phone ? '.og-buds, .og-mark' : `${text}, .og-buds, .og-mark`)].map((el) =>
+      boxOf(el.getBoundingClientRect(), phone ? 12 : 26),
+    );
+    under = phone
+      ? [...hero.querySelectorAll(text)].flatMap((el) => {
+          const range = document.createRange();
+          range.selectNodeContents(el);
+          return [...range.getClientRects()].filter((r) => r.width > 0).map((r) => boxOf(r, 3));
+        })
+      : [];
 
     const thick = Math.max(2.5, Math.min(5, w * 0.004));
     agents = [];
-    const seed = (x: number, y: number, a: number) =>
-      agents.push({ x, y, a, home: a, width: thick * (0.7 + R() * 0.6), life: 200 + R() * 220 });
+    const seed = (x: number, y: number, a: number, life = 200 + R() * 220) =>
+      agents.push({ x, y, a, home: a, width: thick * (0.7 + R() * 0.6), life });
     const up = -Math.PI / 2;
     if (phone) {
       // the first screen's foot, where the buds begin, or the hero's if shorter
       const foot = Math.min(h, window.innerHeight - box.top);
-      const top = keepOut.length ? Math.min(...keepOut.map((k) => k.y)) : 0;
-      // up the left margin from the foot of the first screen, and up the right edge
-      seed(w * 0.06, foot + 4, up + 0.12 + (R() - 0.5) * 0.2);
-      seed(w + 4, foot * (0.6 + R() * 0.15), Math.PI + 0.5 + (R() - 0.5) * 0.3);
-      // down from the top corners, under the site name and the buttons
-      seed(-4, top + 70 + R() * 30, 0.35 + (R() - 0.5) * 0.3);
-      seed(w + 4, top + 80 + R() * 40, Math.PI - 0.3 + (R() - 0.5) * 0.3);
-      // and in from the right beside the headline's ragged lines
-      seed(w + 4, foot * (0.3 + R() * 0.1), Math.PI + (R() - 0.5) * 0.4);
+      const top = under.length ? Math.min(...under.map((k) => k.y)) : foot * 0.3;
+      const long = () => 280 + R() * 200;
+      const jit = (n: number) => (R() - 0.5) * n;
+      // up the left margin from the foot of the first screen, twice
+      seed(w * 0.05, foot + 4, up + 0.1 + jit(0.2), long());
+      // up from the bottom right corner, across the tagline
+      seed(w + 4, foot * (0.8 + R() * 0.1), Math.PI + 0.6 + jit(0.3), long());
+      // down from the top corners, over the headline
+      seed(-4, top - 20 + R() * 30, 0.45 + jit(0.3), long());
+      seed(w + 4, top - 10 + R() * 40, Math.PI - 0.45 + jit(0.3), long());
+      // in from both sides through the middle of the text
+      seed(-4, foot * (0.5 + R() * 0.12), jit(0.6), long());
+      seed(w + 4, foot * (0.4 + R() * 0.12), Math.PI + jit(0.6), long());
       return;
     }
     // from the ground, at the edges
@@ -128,9 +140,14 @@ export function growVines(hero: HTMLElement): { stop: () => void; regrow: () => 
       }
       // a vine that still ends up over the text just stops
       if (inside) continue;
+      // behind a line of text (phones) the vine carries on, but faint
+      let faint = false;
+      for (const k of under) if (g.x > k.x && g.x < k.x + k.w && g.y > k.y && g.y < k.y + k.h) faint = true;
       const nx = g.x + Math.cos(g.a) * 1.8;
       const ny = g.y + Math.sin(g.a) * 1.8;
-      ctx!.strokeStyle = g.width > 2 ? '#35592a' : '#4d7a3a';
+      // faint = the vine's own colour sunk most of the way into the sky (a solid
+      // colour, not transparency, so the overlapping steps don't bead)
+      ctx!.strokeStyle = faint ? '#1a2a17' : g.width > 2 ? '#35592a' : '#4d7a3a';
       ctx!.lineWidth = g.width;
       ctx!.lineCap = 'round';
       ctx!.beginPath();
@@ -141,7 +158,8 @@ export function growVines(hero: HTMLElement): { stop: () => void; regrow: () => 
       g.y = ny;
       g.life--;
       g.width *= 0.9978;
-      if (R() < 0.065) leaf(g.x, g.y, 5 + g.width * 3.2, g.a + (R() < 0.5 ? 1 : -1) * (0.9 + R() * 0.5), R() < 0.5 ? '#5d8c44' : '#79a852');
+      if (R() < (faint ? 0.03 : 0.065))
+        leaf(g.x, g.y, 5 + g.width * 3.2, g.a + (R() < 0.5 ? 1 : -1) * (0.9 + R() * 0.5), faint ? '#22361d' : R() < 0.5 ? '#5d8c44' : '#79a852');
       if (R() < 0.011 && agents.length + next.length < 40 && g.width > 1.2) {
         const a = g.a + (R() < 0.5 ? 1 : -1) * (0.5 + R() * 0.6);
         next.push({ x: g.x, y: g.y, a, home: a, width: g.width * 0.7, life: 80 + R() * 150 });
