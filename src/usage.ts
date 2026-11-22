@@ -1,7 +1,7 @@
 // What the projects cost to run and how many people use them, for the home page.
 // Each project with numbers gets an entry; Candlefair joins once groups are playing it.
 
-import { getMadtownStats, MADTOWN_CAPACITY_PER_DAY, MADTOWN_MONTHLY_USD } from '@/madtown-stats';
+import { getMadtownStats, MADTOWN_CAPACITY_PER_DAY, MADTOWN_COST_FOOTNOTE, MADTOWN_MONTHLY_USD } from '@/madtown-stats';
 
 export interface ProjectUsage {
   /** Project id in src/projects.ts. */
@@ -14,6 +14,8 @@ export interface ProjectUsage {
   monthlyUsd: number;
   /** Roughly how many people a day the same monthly cost would carry (an estimate). */
   capacityPerDay?: number;
+  /** What the monthly cost leaves out, if anything. */
+  costNote?: string;
 }
 
 export interface Usage {
@@ -33,6 +35,7 @@ export async function getUsage(): Promise<Usage> {
     sinceLaunch: stats?.visitorsSinceLaunch ?? null,
     monthlyUsd: MADTOWN_MONTHLY_USD,
     capacityPerDay: MADTOWN_CAPACITY_PER_DAY ?? undefined,
+    costNote: MADTOWN_COST_FOOTNOTE,
   };
   const projects = [madtown];
   const counted = projects.filter((p) => p.perDay !== null);

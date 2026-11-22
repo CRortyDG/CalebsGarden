@@ -1,4 +1,4 @@
-import { getMadtownStats, MADTOWN_COSTS, MADTOWN_MONTHLY_USD } from '@/madtown-stats';
+import { getMadtownStats, MADTOWN_COST_FOOTNOTE, MADTOWN_COSTS, MADTOWN_MONTHLY_USD } from '@/madtown-stats';
 
 const fmt = (n: number, d = 0) => n.toLocaleString('en-US', { minimumFractionDigits: d, maximumFractionDigits: d });
 
@@ -45,6 +45,7 @@ export default async function MadtownLedger() {
           </tbody>
         </table>
       </div>
+      <p className="cs-calc-note">{MADTOWN_COST_FOOTNOTE}</p>
       {stats && days.length > 0 ? (
         <>
           <dl className="cs-calc-out">
