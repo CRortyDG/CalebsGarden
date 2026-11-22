@@ -42,9 +42,10 @@ export const site = {
   name: 'calebs.garden',
   tagline: "a garden of things I've made",
   /** The big line on the first screen. */
-  headline: "A garden of things I've made.",
+  headline: 'I build free software and give it away.',
   /** The line under it. */
-  intro: 'Projects for my city and my table, tended slowly. Pick one to see it up close.',
+  intro:
+    "I'm Caleb. I make small, free software that people actually want to use, like a daily homepage for Madison and a companion for D&D night. No ads, no paywalls.",
   /** A few sentences about you. Not shown anywhere yet. */
   about: '',
   /** Ways to reach you, shown among the roots in the footer. */
