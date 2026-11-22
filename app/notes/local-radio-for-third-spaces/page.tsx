@@ -107,7 +107,7 @@ export default function Page() {
       </p>
       <RadioCalc />
       <p>
-        Prices are from Akamai&apos;s <a href="https://www.akamai.com/cloud/pricing/cpu">shared CPU pricing page</a>, last checked on 21 November 2026. The page says prices
+        Prices are from Akamai&apos;s <a href="https://www.akamai.com/cloud/pricing/cpu">shared CPU pricing page</a>. I re-checked them on 21 November 2026, and the numbers here use that check. The page says prices
         vary by region, so check yours. Bandwidth only; the table leaves out everything else.
       </p>
       <p>
