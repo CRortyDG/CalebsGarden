@@ -64,6 +64,7 @@ export const projects: Project[] = [
       height: 1125,
     },
     tags: ['Cloudflare Workers', 'Durable Objects', 'Real-time rooms'],
+    caseStudy: '/case-studies/candlefair',
   },
   {
     id: 'madtown',
