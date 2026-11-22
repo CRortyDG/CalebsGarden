@@ -190,6 +190,7 @@ export function Overgrowth({ projects, usage }: { projects: Project[]; usage?: U
           type="button"
           onClick={() => regrowRef.current()}
           title="Grow the vines and the stem again, a little differently"
+          aria-label="Regrow"
         >
           <svg viewBox="0 0 16 16" width="13" height="13" aria-hidden="true">
             <path
@@ -201,7 +202,7 @@ export function Overgrowth({ projects, usage }: { projects: Project[]; usage?: U
               strokeLinejoin="round"
             />
           </svg>
-          Regrow
+          <span className="chrome-label">Regrow</span>
         </button>
       </nav>
 

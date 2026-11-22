@@ -190,6 +190,20 @@ button {
 .chrome > a {
   text-decoration: none;
 }
+/* on phones the buttons tighten up and Regrow is just its sprout, so the
+   site's name at top left stays clear of them */
+@media (max-width: 480px) {
+  .chrome {
+    gap: 4px;
+  }
+  .chrome > button,
+  .chrome > a {
+    padding: 7px 9px;
+  }
+  .chrome .chrome-label {
+    display: none;
+  }
+}
 .chrome > button:hover,
 .chrome > a:hover {
   border-color: var(--chrome-fg);
