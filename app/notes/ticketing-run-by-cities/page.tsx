@@ -44,7 +44,7 @@ export default function Page() {
       </p>
       <p>
         This is the same pattern I already use at a smaller size. madtown.today&apos;s answer to a second city is a second copy built from the same code, with its own
-        content and data. Candlefair gives every D&amp;D group its own room. I wrote about both in{' '}
+        content and data. I wrote more about that in{' '}
         <Link href="/case-studies/built-for-one-place">Built for one place</Link>.
       </p>
 

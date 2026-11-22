@@ -119,7 +119,7 @@ export default function Page() {
       <p>
         One small server running a streaming server (Icecast is the usual open-source choice) sends the same stream to every shop. Each shop opens a link on
         whatever already plays music: a laptop, a phone, a cheap speaker. No accounts, in the same spirit as{' '}
-        <Link href="/case-studies/the-browser-is-the-account">madtown.today and Candlefair</Link>.
+        <Link href="/case-studies/the-browser-is-the-account">madtown.today</Link>.
       </p>
       <p>
         Every shop hears the same thing at the same time, which is the point of radio: a band played at 3pm is played in every shop in town at 3pm. If it grew past
