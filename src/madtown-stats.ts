@@ -16,6 +16,14 @@ export const MADTOWN_COSTS = [
 ] as const;
 export const MADTOWN_MONTHLY_USD = MADTOWN_COSTS.reduce((s, c) => s + c.usd, 0);
 
+/**
+ * Roughly how many people a day the same monthly bill would carry before a plan has to go up.
+ * An estimate, not a measurement: the Vercel Pro allowance (1 TB transfer, 10M edge requests a
+ * month) divided by what a visit costs (about 50 requests, a couple of MB), with headroom.
+ * Redis and CI are flat. Change it here if the real numbers say otherwise.
+ */
+export const MADTOWN_CAPACITY_PER_DAY = 5000;
+
 function valid(x: unknown): x is MadtownStats {
   const s = x as MadtownStats;
   return !!s && typeof s.visitorsSinceLaunch === 'number' && Array.isArray(s.days) && s.days.every((d) => typeof d.visitors === 'number' && typeof d.date === 'string');

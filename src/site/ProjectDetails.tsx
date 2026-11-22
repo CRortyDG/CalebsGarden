@@ -46,6 +46,12 @@ export function ProjectDetails({ project, titleId, usage }: { project: Project; 
             </div>
           </dl>
         )}
+        {usage?.capacityPerDay && (
+          <p className="sheet-stats-note">
+            Most of that is flat plan pricing, not traffic. The same ${fmt(usage.monthlyUsd)} would carry
+            about {fmt(usage.capacityPerDay)} people a day before anything has to go up.
+          </p>
+        )}
         {project.highlights && project.highlights.length > 0 && (
           <ul className="sheet-highlights" aria-label="What's there">
             {project.highlights.map((h) => (
