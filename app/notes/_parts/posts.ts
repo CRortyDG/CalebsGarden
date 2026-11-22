@@ -6,25 +6,25 @@ export type Post = { slug: string; title: string; date: string; summary: string 
 // day; pages under /notes re-check every hour, so it appears within an hour of midnight.
 export const allPosts: Post[] = [
   {
-    slug: 'what-50-dollars-buys',
-    title: 'What $50 a month buys on madtown.today',
-    date: '2026-11-24',
-    summary:
-      'madtown.today costs $50 a month to run: $15 for Redis, $20 for Vercel and $15 set aside for automated tests. Over the last month that served about 380 visitors a day, around 200 of them back from the day before. Under half a cent per visitor per day.',
-  },
-  {
     slug: 'build-the-meter-first',
     title: 'Build the meter first',
-    date: '2026-11-23',
+    date: '2026-11-24',
     summary:
       'Before I put a number on how many groups Candlefair can host for free, I had it count what each game actually uses and price it against Cloudflare’s limits. The meter came first; the claim waits for real games.',
   },
   {
     slug: 'three-tests-that-didnt-win',
     title: 'Three tests on madtown.today that didn’t win',
-    date: '2026-11-22',
+    date: '2026-11-23',
     summary:
       'I ran three A/B tests on what a first-time visitor sees on madtown.today. One looked like a win on 124 people and disappeared on 840. None moved the number I cared about: whether people came back the next day.',
+  },
+  {
+    slug: 'what-madtown-today-actually-costs',
+    title: 'What madtown.today actually costs, and the plan to cut it',
+    date: '2026-11-22',
+    summary:
+      'I thought madtown.today’s bill was a heartbeat. Most of it was a monitoring add-on and a tab that asks the server for news every 4 seconds. The plan: move the live parts to a Cloudflare Durable Object, then the site, and take the bill from about $50 a month to about $5.',
   },
   {
     slug: 'why-i-dont-put-ai-in-my-apps',

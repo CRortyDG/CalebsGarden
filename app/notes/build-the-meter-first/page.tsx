@@ -53,11 +53,12 @@ export default function Page() {
         </li>
       </ul>
 
-      <h2>The same idea, elsewhere</h2>
+      <h2>What happens without one</h2>
       <p>
-        madtown.today&apos;s README does a version of this by hand: it lists what each feature costs in Redis commands, which is how I know the &ldquo;who&apos;s
-        here&rdquo; heartbeat is most of the bill and that one setting would halve it. And the madtown.today bill now sits beside its real visitor counts, in the
-        same case study.
+        madtown.today shows the other side. Its README estimates the cost of each feature by hand, and by that estimate the &ldquo;who&apos;s here&rdquo; heartbeat
+        was most of the bill. When I finally read the real invoices, most of it was something else: a monitoring add-on and a tab asking the server for news every
+        few seconds. The estimate was careful and still wrong, because it was an estimate. That story is in{' '}
+        <Link href="/notes/what-madtown-today-actually-costs">What madtown.today actually costs</Link>.
       </p>
       <p>When Candlefair has enough real games behind it, the capacity number will go there too, with the meter&apos;s readings next to it.</p>
     </Note>
