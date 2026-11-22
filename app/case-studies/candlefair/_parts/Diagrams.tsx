@@ -33,7 +33,7 @@ function Screens({ y = 8 }: { y?: number }) {
 export function BeforeDiagram() {
   return (
     <figure className="cs-diagram">
-      <h3>Version two: one game on Redis</h3>
+      <h3>Before: one game on Redis</h3>
       <svg viewBox="0 0 340 430" role="img" aria-labelledby="d1t d1d">
         <title id="d1t">The first deployed version</title>
         <desc id="d1d">
@@ -119,7 +119,7 @@ export function BeforeDiagram() {
 export function AfterDiagram() {
   return (
     <figure className="cs-diagram">
-      <h3>Version three: a room per campaign</h3>
+      <h3>After: a room per campaign</h3>
       <svg viewBox="0 0 340 430" role="img" aria-labelledby="d2t d2d">
         <title id="d2t">The public version</title>
         <desc id="d2d">

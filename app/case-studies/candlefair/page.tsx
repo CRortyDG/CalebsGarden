@@ -6,9 +6,9 @@ import { AfterDiagram, BeforeDiagram, NamespaceDiagram } from './_parts/Diagrams
 import RoomsDemo from './_parts/RoomsDemo';
 import SyncDemo from './_parts/SyncDemo';
 
-const title = 'The story behind Candlefair';
+const title = 'Software for one table';
 const description =
-  'How a D&D table companion went from one game on Redis to a public app where every campaign is its own Cloudflare Durable Object: rooms, WebSockets, keys, backups and the bill.';
+  'Candlefair is a free companion for D&D played in person. It is built for the people at one table, not for scale, and this is what it takes to make software like that cheap enough to give away.';
 const url = '/case-studies/candlefair';
 const IMG = '/case-studies/candlefair';
 
@@ -33,20 +33,18 @@ const jsonLd = {
   description,
   image: `https://calebs.garden${IMG}/og.jpg`,
   author: { '@type': 'Person', name: 'Caleb', url: 'https://calebs.garden' },
-  about: { '@type': 'SoftwareApplication', name: 'Candlefair', url: 'https://dungeon.garden', applicationCategory: 'GameApplication' },
+  about: { '@type': 'SoftwareApplication', name: 'Candlefair', url: 'https://dnd.calebs.garden', applicationCategory: 'GameApplication' },
   mainEntityOfPage: `https://calebs.garden${url}`,
 };
 
 const chapters = [
-  ['what', 'What it is'],
-  ['history', 'Three versions'],
-  ['redis', 'One game on Redis'],
-  ['public', 'Giving it away'],
-  ['rooms', 'A room per campaign'],
-  ['sync', 'Keeping screens in step'],
-  ['identity', 'Who is who'],
-  ['backups', 'Taking your data with you'],
-  ['cost', 'The bill'],
+  ['table', 'A night at the table'],
+  ['who', 'Who it’s for'],
+  ['free', 'Free, on purpose'],
+  ['cost', 'What free costs'],
+  ['rooms', 'One room per table'],
+  ['care', 'Small, not sloppy'],
+  ['now', 'Where it is now'],
   ['built', 'How it was built'],
 ] as const;
 
@@ -203,27 +201,27 @@ export default function CandlefairCaseStudy() {
         <p className="cs-kicker">Case study · Candlefair</p>
         <h1>{title}</h1>
         <p className="cs-dek">
-          I built Candlefair to run my own D&amp;D games: a TV in the middle of the table, everyone&apos;s phone in their hand, and a DM console that remembers what I
-          won&apos;t. This is how it went from one game on Redis to an app anyone can use, where every campaign is its own small server.
+          Candlefair is a free companion for D&amp;D played in person. It isn&apos;t built to reach millions of people. It&apos;s built for the few people sitting around
+          my table, and for any other table that wants it. This is what it takes to make software like that cheap enough to give away.
         </p>
         <dl className="cs-facts">
           <div>
             <dt>Live at</dt>
             <dd>
-              <a href="https://dungeon.garden">dungeon.garden</a>
+              <a href="https://dnd.calebs.garden">dnd.calebs.garden</a>
             </dd>
           </div>
           <div>
+            <dt>Costs players</dt>
+            <dd>Nothing. No accounts, no app to install.</dd>
+          </div>
+          <div>
             <dt>Runs on</dt>
-            <dd>Cloudflare Workers, Durable Objects, R2</dd>
+            <dd>Cloudflare Workers and Durable Objects</dd>
           </div>
           <div>
-            <dt>Client</dt>
-            <dd>React, built with Vite</dd>
-          </div>
-          <div>
-            <dt>Repository history</dt>
-            <dd>12 to 20 November 2026</dd>
+            <dt>Built</dt>
+            <dd>November 2026</dd>
           </div>
         </dl>
         <figure className="cs-hero">
@@ -246,28 +244,23 @@ export default function CandlefairCaseStudy() {
 
         <article>
           {/* ------------------------------------------------------------ 1 */}
-          <section className="cs-chapter" id="what" aria-labelledby="what-h">
+          <section className="cs-chapter" id="table" aria-labelledby="table-h">
             <header>
               <p className="cs-num">Chapter 1</p>
-              <h2 id="what-h">What it is</h2>
+              <h2 id="table-h">A night at the table</h2>
             </header>
             <p>
-              Candlefair is for D&amp;D played in person. There are three kinds of screen, and they all show the same game at once.
+              Picture a living room. There&apos;s a TV at one end showing a map of the town, with everyone&apos;s token on it. Each player has their phone: their gold,
+              their character sheet, the shop, their dice. I have a laptop with the DM console, where I pay the party, run fights, decide what goes on the TV and keep
+              my notes.
             </p>
-            <ul>
-              <li>
-                <strong>The TV</strong> is what everyone looks at: the map with the party&apos;s tokens, fog of war, scenes, dice rolls and the party purse.
-              </li>
-              <li>
-                <strong>Each player&apos;s phone</strong> shows their own gold, character sheet, the shop, dice, and the places and people the party has discovered.
-              </li>
-              <li>
-                <strong>The DM console</strong> is where I run the night: the bank and its ledger, fights, what&apos;s on the TV, notes and the plan for the session.
-              </li>
-            </ul>
             <p>
-              I built it around what frustrated me as a player and what I knew I&apos;d forget as a DM: who owes what, what the party learned six sessions ago, which shop
-              sold which sword. It doesn&apos;t replace the table. There&apos;s no video chat and no drawing tools; it sits next to the dice.
+              When I pay everyone 25 gold, every phone and the TV change at once. When a player buys a sword from the shop, I get the request and approve it. When the
+              party finds a new place, it appears on their phones and stays there, so in three months someone can still look up who ran the ferry.
+            </p>
+            <p>
+              It doesn&apos;t replace the table. There&apos;s no video chat and no drawing tools. Everyone is in the same room; Candlefair is the bookkeeping, the map
+              and the memory, sitting next to the dice.
             </p>
             <figure>
               <img src={`${IMG}/dm.jpg`} width={2000} height={1250} alt="The DM console: a sidebar of pages, a first-night checklist, the Bank with pay buttons for each player, and a small copy of what is on the TV" loading="lazy" />
@@ -276,90 +269,47 @@ export default function CandlefairCaseStudy() {
           </section>
 
           {/* ------------------------------------------------------------ 2 */}
-          <section className="cs-chapter" id="history" aria-labelledby="history-h">
+          <section className="cs-chapter" id="who" aria-labelledby="who-h">
             <header>
               <p className="cs-num">Chapter 2</p>
-              <h2 id="history-h">Three versions</h2>
+              <h2 id="who-h">Who it&apos;s for</h2>
             </header>
+            <p>I built Candlefair around two people: the player I was, and the DM I&apos;m about to be.</p>
+            <h3>The player</h3>
             <p>
-              There have been three versions, and only the last two are in the repository. Each item below says where the claim comes from: <Src kind="record" />
-              means a commit, a pull request or a message with a timestamp; <Src kind="memory" /> means my own account, which nothing in the repository can confirm.
+              As a player, the parts of D&amp;D that wore me down weren&apos;t the dice or the story. They were the bookkeeping: who has how much gold, what we were
+              carrying, what that merchant said four sessions ago. Candlefair takes that off paper and puts it on the phone already in your hand, and makes some of it
+              a little more fun: a party purse on the TV, job flyers, renown that goes up when the party does something worth talking about.
             </p>
-            <ol className="cs-timeline">
-              {milestones.map((m) => (
-                <li key={m.title} className={m.kind ? `is-${m.kind}` : undefined}>
-                  <details>
-                    <summary>
-                      <time>{m.when}</time>
-                      <strong>{m.title}</strong>
-                    </summary>
-                    <dl>
-                      <dt>Before</dt>
-                      <dd>{m.before}</dd>
-                      <dt>After</dt>
-                      <dd>{m.after}</dd>
-                      <dt>How</dt>
-                      <dd>{m.how}</dd>
-                      <dt>Source</dt>
-                      <dd>{m.evidence}</dd>
-                    </dl>
-                  </details>
-                </li>
-              ))}
-            </ol>
-            <p className="cs-when" style={{ marginTop: 16 }}>
-              Dates are from git and pull request timestamps. Open any item for the before, the after and the commits.
+            <h3>The DM</h3>
+            <p>
+              I&apos;m not a natural storyteller with a perfect memory. Remembering what happened six sessions or six months ago is hard, and it&apos;s harder when more
+              than one group plays in the same world. That&apos;s the plan: my best friend can play about once a month, so several groups share one world and one
+              storyline. Candlefair keeps track of what each group has found, what they were paid and what they still owe.
+            </p>
+            <h3>The table that isn&apos;t mine</h3>
+            <p>
+              If it works for my table, it should work for anyone&apos;s, without asking them to pay, sign up, or install anything. That last part is what shaped most of
+              the engineering.
             </p>
           </section>
 
           {/* ------------------------------------------------------------ 3 */}
-          <section className="cs-chapter" id="redis" aria-labelledby="redis-h">
+          <section className="cs-chapter" id="free" aria-labelledby="free-h">
             <header>
               <p className="cs-num">Chapter 3</p>
-              <h2 id="redis-h">One game on Redis</h2>
+              <h2 id="free-h">Free, on purpose</h2>
             </header>
             <p>
-              The first deployed version was a Next.js app on Vercel. That was the stack I knew, and for one table it was fine. The whole game was one JSON document in
-              Upstash Redis, next to a version number and a ledger of every change to anyone&apos;s gold.
+              Most of what I build follows one idea: make free, or nearly free, software that people actually want and will use. madtown.today is one example.
+              Candlefair is another.
             </p>
             <p>
-              A change was a POST. The server read the game, ran the rules over it, and saved the result with a short Lua script that refused to write if someone else
-              had saved first. That check, and the retry around it, is still in the code today.
+              That idea comes with a trade most software doesn&apos;t make. Candlefair isn&apos;t trying to be a platform, and it isn&apos;t built for a scale it
+              hasn&apos;t reached. A table is a handful of people in one room for a few hours at a time. The goal isn&apos;t to serve a million of them at once; it&apos;s to
+              make each one cost so little that I never have to charge for it.
             </p>
-            <Code file="src/server/store.ts" at="8dabf57 (the first version)">{`
--- KEYS: ver, state, ledger. ARGV[1] is the version the caller read.
-local v = tonumber(redis.call('GET', KEYS[1]) or '0')
-if v ~= tonumber(ARGV[1]) then return -1 end
-redis.call('SET', KEYS[2], ARGV[2])
-for i = 3, #ARGV do redis.call('RPUSH', KEYS[3], ARGV[i]) end
-return redis.call('INCR', KEYS[1])
-`}</Code>
-            <p>
-              Live updates were the awkward part. A Vercel function can&apos;t hold a WebSocket, so every screen kept a server-sent events stream open instead. The stream
-              only ever said &ldquo;the game is at version 42 now&rdquo;; each screen then fetched its own view. A function can&apos;t run forever either, so each stream
-              closed itself after 270 seconds and the browser opened a new one.
-            </p>
-            <Code file="app/api/stream/route.ts" at="8dabf57" note="trimmed">{`
-export const maxDuration = 300;
-const LIFETIME_MS = 270_000; // close before the function limit; EventSource reconnects by itself
-
-// Server-sent events: "the game changed, it's version N now". Carries no game
-// data at all, so it needs no auth: each client then fetches its own filtered view.
-const unsubscribe = store.subscribe(game, (v) => send(\`event: v\\ndata: \${v}\\n\\n\`));
-`}</Code>
-            <p>
-              And there was one DM. The key that let you run the game was a single environment variable, <code>DM_KEY</code>, for the whole site. That is fine when the
-              only DM is me.
-            </p>
-          </section>
-
-          {/* ------------------------------------------------------------ 4 */}
-          <section className="cs-chapter" id="public" aria-labelledby="public-h">
-            <header>
-              <p className="cs-num">Chapter 4</p>
-              <h2 id="public-h">Giving it away</h2>
-            </header>
-            <p>A couple of hours after Milestone 1 was merged, I asked:</p>
+            <p>The first version that went online didn&apos;t meet that bar. A couple of hours after it was merged, I asked:</p>
             <blockquote>
               how could I make this not use redis and rather use the DMs machine as the node to offload 100% of the server cost to the client? Then I could just give
               this away to people / the public
@@ -367,294 +317,90 @@ const unsubscribe = store.subscribe(game, (v) => send(\`event: v\\ndata: \${v}\\
                 <Src kind="record" /> My message, 13 November 2026, 07:22 UTC. Spelling as typed.
               </footer>
             </blockquote>
-            <p>Giving it away changed what the app had to be:</p>
+            <p>Giving it away meant three things had to be true:</p>
             <ul>
-              <li>Every campaign needed its own DM key, made when the campaign is made, instead of one key in an environment variable.</li>
-              <li>Campaigns had to be properly separate. One table&apos;s busy night couldn&apos;t slow another&apos;s, and one table must never see another&apos;s data.</li>
-              <li>The cost of an idle campaign had to be close to nothing, because most campaigns are idle most of the week.</li>
+              <li>A table nobody is using should cost close to nothing, because most tables are idle most of the week.</li>
+              <li>Every table is its own world. One group&apos;s busy night can&apos;t slow down another&apos;s, and one table never sees another&apos;s data.</li>
+              <li>No accounts. A DM starts a campaign and sends a link; players open it on their phones.</li>
             </ul>
-            <p>Three ways were weighed that morning.</p>
+            <p>Three ways to get there were weighed that morning.</p>
             <div className="cs-table-wrap">
               <table>
                 <thead>
                   <tr>
                     <th scope="col">Option</th>
-                    <th scope="col">What it would take</th>
-                    <th scope="col">Why not</th>
+                    <th scope="col">The appeal</th>
+                    <th scope="col">The catch</th>
                   </tr>
                 </thead>
                 <tbody>
                   <tr>
-                    <td>The DM&apos;s laptop on the local network</td>
-                    <td>The app already had a file-based store for development.</td>
+                    <td>Run it on the DM&apos;s laptop, on the local network</td>
+                    <td>No server bill at all.</td>
                     <td>Only works for phones on the same Wi-Fi. A link texted to a player at home goes nowhere.</td>
                   </tr>
                   <tr>
-                    <td>WebRTC from the DM&apos;s browser</td>
-                    <td>A signalling server, TURN for phones behind strict networks.</td>
-                    <td>The DM&apos;s tab becomes the server: close it and the table goes dark. Rated the hardest of the three.</td>
+                    <td>Peer-to-peer (WebRTC) from the DM&apos;s browser</td>
+                    <td>Also close to no server.</td>
+                    <td>The DM&apos;s tab becomes the server: close it and the table goes dark. It still needs relay servers for some phones. Rated the hardest of the three.</td>
                   </tr>
                   <tr>
-                    <td>Cloudflare Durable Objects</td>
-                    <td>One small stateful server per campaign, with storage and WebSockets built in.</td>
-                    <td>Chosen. It still costs something, but very little when idle.</td>
+                    <td>A tiny server per table (Cloudflare Durable Objects)</td>
+                    <td>Works from anywhere, and an idle table costs next to nothing.</td>
+                    <td>Not literally free, and it meant leaving Next.js. I said that if it worked, I didn&apos;t mind what it ran on. Chosen.</td>
                   </tr>
                 </tbody>
               </table>
             </div>
             <p>
-              It wasn&apos;t only about the bill. My Vercel account is paid for through madtown.today, and I wanted Candlefair&apos;s hosting to stand on its own. Dropping Next.js was part of the deal; I said that if it worked, I didn&apos;t mind what it ran on.
-              The move was merged that afternoon.
+              The cost wasn&apos;t the only reason. My Vercel account is paid for through madtown.today, and I wanted Candlefair&apos;s hosting to stand on its own. The
+              move was merged that afternoon.
+            </p>
+          </section>
+
+          {/* ------------------------------------------------------------ 4 */}
+          <section className="cs-chapter" id="cost" aria-labelledby="cost-h">
+            <header>
+              <p className="cs-num">Chapter 4</p>
+              <h2 id="cost-h">What free costs</h2>
+            </header>
+            <p>
+              I can&apos;t show you a before-and-after bill. The first version was online for about ten hours, with no real campaigns on it. What I can show is the shape
+              of the bill: how each version turns one click at the table into work someone charges for.
+            </p>
+            <p>Take a table with seven screens open (a DM laptop, a TV and five phones) and a DM who pays the party:</p>
+            <div className="cs-compare">
+              <section>
+                <h3>Before: Next.js on Vercel, Redis</h3>
+                <span className="cs-when">the first version online</span>
+                <ol>
+                  <li>The DM&apos;s click runs one server function, which reads the game from Redis, saves it and announces a new version.</li>
+                  <li>Seven screens hear the announcement, and each runs another function to fetch its own view, which reads Redis again.</li>
+                  <li>
+                    Meanwhile, every open screen is holding a server function open, restarted every 270 seconds, for as long as the screen is on. A four-hour session
+                    is a lot of function time.
+                  </li>
+                </ol>
+              </section>
+              <section>
+                <h3>After: a room per table</h3>
+                <span className="cs-when">Cloudflare Worker and Durable Object</span>
+                <ol>
+                  <li>The DM&apos;s click is one request, passed to that table&apos;s room.</li>
+                  <li>The room saves to its own small database.</li>
+                  <li>The room sends seven messages over the screens&apos; open connections. Cloudflare doesn&apos;t charge for those.</li>
+                  <li>Between clicks the room can go to sleep, and the screens&apos; &ldquo;still there?&rdquo; pings don&apos;t wake it.</li>
+                </ol>
+              </section>
+            </div>
+            <p>
+              The first shape costs more the longer screens stay open. The second costs more only when people actually do something. A table is open for hours and
+              changes something every few seconds at most, so for a tool like this the second shape is the one that can stay free.
             </p>
             <div className="cs-diagrams">
               <BeforeDiagram />
               <AfterDiagram />
             </div>
-          </section>
-
-          {/* ------------------------------------------------------------ 5 */}
-          <section className="cs-chapter" id="rooms" aria-labelledby="rooms-h">
-            <header>
-              <p className="cs-num">Chapter 5</p>
-              <h2 id="rooms-h">A room per campaign</h2>
-            </header>
-            <p>
-              A Durable Object is a small server that Cloudflare keeps for a name you give it, with its own storage. Cloudflare runs at most one copy of a given object at
-              a time, so everything sent to it goes through the same place. Candlefair calls one a <em>room</em>, and every campaign code gets one. The Worker in front
-              never keeps game state; it finds the room and hands the request over:
-            </p>
-            <Code file="worker/index.ts" at="f8de4ba">{`
-function room(env: Env, game: string) {
-  return env.ROOMS.get(env.ROOMS.idFromName(game));
-}
-
-// A campaign's practice copy: "practice:<code>". Codes are letters, digits and dashes, so no code is ever this name.
-function practiceRoom(env: Env, game: string) {
-  return env.ROOMS.get(env.ROOMS.idFromName(\`practice:\${game}\`));
-}
-`}</Code>
-            <p>
-              There is no table of campaigns to look up first. The code <em>is</em> the address. Isolation falls out of that: a room only ever reads its own storage, so
-              there is no shared database where one campaign&apos;s query could return another&apos;s rows.
-            </p>
-            <NamespaceDiagram />
-            <p>
-              Inside, each room has a small SQLite database. The game is still one JSON document, in a one-row <code>doc</code> table beside its version and the hash of
-              the DM key. The ledger is a table with a row per entry. A save writes both inside one transaction:
-            </p>
-            <Code file="worker/room.ts" at="f8de4ba" note="trimmed">{`
-async commit(game: string, expected: number, state: GameState, ledger: LedgerEntry[]) {
-  const d = this.load();
-  if (d.version !== expected) return null; // someone saved first: the caller retries
-  const next: Doc = { ...d, game, version: d.version + 1, state: structuredClone(state) };
-  // …
-  this.ctx.storage.transactionSync(() => {
-    this.save(game, next);
-    for (const e of entries) this.sql.exec("INSERT INTO ledger (entry) VALUES (?)", JSON.stringify(e));
-  });
-  // …
-  return next.version;
-}
-`}</Code>
-            <p>
-              Two details keep rooms cheap. The tables are only created on the first real save, so a request for a code that doesn&apos;t exist leaves nothing behind.
-              And every room sets an alarm: after 180 days without use, it deletes itself and its images.
-            </p>
-            <RoomsDemo />
-          </section>
-
-          {/* ------------------------------------------------------------ 6 */}
-          <section className="cs-chapter" id="sync" aria-labelledby="sync-h">
-            <header>
-              <p className="cs-num">Chapter 6</p>
-              <h2 id="sync-h">Keeping screens in step</h2>
-            </header>
-            <p>
-              Every screen at the table holds one WebSocket to its room. Changes don&apos;t go over it; they go over ordinary HTTP posts. After each save the room sends every
-              open socket the whole view that screen is allowed to see. The DM gets everything, the TV gets what&apos;s on the TV, and a player gets their own gold and
-              not their friend&apos;s secret.
-            </p>
-            <Code file="worker/room.ts" at="f8de4ba" note="trimmed">{`
-/** The game changed: push every open screen its own view. Outgoing messages are free. */
-async publish(_game: string, _version: number) {
-  for (const ws of this.ctx.getWebSockets()) await this.push(ws);
-}
-
-private async push(ws: WebSocket) {
-  const att = ws.deserializeAttachment() as Attachment;
-  // …
-  const who = identify(state, att.player, att.key, this.load().dmKeyHash);
-  // …
-  send({ t: "view", view: await projectFor(state, version, actorOf(who), () => this.loadLedger()) });
-}
-`}</Code>
-            <p>
-              Sending the whole view instead of a list of changes costs more bytes, but it removes a class of bugs. A screen never has to apply changes in the right
-              order, and one that missed three updates while a phone was asleep only needs the next one. Each view carries the game&apos;s version, and a screen ignores any
-              view older than the one it has.
-            </p>
-            <SyncDemo />
-            <h3>When a phone goes to sleep</h3>
-            <p>
-              Phones at a table lock their screens, drop Wi-Fi and wake up minutes later. The client pings every 25 seconds and replaces a socket it hasn&apos;t heard from
-              in 75. When a socket closes it reconnects after 1 second, then 2, 4 and so on up to 15. When the tab becomes visible again or the network comes back, it
-              asks for its view straight away instead of waiting. The pings themselves never wake the room:
-            </p>
-            <Code file="worker/room.ts" at="f8de4ba">{`
-// Keep-alive pings from the browser are answered without waking the room.
-ctx.setWebSocketAutoResponse(new WebSocketRequestResponsePair("ping", "pong"));
-`}</Code>
-            <p>
-              The room uses Cloudflare&apos;s hibernation API for its sockets. Who is on each socket is saved with the socket, so the room can be taken out of memory between
-              changes and still know who to send what when it wakes.
-            </p>
-            <h3>Moving tokens</h3>
-            <p>
-              Tokens on the map move by an absolute position, sent once when you let go, snapped to the grid. There is no merging: if the DM and a player drag the same
-              token at the same moment, the later save wins. At a table where people are talking to each other, that seemed the right trade. The rules only let a
-              player move their own token, and only on the map that&apos;s on the TV:
-            </p>
-            <Code file="src/shared/reducer.ts" at="f8de4ba">{`
-case "me.tokenMove": {
-  if (ctx.actor.role !== "player") fail("Only a player can do that.");
-  const pid = ctx.actor.playerId;
-  const live = s.scenes.find((x) => x.id === s.live.sceneId);
-  if (!live || live.kind !== "map" || !live.map) fail("There's no map on the TV right now.");
-  const m = live.map;
-  const t = tokensOf(m).find((x) => x.playerId === pid) ?? fail("You don't have a token on this map yet. Ask the DM.");
-  if (t.locked) fail("The DM has locked your token.");
-  Object.assign(t, snapToGrid(m.grid, cmd.x, cmd.y, t.size));
-  break;
-}
-`}</Code>
-          </section>
-
-          {/* ------------------------------------------------------------ 7 */}
-          <section className="cs-chapter" id="identity" aria-labelledby="identity-h">
-            <header>
-              <p className="cs-num">Chapter 7</p>
-              <h2 id="identity-h">Who is who</h2>
-            </header>
-            <p>
-              Candlefair has no accounts and no passwords. Who you are comes from the link you opened and a key your browser keeps. That is easy at a table, and it has
-              limits worth being plain about.
-            </p>
-            <h3>The DM key</h3>
-            <p>
-              When someone starts a campaign, the server makes 24 random bytes, sends them back once, and stores only their SHA-256 hash. Checking a key compares hashes
-              in constant time.
-            </p>
-            <Code file="src/server/auth.ts" at="f8de4ba">{`
-/** A new campaign's DM key: 24 random bytes, URL-safe. Only its hash is stored. */
-export function newDmKey(): string {
-  return randomBytes(24).toString("base64url");
-}
-
-/** Is this the campaign's DM key? A campaign with no key set lets nobody in. */
-export function isDmKey(key: string | null | undefined, hash: string | null | undefined): boolean {
-  if (!key || !hash) return false;
-  return sameHash(sha256(key), hash);
-}
-`}</Code>
-            <p>
-              The DM&apos;s link carries the key after a <code>#</code>, in the part of a URL that browsers don&apos;t send to the server. On first load the app saves it on
-              the device and removes it from the address bar, and from then on sends it in a header. The key is a bearer secret: anyone who has the DM link can run the
-              game, so the DM can make a new key at any time, which cuts off every screen holding the old one. Older links that put the key in the query string still
-              work and are cleaned up the same way, but a query string can end up in logs, which is why new links don&apos;t use one.
-            </p>
-            <h3>Players</h3>
-            <div className="cs-pair is-phone">
-              <div>
-                <p>
-                  A player&apos;s link names them, like <code>?player=sam</code>. The name alone isn&apos;t enough. The first time a phone shows up with a name, it makes
-                  its own random key and the server ties the name to it. After that, anyone else arriving as &ldquo;sam&rdquo; is told the name is taken. To use a
-                  second device, Sam copies a sign-in link from the first; if Sam loses the phone, the DM can reset the lock.
-                </p>
-                <p>
-                  That is trust on first use, and it has the usual hole: if someone else claims your name before you do, it&apos;s theirs until the DM steps in. At a
-                  table of friends that&apos;s a conversation, not an attack. Once a session has started, or the table is full, new names have to knock and the DM lets
-                  them in.
-                </p>
-              </div>
-              <figure className="cs-phone">
-                <img src={`${IMG}/phone.jpg`} width={780} height={1688} alt="A phone screen headed 'That name is taken', explaining that sam is signed in on another device and offering a sign-in link or a key" loading="lazy" />
-                <figcaption>What a second device sees when the name is already locked.</figcaption>
-              </figure>
-            </div>
-            <h3>Campaign codes</h3>
-            <p>
-              A made-up code is 7 characters from a 31-letter alphabet with look-alikes like 0 and o removed, so it can be read aloud. A code a DM picks needs at least 8
-              letters or digits. A code is closer to a room number than a password: with the code alone you can open the read-only TV view, which shows what&apos;s on the
-              TV and nothing more. Guessing is slowed down rather than prevented: 20 misses a minute from one address locks that address out for 15 minutes at the Cloudflare data centre it reached.
-            </p>
-            <div className="cs-aside">
-              <p>
-                <strong>What this doesn&apos;t protect.</strong> Anyone with a DM link is the DM. Anyone with a code can watch the TV view. A name nobody has claimed yet
-                can be claimed by whoever gets there first. None of this has been through an outside security review; the holes I know about were found by a deliberate attack on
-                my own site and are listed in the history above.
-              </p>
-            </div>
-          </section>
-
-          {/* ------------------------------------------------------------ 8 */}
-          <section className="cs-chapter" id="backups" aria-labelledby="backups-h">
-            <header>
-              <p className="cs-num">Chapter 8</p>
-              <h2 id="backups-h">Taking your data with you</h2>
-            </header>
-            <p>
-              Because every campaign lives in its own room, a DM&apos;s data is easy to hand back. The DM can download a backup: a zip with the game, the full ledger and
-              the images it uses. Restoring one into a campaign takes a safety snapshot first, re-uploads any images that are missing, upgrades old saves to the current
-              format, and moves everything to the new code.
-            </p>
-            <p>The limits, as they stand:</p>
-            <ul>
-              <li>An import can be at most 4 MB of JSON, and a game can grow to about 1.5 million characters before the room refuses to save more.</li>
-              <li>The DM key, snapshots, usage counts and unreviewed Worldbuilder drafts are not in a backup. The DM key never leaves the room it was made for.</li>
-              <li>
-                Images that are still online when a backup is restored are linked, not copied. If the original campaign is later deleted for being idle, those
-                images go with it.
-              </li>
-            </ul>
-          </section>
-
-          {/* ------------------------------------------------------------ 9 */}
-          <section className="cs-chapter" id="cost" aria-labelledby="cost-h">
-            <header>
-              <p className="cs-num">Chapter 9</p>
-              <h2 id="cost-h">The bill</h2>
-            </header>
-            <p>
-              I can&apos;t give you a before-and-after bill. The Redis version was on main for about ten hours, with no real campaigns on it. What I can show is how each
-              version turns one click at the table into work someone charges for. Take a table with seven screens open (a DM laptop, a TV and five phones) and a DM who
-              pays the party:
-            </p>
-            <div className="cs-compare">
-              <section>
-                <h3>Version two</h3>
-                <span className="cs-when">Next.js on Vercel, Upstash Redis</span>
-                <ol>
-                  <li>The DM&apos;s POST runs one function: a Redis read, the Lua save, a publish.</li>
-                  <li>Seven open streams each hear the new version number.</li>
-                  <li>Seven screens each run another function to fetch their view, and each of those reads Redis again.</li>
-                  <li>Meanwhile, every open screen is a function that stays running, reopened every 270 seconds, for as long as the screen is open.</li>
-                </ol>
-              </section>
-              <section>
-                <h3>Version three</h3>
-                <span className="cs-when">Worker and a Durable Object</span>
-                <ol>
-                  <li>The DM&apos;s POST is one Worker request, passed to the room as one request.</li>
-                  <li>The room saves to its own SQLite in one transaction.</li>
-                  <li>The room sends seven WebSocket messages. Cloudflare doesn&apos;t charge for messages a Durable Object sends.</li>
-                  <li>Between changes the room can hibernate, and keep-alive pings are answered without waking it.</li>
-                </ol>
-              </section>
-            </div>
-            <p>
-              The second shape grows with how many screens are open and for how long. The first grows mostly with how many changes are made. A table is open for hours
-              and changes something every few seconds at most, so the difference matters.
-            </p>
             <p>The published prices I checked on 21 November 2026:</p>
             <div className="cs-table-wrap">
               <table>
@@ -678,7 +424,7 @@ export function isDmKey(key: string | null | undefined, hash: string | null | un
                       <a href="https://developers.cloudflare.com/durable-objects/platform/pricing/">Durable Objects</a> (SQLite)
                     </td>
                     <td>100,000 requests a day; 5 million rows read and 100,000 rows written a day; 5 GB stored</td>
-                    <td>Outgoing WebSocket messages aren&apos;t billed; incoming ones count as one request per 20. A hibernating object isn&apos;t billed for time.</td>
+                    <td>Outgoing WebSocket messages aren&apos;t billed; incoming ones count as one request per 20. A sleeping object isn&apos;t billed for time.</td>
                   </tr>
                   <tr>
                     <td>
@@ -696,32 +442,196 @@ export function isDmKey(key: string | null | undefined, hash: string | null | un
             </p>
           </section>
 
-          {/* ------------------------------------------------------------ 10 */}
+          {/* ------------------------------------------------------------ 5 */}
+          <section className="cs-chapter" id="rooms" aria-labelledby="rooms-h">
+            <header>
+              <p className="cs-num">Chapter 5</p>
+              <h2 id="rooms-h">One room per table</h2>
+            </header>
+            <p>
+              A Durable Object is a small server that Cloudflare keeps for a name you give it, with its own storage. Cloudflare runs at most one copy of a given one at a
+              time, so every screen at a table talks to the same copy of the game. Candlefair calls each one a <em>room</em>, and every campaign code gets its own.
+            </p>
+            <p>
+              The code <em>is</em> the address. There&apos;s no central database of campaigns to look up first, and no shared table where one group&apos;s data sits next
+              to another&apos;s. The front door just turns the code into a room:
+            </p>
+            <Code file="worker/index.ts" at="f8de4ba">{`
+function room(env: Env, game: string) {
+  return env.ROOMS.get(env.ROOMS.idFromName(game));
+}
+`}</Code>
+            <NamespaceDiagram />
+            <p>
+              A few details keep rooms cheap to leave lying around. A room only creates its storage on the first real save, so a mistyped or guessed code leaves nothing
+              behind. A campaign nobody has touched for 180 days deletes itself and its images. And a DM who wants to rehearse gets a private copy in a separate room,
+              so practice can never touch the real game.
+            </p>
+            <RoomsDemo />
+          </section>
+
+          {/* ------------------------------------------------------------ 6 */}
+          <section className="cs-chapter" id="care" aria-labelledby="care-h">
+            <header>
+              <p className="cs-num">Chapter 6</p>
+              <h2 id="care-h">Small, not sloppy</h2>
+            </header>
+            <p>
+              Small and free doesn&apos;t get a pass on the things people notice. If a phone shows the wrong gold, or a player can act as someone else, nobody at the
+              table cares how cheap it was to run. These are the parts that took the most care.
+            </p>
+
+            <h3>Every screen agrees</h3>
+            <p>
+              Each screen keeps one live connection to its table&apos;s room. After every change, the room sends each screen the whole picture it&apos;s allowed to see:
+              the DM sees everything, the TV sees what&apos;s on the TV, and a player sees their own gold and not their friend&apos;s secret. Sending the whole picture
+              instead of a list of changes costs a few more bytes, but a phone that slept through three changes only needs the next one.
+            </p>
+            <SyncDemo />
+            <details className="cs-simplifies">
+              <summary>The code behind it</summary>
+              <Code file="worker/room.ts" at="f8de4ba" note="trimmed">{`
+/** The game changed: push every open screen its own view. Outgoing messages are free. */
+async publish(_game: string, _version: number) {
+  for (const ws of this.ctx.getWebSockets()) await this.push(ws);
+}
+
+private async push(ws: WebSocket) {
+  const att = ws.deserializeAttachment() as Attachment;
+  // …
+  const who = identify(state, att.player, att.key, this.load().dmKeyHash);
+  // …
+  send({ t: "view", view: await projectFor(state, version, actorOf(who), () => this.loadLedger()) });
+}
+`}</Code>
+              <Code file="worker/room.ts" at="f8de4ba" note="trimmed">{`
+async commit(game: string, expected: number, state: GameState, ledger: LedgerEntry[]) {
+  const d = this.load();
+  if (d.version !== expected) return null; // someone saved first: the caller retries
+  // …
+  this.ctx.storage.transactionSync(() => {
+    this.save(game, next);
+    for (const e of entries) this.sql.exec("INSERT INTO ledger (entry) VALUES (?)", JSON.stringify(e));
+  });
+  // …
+}
+`}</Code>
+            </details>
+
+            <h3>Phones fall asleep</h3>
+            <p>
+              Phones at a table lock their screens and drop Wi-Fi. Each screen checks in every 25 seconds and replaces a connection it hasn&apos;t heard from in 75. A
+              dropped connection retries after 1 second, then 2, then 4, up to 15. When the phone wakes up, it asks for the latest picture straight away. The check-ins
+              are answered without waking the room, so a quiet table stays cheap.
+            </p>
+            <p>
+              Tokens on the map move by where you let go, snapped to the grid. If the DM and a player drag the same token at the same moment, the later one wins. At a
+              table where people are talking to each other, that seemed the right trade. A player can only move their own token, on the map that&apos;s on the TV, and
+              not if the DM has locked it.
+            </p>
+
+            <h3>Who is who, without accounts</h3>
+            <div className="cs-pair is-phone">
+              <div>
+                <p>
+                  There are no passwords. When a DM starts a campaign, the server makes a random key, hands it over once inside the DM&apos;s link, and keeps only a
+                  scrambled fingerprint of it (a SHA-256 hash). The key travels after the <code>#</code> in the link, a part browsers don&apos;t send to servers; the app
+                  saves it on the device and removes it from the address bar.
+                </p>
+                <p>
+                  A player&apos;s link just has their name. The first phone to show up with that name makes its own key, and the name is locked to it. Anyone else
+                  arriving as that name is told it&apos;s taken. A second device signs in with a link copied from the first, and the DM can reset a lock if a phone is
+                  lost.
+                </p>
+              </div>
+              <figure className="cs-phone">
+                <img src={`${IMG}/phone.jpg`} width={780} height={1688} alt="A phone screen headed 'That name is taken', explaining that sam is signed in on another device and offering a sign-in link or a key" loading="lazy" />
+                <figcaption>What a second device sees when the name is already locked.</figcaption>
+              </figure>
+            </div>
+            <div className="cs-aside">
+              <p>
+                <strong>What this doesn&apos;t protect.</strong> Anyone with the DM link is the DM, so the DM can make a new key at any time. Anyone with a campaign code
+                can open the read-only TV view. A name nobody has claimed yet goes to whoever gets there first. Guessing codes is slowed down (20 misses a minute locks
+                an address out for 15 minutes), not made impossible. None of this has had an outside security review; the holes I know about came from a deliberate
+                attack on my own site, and were fixed.
+              </p>
+            </div>
+
+            <h3>Your data is yours</h3>
+            <p>
+              A DM can download the whole campaign as a zip: the game, every gold transaction and the images. Restoring one takes a safety snapshot first and upgrades
+              old saves. The limits: a backup can be at most 4 MB of game data, the DM key is never in it, and images that are still online when you restore are linked
+              rather than copied.
+            </p>
+          </section>
+
+          {/* ------------------------------------------------------------ 7 */}
+          <section className="cs-chapter" id="now" aria-labelledby="now-h">
+            <header>
+              <p className="cs-num">Chapter 7</p>
+              <h2 id="now-h">Where it is now</h2>
+            </header>
+            <p>
+              Candlefair is live at <a href="https://dnd.calebs.garden">dnd.calebs.garden</a>, and anyone can start a campaign. It&apos;s still young. I don&apos;t have
+              usage numbers worth quoting, and I&apos;m not going to make some up. What I have is a tool I&apos;m about to run my own first game on, built so that if
+              other tables pick it up, the cost of having them stays small enough to keep it free.
+            </p>
+            <p>
+              That&apos;s the whole bet. Not a platform, not a startup: a piece of software that a few people at a table actually want, cheap enough that I never have
+              to ask them for anything.
+            </p>
+          </section>
+
+          {/* ------------------------------------------------------------ 8 */}
           <section className="cs-chapter" id="built" aria-labelledby="built-h">
             <header>
-              <p className="cs-num">Chapter 10</p>
+              <p className="cs-num">Chapter 8</p>
               <h2 id="built-h">How it was built</h2>
             </header>
             <p>
               I didn&apos;t type most of this code. Every code commit in the repository was written by Claude Code, working from my direction. My part was deciding what
-              Candlefair should be and what it shouldn&apos;t: the product, every feature and its wording, the architecture calls in this case study, having my own
-              site attacked to find holes, and merging each change.
+              Candlefair should be and what it shouldn&apos;t: the product, every feature and its wording, the calls in this case study, having my own site attacked to
+              find holes, and merging each change.
             </p>
             <p>
-              It still wasn&apos;t a weekend. The repository covers eight days of steady work in November 2026, from a single game on Redis to separate rooms, keys,
-              backups, practice copies and a registry. The history above links each change to its commit.
+              It still wasn&apos;t a weekend. The repository covers eight days of steady work in November 2026, from one game on Redis to separate rooms, keys, backups,
+              practice copies and a registry. Each item below says where it comes from: <Src kind="record" /> means a commit, a pull request or a timestamped
+              message; <Src kind="memory" /> means my own account.
             </p>
+            <ol className="cs-timeline">
+              {milestones.map((m) => (
+                <li key={m.title} className={m.kind ? `is-${m.kind}` : undefined}>
+                  <details>
+                    <summary>
+                      <time>{m.when}</time>
+                      <strong>{m.title}</strong>
+                    </summary>
+                    <dl>
+                      <dt>Before</dt>
+                      <dd>{m.before}</dd>
+                      <dt>After</dt>
+                      <dd>{m.after}</dd>
+                      <dt>How</dt>
+                      <dd>{m.how}</dd>
+                      <dt>Source</dt>
+                      <dd>{m.evidence}</dd>
+                    </dl>
+                  </details>
+                </li>
+              ))}
+            </ol>
           </section>
 
           <footer className="cs-end">
             <h2>Try it</h2>
             <p>Start a campaign, put the TV view on a screen, and send your players the link.</p>
-            <a className="cs-cta" href="https://dungeon.garden">
-              Open dungeon.garden →
+            <a className="cs-cta" href="https://dnd.calebs.garden">
+              Open Candlefair →
             </a>
-            <h2 style={{ marginTop: 32 }}>About the code on this page</h2>
+            <h2 style={{ marginTop: 32 }}>About this page</h2>
             <ul>
-              <li>Excerpts are copied from the Candlefair repository at the commit shown under each one. “Trimmed” means lines were left out, marked with …</li>
+              <li>Code is copied from the Candlefair repository at the commit shown under each excerpt. “Trimmed” means lines were left out, marked with …</li>
               <li>The two demos run only in your browser. They copy the rules described here in a few hundred lines; they don&apos;t talk to Candlefair.</li>
               <li>Prices were checked on 21 November 2026 and will change.</li>
             </ul>
