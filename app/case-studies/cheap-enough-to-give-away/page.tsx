@@ -33,8 +33,8 @@ export default function Page() {
             can sleep between moves and sends updates for free.
           </p>
           <p>
-            madtown.today shows the other side: its bill is almost entirely a &ldquo;who&apos;s here&rdquo; heartbeat, and the README says exactly how to halve it if
-            it ever gets tight.
+            madtown.today shows the other side: its README said the bill was almost all a &ldquo;who&apos;s here&rdquo; heartbeat, and the real bill said otherwise.
+            Knowing which feature costs what only helps if you check it against the invoice.
           </p>
         </>
       }
@@ -96,7 +96,7 @@ export default function Page() {
         <AfterDiagram />
       </div>
 
-      <h2>Three options, one afternoon</h2>
+      <h2>Three options, one morning</h2>
       <div className="cs-table-wrap">
         <table>
           <thead>
@@ -120,7 +120,7 @@ export default function Page() {
             <tr>
               <td>A tiny server per group (Cloudflare Durable Objects)</td>
               <td>Works from anywhere, and an idle group costs next to nothing.</td>
-              <td>Not literally free, and it meant leaving Next.js. If it worked, I didn&apos;t mind what it ran on. Chosen, and merged that afternoon.</td>
+              <td>Not literally free, and it meant leaving Next.js. If it worked, I didn&apos;t mind what it ran on. Chosen, and merged that morning.</td>
             </tr>
           </tbody>
         </table>
@@ -211,7 +211,7 @@ async publish(_game: string, _version: number) {
         everyone, and your game history stays in your own browser, which costs nothing.
       </p>
       <p>
-        Put together, here is the whole bill. madtown.today publishes its own counts, so the numbers beside it are real:
+        Put together, here is what madtown.today costs to run. It publishes its own counts, so the numbers beside it are real:
       </p>
       <MadtownLedger />
 
@@ -268,7 +268,7 @@ async publish(_game: string, _version: number) {
       <p>
         I didn&apos;t type most of Candlefair&apos;s code. Every code commit in its repository was written by Claude Code, working from my direction. My part was
         deciding what it should be and what it shouldn&apos;t: the product, every feature, the calls in this piece, having my own site attacked to find holes, and
-        merging each change. The Redis version went up on the evening of 12 November 2026 (US Central), the room-per-group version the next afternoon.
+        merging each change. The Redis version went up on the evening of 12 November 2026 (US Central), the room-per-group version the next morning.
       </p>
     </Essay>
   );

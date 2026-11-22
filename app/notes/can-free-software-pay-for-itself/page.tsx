@@ -83,7 +83,7 @@ export default function Page() {
 
       <h2>Where I might be wrong</h2>
       <ul>
-        <li>$390 from friendly businesses in a launch month is not a trend. I&apos;d want a year of it before saying this works.</li>
+        <li>$390 in under two months, mostly from people I know, is not a trend. I&apos;d want a year of it before saying this works.</li>
         <li>Creators earn on Patreon because they keep showing up with something new. A finished app that never changes may be easy to forget to support.</li>
         <li>&ldquo;Left alone&rdquo; is a goal, not a promise. Browsers, hosts and security problems all move, whether I do or not.</li>
       </ul>
