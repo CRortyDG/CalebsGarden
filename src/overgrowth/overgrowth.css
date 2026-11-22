@@ -476,3 +476,38 @@ html:not(.js) .og-flower {
   transform: none;
   opacity: 1;
 }
+
+/* the vines as a band across the top of a case study or a note (VineBand) */
+html:has(.og-band) body {
+  /* the band is full width; 100vw counts a desktop scrollbar, so clip that sliver */
+  overflow-x: clip;
+}
+.og-band {
+  position: relative;
+  /* full width out of the page's column, with the content kept in it */
+  margin: -72px calc(50% - 50vw) 0;
+  padding: 72px calc(50vw - 50%) 48px;
+}
+.og-band canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  /* the vines thin out into the page below instead of ending in a line */
+  -webkit-mask-image: linear-gradient(to bottom, #000 60%, transparent 98%);
+  mask-image: linear-gradient(to bottom, #000 60%, transparent 98%);
+}
+.og-band > :not(canvas) {
+  position: relative;
+  z-index: 1;
+}
+/* the vines grow on behind the header; a soft halo of night keeps it crisp */
+.og-band h1,
+.og-band .cs-kicker,
+.og-band .cs-dek,
+.og-band .back {
+  text-shadow:
+    0 0 2px var(--night),
+    0 0 8px var(--night);
+}
