@@ -5,7 +5,7 @@ import { MADTOWN_EVENTS } from '@/madtown-events';
 import { getMadtownTimeline, type TimelineDay } from '@/madtown-timeline';
 import Timeline from '@/timeline/Timeline';
 
-export const revalidate = 43200; // madtown's numbers are read at most twice a day
+export const revalidate = 900; // rebuilt every 15 minutes, but the fetch below keeps a good answer for 12 hours, so madtown is still asked at most twice a day; a failed read (not cached) is retried on the next rebuild
 
 const description =
   'Every day of madtown.today since launch, as an animated timeline you can play, pause and scrub: visitors, where new people came from, who came back, and the posts and features behind each change.';
@@ -97,7 +97,7 @@ export default async function MadtownNumbers() {
           </p>
         </>
       ) : (
-        <p>madtown.today&apos;s numbers couldn&apos;t be read just now. They come back on the next refresh, within a few hours.</p>
+        <p>madtown.today&apos;s numbers couldn&apos;t be read just now. The page tries again every 15 minutes.</p>
       )}
     </main>
   );

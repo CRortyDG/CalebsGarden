@@ -52,7 +52,7 @@ function valid(x: unknown): x is MadtownTimeline {
 
 export async function getMadtownTimeline(): Promise<MadtownTimeline | null> {
   try {
-    const res = await fetch(MADTOWN_TIMELINE_URL, { next: { revalidate: REVALIDATE_SECONDS }, signal: AbortSignal.timeout(8000) });
+    const res = await fetch(MADTOWN_TIMELINE_URL, { next: { revalidate: REVALIDATE_SECONDS }, signal: AbortSignal.timeout(15000) });
     if (!res.ok) return null;
     const body: unknown = await res.json();
     if (!valid(body)) return null;
