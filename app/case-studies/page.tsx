@@ -6,7 +6,6 @@ export const metadata: Metadata = {
   description: 'Engineering write-ups on how each project in the garden was built.',
 };
 
-// Placeholder until the first case study lands at /case-studies/candlefair.
 export default function CaseStudies() {
   return (
     <main className="plain">
@@ -16,9 +15,11 @@ export default function CaseStudies() {
       <h1>Case studies</h1>
       <ul className="project-list">
         <li>
-          <span className="name">Candlefair</span>
-          <span className="blurb">being written</span>
-          <p>How Candlefair, a companion for D&amp;D at the table, was built.</p>
+          <Link className="name" href="/case-studies/candlefair">
+            The story behind Candlefair
+          </Link>
+          <span className="blurb">draft</span>
+          <p>How a companion for D&amp;D at the table went from one game on Redis to a room per campaign on Cloudflare.</p>
         </li>
       </ul>
     </main>
