@@ -6,6 +6,13 @@ export type Post = { slug: string; title: string; date: string; summary: string 
 // day; pages under /notes re-check every hour, so it appears within an hour of midnight.
 export const allPosts: Post[] = [
   {
+    slug: 'what-madtown-today-actually-costs',
+    title: 'What madtown.today actually costs, and the plan to cut it',
+    date: '2026-11-22',
+    summary:
+      'I thought madtown.today’s bill was a heartbeat. Most of it was a monitoring add-on and a tab that asks the server for news every 4 seconds. The plan: move the live parts to a Cloudflare Durable Object, then the site, and take the bill from about $50 a month to about $5.',
+  },
+  {
     slug: 'why-i-dont-put-ai-in-my-apps',
     title: 'Why I don’t put AI in my apps',
     date: '2026-11-21',
