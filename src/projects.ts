@@ -62,8 +62,8 @@ export const projects: Project[] = [
     ],
     status: 'budding',
     type: 'project',
-    href: 'https://dungeon.garden',
-    hostLabel: 'dungeon.garden',
+    href: 'https://dnd.calebs.garden',
+    hostLabel: 'dnd.calebs.garden',
     image: {
       src: '/projects/candlefair.png',
       alt: 'Candlefair: D&D at the table, with a TV map, a phone and a candle',
