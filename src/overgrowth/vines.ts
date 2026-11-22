@@ -58,11 +58,19 @@ export function growVines(hero: HTMLElement): { stop: () => void; regrow: () => 
     ctx!.setTransform(dpr, 0, 0, dpr, 0, 0);
     ctx!.clearRect(0, 0, w, h);
 
+    // On a phone the text fills the width and the hero runs past the first
+    // screen, so vines from the hero's foot would grow out of sight. There
+    // they keep out of each line of text rather than the whole block (so they
+    // can reach into the ragged ends of lines) and start on the first screen.
+    const phone = matchMedia('(max-width: 760px)').matches;
+    const pad = phone ? 12 : 26;
+    const boxOf = (r: DOMRect) => ({ x: r.left - box.left - pad, y: r.top - box.top - pad, w: r.width + pad * 2, h: r.height + pad * 2 });
     // text and buds the vines must stay away from
-    keepOut = [...hero.querySelectorAll('h1, .og-tagline, .og-ledger, .og-buds, .og-mark')].map((el) => {
-      const r = el.getBoundingClientRect();
-      const pad = 26;
-      return { x: r.left - box.left - pad, y: r.top - box.top - pad, w: r.width + pad * 2, h: r.height + pad * 2 };
+    keepOut = [...hero.querySelectorAll('h1, .og-tagline, .og-ledger, .og-ledger-note, .og-buds, .og-mark')].flatMap((el) => {
+      if (!phone || el.matches('.og-buds, .og-mark')) return [boxOf(el.getBoundingClientRect())];
+      const range = document.createRange();
+      range.selectNodeContents(el);
+      return [...range.getClientRects()].filter((r) => r.width > 0).map(boxOf);
     });
 
     const thick = Math.max(2.5, Math.min(5, w * 0.004));
@@ -70,6 +78,20 @@ export function growVines(hero: HTMLElement): { stop: () => void; regrow: () => 
     const seed = (x: number, y: number, a: number) =>
       agents.push({ x, y, a, home: a, width: thick * (0.7 + R() * 0.6), life: 200 + R() * 220 });
     const up = -Math.PI / 2;
+    if (phone) {
+      // the first screen's foot, where the buds begin, or the hero's if shorter
+      const foot = Math.min(h, window.innerHeight - box.top);
+      const top = keepOut.length ? Math.min(...keepOut.map((k) => k.y)) : 0;
+      // up the left margin from the foot of the first screen, and up the right edge
+      seed(w * 0.06, foot + 4, up + 0.12 + (R() - 0.5) * 0.2);
+      seed(w + 4, foot * (0.6 + R() * 0.15), Math.PI + 0.5 + (R() - 0.5) * 0.3);
+      // down from the top corners, under the site name and the buttons
+      seed(-4, top + 70 + R() * 30, 0.35 + (R() - 0.5) * 0.3);
+      seed(w + 4, top + 80 + R() * 40, Math.PI - 0.3 + (R() - 0.5) * 0.3);
+      // and in from the right beside the headline's ragged lines
+      seed(w + 4, foot * (0.3 + R() * 0.1), Math.PI + (R() - 0.5) * 0.4);
+      return;
+    }
     // from the ground, at the edges
     for (const fx of [0.03, 0.12, 0.88, 0.97]) seed(fx * w, h + 4, up + (fx < 0.5 ? 0.25 : -0.25) + (R() - 0.5) * 0.4);
     // creeping in from the sides and the top corners
