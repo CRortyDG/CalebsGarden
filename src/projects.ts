@@ -48,8 +48,15 @@ export const site = {
     "I'm Caleb. I make small, free software that people actually want to use, like a daily homepage for Madison and a companion for D&D night. No ads, no paywalls.",
   /** A few sentences about you. Not shown anywhere yet. */
   about: '',
-  /** Ways to reach you, shown among the roots in the footer. */
+  /** Ways to reach you, shown among the roots in the footer and on /experience. */
   links: [] as { label: string; href: string }[],
+  /**
+   * One or two sentences on the kind of role you want next, shown at the top of
+   * /experience. Hidden while empty. Only Caleb fills this in.
+   */
+  lookingFor: '',
+  /** Public code. */
+  github: 'https://github.com/CRortyDG',
 };
 
 export const projects: Project[] = [
@@ -135,42 +142,107 @@ export const projects: Project[] = [
 export const about =
   "Before the garden, I spent years on the parts of the internet people don't see. I aimed point-to-point radios on downtown Madison rooftops for a local ISP and data center, ran hosting for an agency with 150+ client sites, and was the sole developer behind the web side of a regional radio network. Today I'm an infrastructure engineer running Kubernetes and Terraform for a living, which is exactly why I keep these projects small: I know what scale costs, and most community software doesn't need it.";
 
-/** Where Caleb has worked, newest first. */
+/** Where Caleb has worked, newest first. The short fields feed Roots; the rest feed /experience. */
 export interface Job {
+  id: string;
   role: string;
   org: string;
   /** e.g. '2025 – now' */
   when: string;
   /** One short line on the work. */
   what: string;
+  /** Full dates, e.g. 'Jun 2025 – now'. */
+  dates: string;
+  /** e.g. 'Full-time · Remote' */
+  kind: string;
+  /** What the job was, in a sentence or two. */
+  scope: string;
+  /** What Caleb personally owned. */
+  owned: string[];
+  /** Systems and tools run day to day. */
+  systems: string[];
+  /** Measured results. Only real ones, supplied by Caleb; hidden while empty. */
+  outcomes?: string[];
 }
 
 export const experience: Job[] = [
   {
+    id: 'n3xt',
     role: 'Infrastructure Engineer',
     org: 'N3XT',
     when: '2025 – now',
     what: 'Cloud infrastructure on GCP with Kubernetes and Terraform; deployments, CI/CD and developer tooling.',
+    dates: 'Jun 2025 – now',
+    kind: 'Full-time · Remote',
+    scope: 'Infrastructure engineer at a blockchain-based banking startup.',
+    owned: [
+      'Building and maintaining the cloud infrastructure on GCP, with Kubernetes and Terraform',
+      'Deployments and the CI/CD pipelines for the organization',
+      'Developer tooling for the engineering team',
+    ],
+    systems: ['GCP', 'Kubernetes', 'Terraform', 'CI/CD'],
   },
   {
+    id: 'civic-media',
     role: 'Software Engineer',
     org: 'Civic Media',
     when: '2024 – 2025',
     what: 'Sole developer for a regional radio network: 25 Next.js apps and the GCP and Terraform under them.',
+    dates: 'Jan 2024 – Jun 2025',
+    kind: 'Full-time · Madison, WI · Remote',
+    scope: 'The only developer at a regional radio network, reporting directly to the CEO.',
+    owned: [
+      'Building and maintaining 25 Next.js applications for the network',
+      'All of the GCP and Terraform infrastructure under them, the CI/CD pipelines and production operations',
+      'Project intake, working with a designer, and guiding an external consultant',
+      'Explaining technical decisions and tradeoffs to non-technical people across the organization',
+    ],
+    systems: ['Next.js', 'JavaScript', 'GCP', 'Terraform', 'CI/CD'],
   },
   {
+    id: 'design-garden',
     role: 'Software Engineer',
     org: 'Design.Garden',
     when: '2021 – 2024',
     what: 'Full-stack developer and hosting operator for a web agency with 150+ client sites.',
+    dates: 'Jan 2021 – Jan 2024',
+    kind: 'Part-time Jan – Jun 2021, full-time from Aug 2021 · Madison, WI · Remote',
+    scope: 'Full-stack developer and hosting operator for a web agency managing 150+ client sites.',
+    owned: [
+      'Custom web applications beyond WordPress',
+      'The WHMCS hosting portal, end to end',
+      'Client communication from scoping through delivery',
+      'Training junior staff on WordPress site management, WHMCS and working with clients',
+    ],
+    systems: ['PHP', 'MySQL', 'WordPress', 'WHMCS', 'Web hosting'],
   },
   {
+    id: '5nines',
     role: 'IT Specialist',
     org: '5NINES',
     when: '2018 – 2020',
     what: 'Rooftop point-to-point radios, data center buildouts and network support for a regional ISP.',
+    dates: 'Jun 2018 – Dec 2020',
+    kind: 'Part-time · Madison, WI',
+    scope: 'Field operations, infrastructure and helpdesk for a regional ISP and data center provider.',
+    owned: [
+      'Installing and aiming point-to-point wireless radios on commercial rooftops in downtown Madison',
+      'Data center buildouts: switch rewiring and rack cabling',
+      'Triaging network infrastructure alerts and client support tickets',
+      'Equipment inventory',
+    ],
+    systems: ['Ubiquiti point-to-point wireless', 'Switching and cabling', 'Network monitoring', 'Helpdesk'],
   },
 ];
+
+/** Short quotes from people Caleb has worked with. Only real ones, with their permission; hidden while empty. */
+export interface Testimonial {
+  quote: string;
+  name: string;
+  /** Their role and where you worked together, e.g. 'Designer, Civic Media'. */
+  role: string;
+}
+export const testimonials: Testimonial[] = [];
 
 export const statusLabel: Record<Status, string> = {
   seedling: 'Seedling',

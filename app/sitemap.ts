@@ -9,6 +9,7 @@ const SITE = 'https://calebs.garden';
 export default function sitemap(): MetadataRoute.Sitemap {
   return [
     { url: `${SITE}/` },
+    { url: `${SITE}/experience` },
     { url: `${SITE}/case-studies` },
     ...pieces.map((p) => ({ url: `${SITE}${pieceUrl(p.slug)}` })),
     { url: `${SITE}/notes` },

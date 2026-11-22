@@ -150,7 +150,7 @@ export function Overgrowth({ projects, usage }: { projects: Project[]; usage?: U
             <a className="og-root-tip" href="/notes">
               Notes
             </a>
-            <a className="og-root-tip" href="#experience">
+            <a className="og-root-tip" href="/experience">
               Experience
             </a>
             <a className="og-root-tip" href="#top" onClick={(e) => (e.preventDefault(), window.scrollTo({ top: 0 }))}>
@@ -162,7 +162,7 @@ export function Overgrowth({ projects, usage }: { projects: Project[]; usage?: U
             <p className="og-jobs-about">{about}</p>
             <ol>
               {experience.map((j) => (
-                <li key={j.org + j.when} className="og-job">
+                <li key={j.id} className="og-job">
                   <span className="og-job-when">{j.when}</span>
                   <span className="og-job-role">{j.role}</span>
                   <span className="og-job-org">{j.org}</span>
@@ -170,6 +170,9 @@ export function Overgrowth({ projects, usage }: { projects: Project[]; usage?: U
                 </li>
               ))}
             </ol>
+            <p className="og-jobs-more">
+              <a href="/experience">The full story: what I owned at each job, and the receipts →</a>
+            </p>
           </section>
           <p>
             © {new Date().getFullYear()} Caleb · {site.name}
@@ -178,6 +181,7 @@ export function Overgrowth({ projects, usage }: { projects: Project[]; usage?: U
       </div>
 
       <nav className="chrome" aria-label="Site">
+        <a href="/experience">Experience</a>
         <button type="button" onClick={() => setIndexOpen(true)}>
           Index
         </button>
