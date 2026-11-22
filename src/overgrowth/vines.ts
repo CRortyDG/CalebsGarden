@@ -59,7 +59,7 @@ export function growVines(hero: HTMLElement): { stop: () => void; regrow: () => 
     ctx!.clearRect(0, 0, w, h);
 
     // text and buds the vines must stay away from
-    keepOut = [...hero.querySelectorAll('h1, .og-tagline, .og-buds, .og-mark')].map((el) => {
+    keepOut = [...hero.querySelectorAll('h1, .og-tagline, .og-ledger, .og-buds, .og-mark')].map((el) => {
       const r = el.getBoundingClientRect();
       const pad = 26;
       return { x: r.left - box.left - pad, y: r.top - box.top - pad, w: r.width + pad * 2, h: r.height + pad * 2 };

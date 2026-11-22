@@ -1,10 +1,13 @@
 import { statusLabel, type Project } from '@/projects';
+import type { ProjectUsage } from '@/usage';
+
+const fmt = (n: number) => n.toLocaleString('en-US');
 
 /**
  * What the site says about one project, in its card on the page. Buttons go
  * in this order: Visit, Read how it was built, Source.
  */
-export function ProjectDetails({ project, titleId }: { project: Project; titleId: string }) {
+export function ProjectDetails({ project, titleId, usage }: { project: Project; titleId: string; usage?: ProjectUsage }) {
   return (
     <>
       {project.image && (
@@ -23,6 +26,26 @@ export function ProjectDetails({ project, titleId }: { project: Project; titleId
         <h2 id={titleId}>{project.name}</h2>
         {project.blurb && <p className="sheet-blurb">{project.blurb}</p>}
         {project.about && <p className="sheet-about">{project.about}</p>}
+        {usage && (
+          <dl className="sheet-stats">
+            {usage.perDay !== null && (
+              <div>
+                <dt>People a day</dt>
+                <dd>{fmt(usage.perDay)}</dd>
+              </div>
+            )}
+            {usage.sinceLaunch !== null && (
+              <div>
+                <dt>Since launch</dt>
+                <dd>{fmt(usage.sinceLaunch)}</dd>
+              </div>
+            )}
+            <div>
+              <dt>Costs a month</dt>
+              <dd>${fmt(usage.monthlyUsd)}</dd>
+            </div>
+          </dl>
+        )}
         {project.highlights && project.highlights.length > 0 && (
           <ul className="sheet-highlights" aria-label="What's there">
             {project.highlights.map((h) => (

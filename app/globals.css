@@ -347,3 +347,26 @@ button {
   background: #8dbb62;
   transform: rotate(-20deg);
 }
+.sheet-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 28px;
+  margin: 2px 0;
+  padding: 12px 0;
+  border-block: 1px solid var(--sheet-line);
+}
+.sheet-stats div {
+  display: flex;
+  flex-direction: column-reverse;
+}
+.sheet-stats dt {
+  font: 500 0.66rem var(--mono);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--sheet-muted);
+}
+.sheet-stats dd {
+  margin: 0;
+  font: 800 1.5rem/1.1 var(--display);
+  letter-spacing: -0.01em;
+}
