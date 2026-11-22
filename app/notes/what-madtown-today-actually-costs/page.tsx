@@ -154,6 +154,30 @@ export default function Page() {
         {fmt((22 * 3600 * 1000) / INVOCATIONS)} ms per call, so I&apos;m planning on paying it.
       </p>
 
+      <h2>How many people the free plan would carry</h2>
+      <p>
+        A rough guess, until there are real numbers to check it against. Once the 4-second polling is gone, a visit is mostly loading the page, starting and
+        finishing a few puzzles, voting on the day&apos;s question and staying connected to the room. I count that as about 20 to 50 requests a person a day
+        that reach a Worker. Static files like scripts, fonts and images don&apos;t count, because Cloudflare serves those for free.
+      </p>
+      <ul>
+        <li>
+          <strong>Requests:</strong> the free plan allows 100,000 a day, so that&apos;s roughly <strong>2,000 to 5,000 people a day</strong>. The room
+          barely adds to it: being connected is one request, and only one in every 20 messages from browsers is billed.
+        </li>
+        <li>
+          <strong>CPU is the real limit:</strong> a free Worker gets 10 ms per request, and a server-rendered page takes longer than that today. The free plan
+          would hold the room on its own, but not the whole site, unless the pages get a lot lighter.
+        </li>
+        <li>
+          <strong>On the $5 plan:</strong> 10 million requests a month is about 330,000 a day, so around 6,000 to 15,000 people a day before any extra cost.
+        </li>
+      </ul>
+      <p>
+        Today&apos;s traffic is about {fmt(VISITORS_A_DAY)} a day, so either plan has plenty of headroom. I&apos;ll replace these guesses with the real request
+        counts after the move.
+      </p>
+
       <h2>What stays the same</h2>
       <p>
         Nobody should notice any of this. The puzzles, the streaks and the Who&apos;s here room work the same way. Streaks live in each person&apos;s browser, so a
