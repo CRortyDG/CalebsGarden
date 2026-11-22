@@ -4,6 +4,13 @@ export type Post = { slug: string; title: string; date: string; summary: string 
 // Newest first. date is the US Central date it was published (YYYY-MM-DD).
 export const posts: Post[] = [
   {
+    slug: 'why-i-dont-put-ai-in-my-apps',
+    title: 'Why I don’t put AI in my apps',
+    date: '2026-11-22',
+    summary:
+      'I use AI for almost everything I build, and neither of my apps has a chatbot. People using them don’t want one. The AI stays behind the scenes, or comes in from outside through MCP, when someone chooses to bring their own.',
+  },
+  {
     slug: 'local-radio-for-third-spaces',
     title: 'Local radio for third spaces, for about $5 a month',
     date: '2026-11-21',
