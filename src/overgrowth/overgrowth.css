@@ -121,6 +121,11 @@ html:has(.og) {
   font: 400 0.74rem var(--mono);
   color: #8fa283;
 }
+.og-ledger-note a {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
 .og-ledger b {
   font-weight: 600;
   color: #e9f0df;

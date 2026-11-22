@@ -50,7 +50,8 @@ export function ProjectDetails({ project, titleId, usage }: { project: Project; 
         {usage?.capacityPerDay && (
           <p className="sheet-stats-note">
             At today&apos;s usage, that ${fmt(usage.monthlyUsd)} plan carries about{' '}
-            {fmt(usage.capacityPerDay)} people a day before it needs an upgrade.
+            {fmt(usage.capacityPerDay)} people a day before it needs an upgrade.{' '}
+            <a href="/notes/what-madtown-today-actually-costs">Read the migration plan</a>.
           </p>
         )}
         {project.highlights && project.highlights.length > 0 && (
