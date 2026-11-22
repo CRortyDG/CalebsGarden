@@ -1,6 +1,7 @@
 import { Code } from '../_shared/Code';
 import { AfterDiagram, BeforeDiagram, NamespaceDiagram } from '../_shared/Diagrams';
 import { Essay, essayMetadata, Src } from '../_shared/Essay';
+import MadtownLedger from '../_shared/MadtownLedger';
 import RoomsDemo from '../_shared/RoomsDemo';
 import SyncDemo from '../_shared/SyncDemo';
 
@@ -10,6 +11,9 @@ const dek =
 
 export const metadata = essayMetadata(SLUG, dek);
 const IMG = '/case-studies/candlefair';
+
+// madtown.today's live counts (MadtownLedger) are fetched at most twice a day.
+export const revalidate = 43200;
 
 export default function Page() {
   return (
@@ -201,6 +205,10 @@ async publish(_game: string, _version: number) {
         The rest leans on free things used gently. The weather comes from Open-Meteo, free for non-commercial use, fetched at most once every 10 minutes for
         everyone, and your game history stays in your own browser, which costs nothing.
       </p>
+      <p>
+        Put together, here is the whole bill. madtown.today publishes its own counts, so the numbers beside it are real:
+      </p>
+      <MadtownLedger />
 
       <h2>The prices, as published</h2>
       <p>Checked on 21 November 2026. They&apos;ll change.</p>

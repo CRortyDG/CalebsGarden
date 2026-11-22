@@ -1,5 +1,5 @@
 // The radio note's maths, shared by the page and its calculator so they can't drift apart.
-// Prices: Akamai shared CPU pricing, Nanode 1 GB, checked 22 November 2026.
+// Prices: Akamai shared CPU pricing, Nanode 1 GB, last checked 21 November 2026 (US Central).
 export const SERVER_USD = 5;
 export const INCLUDED_GB = 1000; // 1 TB of outgoing transfer a month included
 export const OVERAGE_PER_GB = 0.005;
