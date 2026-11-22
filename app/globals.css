@@ -355,6 +355,12 @@ button {
   padding: 12px 0;
   border-block: 1px solid var(--sheet-line);
 }
+.sheet-stats-note {
+  margin: -2px 0 2px;
+  font-size: 0.8rem;
+  line-height: 1.45;
+  color: var(--sheet-muted);
+}
 .sheet-stats div {
   display: flex;
   flex-direction: column-reverse;
