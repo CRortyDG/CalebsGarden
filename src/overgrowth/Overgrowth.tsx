@@ -83,9 +83,14 @@ export function Overgrowth({ projects, usage }: { projects: Project[]; usage?: U
             </p>
           )}
           {usage?.projects[0]?.costNote && <p className="og-ledger-note">{usage.projects[0].costNote}</p>}
-          {usage?.projects[0]?.capacityPerDay && (
+          {usage?.projects[0]?.costNote && (
             <p className="og-ledger-note">
-              At today&apos;s usage, that ${fmt(usage.monthlyUsd)} plan carries about {fmt(usage.projects[0].capacityPerDay)} people a day before it needs an upgrade.{' '}
+              {usage.projects[0].capacityPerDay ? (
+                <>
+                  At today&apos;s usage, that ${fmt(usage.monthlyUsd)} plan carries about {fmt(usage.projects[0].capacityPerDay)} people a day before it needs
+                  an upgrade.{' '}
+                </>
+              ) : null}
               Does it need to cost this much? No. <a href="/notes/what-madtown-today-actually-costs">Here’s my plan to cut it</a>.
             </p>
           )}
