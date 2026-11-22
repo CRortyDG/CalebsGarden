@@ -49,12 +49,13 @@ export const site = {
   /** A few sentences about you. Not shown anywhere yet. */
   about: '',
   /** Ways to reach you, shown among the roots in the footer and on /experience. */
-  links: [] as { label: string; href: string }[],
+  links: [{ label: 'Email', href: 'mailto:caleb@madtown.today' }] as { label: string; href: string }[],
   /**
    * One or two sentences on the kind of role you want next, shown at the top of
    * /experience. Hidden while empty. Only Caleb fills this in.
    */
-  lookingFor: '',
+  lookingFor:
+    "I'm looking for full-stack work again. I miss making products, which is why I made madtown.today and Candlefair. If you're building something people use and want someone who can take it from the screen down to the servers, I'd like to hear from you.",
   /** Public code. */
   github: 'https://github.com/CRortyDG',
 };
