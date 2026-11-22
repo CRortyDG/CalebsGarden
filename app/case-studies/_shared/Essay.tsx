@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import './case-study.css';
 import { pieces, pieceUrl, SERIES_NAME } from './series';
+import { VineBand } from '@/overgrowth/VineBand';
 
 const SITE = 'https://calebs.garden';
 
@@ -50,16 +51,18 @@ export function Essay({
   return (
     <main className="cs cs-essay">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
-      <p className="back">
-        <Link href="/case-studies">← {SERIES_NAME}</Link>
-      </p>
-      <header className="cs-head">
-        <p className="cs-kicker">
-          {SERIES_NAME} · {i + 1} of {pieces.length}
+      <VineBand>
+        <p className="back">
+          <Link href="/case-studies">← {SERIES_NAME}</Link>
         </p>
-        <h1>{p.title}</h1>
-        <p className="cs-dek">{dek}</p>
-      </header>
+        <header className="cs-head">
+          <p className="cs-kicker">
+            {SERIES_NAME} · {i + 1} of {pieces.length}
+          </p>
+          <h1>{p.title}</h1>
+          <p className="cs-dek">{dek}</p>
+        </header>
+      </VineBand>
       <aside className="cs-short" aria-label="In short">
         <p className="cs-short-label">In short</p>
         {inShort}

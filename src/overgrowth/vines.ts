@@ -3,6 +3,10 @@
 // clear of the text and the buds (on a phone they grow on behind the text,
 // faded, since there is no room around it). Clicking bare ground plants a new sprout, and
 // regrow() clears them and grows a fresh set.
+//
+// kind 'band' is the same vines as a calling card across the top of an inner
+// page (a case study or a note): they grow in from the edges and on behind the
+// page's header text, faint where they cross it, at every width.
 
 const TAU = Math.PI * 2;
 
@@ -21,7 +25,7 @@ interface Box {
   h: number;
 }
 
-export function growVines(hero: HTMLElement): { stop: () => void; regrow: () => void } {
+export function growVines(hero: HTMLElement, kind: 'hero' | 'band' = 'hero'): { stop: () => void; regrow: () => void } {
   const canvas = hero.querySelector('canvas');
   const ctx = canvas?.getContext('2d');
   if (!canvas || !ctx) return { stop: () => {}, regrow: () => {} };
@@ -67,13 +71,16 @@ export function growVines(hero: HTMLElement): { stop: () => void; regrow: () => 
     // they start on the first screen and grow right through, behind each line
     // of text, drawn faint where they cross it so the words stay easy to read.
     const phone = matchMedia('(max-width: 760px)').matches;
+    const band = kind === 'band';
     const boxOf = (r: DOMRect, pad: number) => ({ x: r.left - box.left - pad, y: r.top - box.top - pad, w: r.width + pad * 2, h: r.height + pad * 2 });
-    const text = 'h1, .og-tagline, .og-ledger, .og-ledger-note';
+    const text = band ? 'h1, .cs-kicker, .cs-dek, .back' : 'h1, .og-tagline, .og-ledger, .og-ledger-note';
     // text and buds the vines must stay away from
-    keepOut = [...hero.querySelectorAll(phone ? '.og-buds, .og-mark' : `${text}, .og-buds, .og-mark`)].map((el) =>
-      boxOf(el.getBoundingClientRect(), phone ? 12 : 26),
-    );
-    under = phone
+    keepOut = band
+      ? []
+      : [...hero.querySelectorAll(phone ? '.og-buds, .og-mark' : `${text}, .og-buds, .og-mark`)].map((el) =>
+          boxOf(el.getBoundingClientRect(), phone ? 12 : 26),
+        );
+    under = phone || band
       ? [...hero.querySelectorAll(text)].flatMap((el) => {
           const range = document.createRange();
           range.selectNodeContents(el);
@@ -86,12 +93,28 @@ export function growVines(hero: HTMLElement): { stop: () => void; regrow: () => 
     const seed = (x: number, y: number, a: number, life = 200 + R() * 220) =>
       agents.push({ x, y, a, home: a, width: thick * (0.7 + R() * 0.6), life });
     const up = -Math.PI / 2;
+    const jit = (n: number) => (R() - 0.5) * n;
+    if (band) {
+      // the header sits in a column in the middle; vines come in from both
+      // edges and the top corners, and a little way up from below the sides
+      const run = () => (phone ? 220 : 260) + R() * (phone ? 160 : 260);
+      seed(-4, h * (0.08 + R() * 0.12), 0.35 + jit(0.4), run());
+      seed(w + 4, h * (0.06 + R() * 0.12), Math.PI - 0.35 + jit(0.4), run());
+      seed(-4, h * (0.45 + R() * 0.2), -0.15 + jit(0.5), run());
+      seed(w + 4, h * (0.4 + R() * 0.2), Math.PI + 0.15 + jit(0.5), run());
+      if (!phone) {
+        seed(w * (0.04 + R() * 0.06), h + 4, up + 0.35 + jit(0.3), run());
+        seed(w * (0.9 + R() * 0.06), h + 4, up - 0.35 + jit(0.3), run());
+        seed(w * (0.2 + R() * 0.1), -4, Math.PI / 2 + jit(0.6));
+        seed(w * (0.7 + R() * 0.1), -4, Math.PI / 2 + jit(0.6));
+      }
+      return;
+    }
     if (phone) {
       // the first screen's foot, where the buds begin, or the hero's if shorter
       const foot = Math.min(h, window.innerHeight - box.top);
       const top = under.length ? Math.min(...under.map((k) => k.y)) : foot * 0.3;
       const long = () => 280 + R() * 200;
-      const jit = (n: number) => (R() - 0.5) * n;
       // up the left margin from the foot of the first screen, twice
       seed(w * 0.05, foot + 4, up + 0.1 + jit(0.2), long());
       // up from the bottom right corner, across the tagline

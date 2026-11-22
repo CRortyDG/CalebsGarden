@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import '../../case-studies/_shared/case-study.css';
 import { allPosts, formatDate, isDue, isLive, livePosts, postUrl } from './posts';
+import { VineBand } from '@/overgrowth/VineBand';
 
 const SITE = 'https://calebs.garden';
 
@@ -36,15 +37,17 @@ export function Note({ slug, kind, children }: { slug: string; kind: 'idea' | 'w
   return (
     <main className="cs cs-essay">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
-      <p className="back">
-        <Link href="/notes">← Notes</Link>
-      </p>
-      <header className="cs-head">
-        <p className="cs-kicker">
-          {isDue(p) ? '' : 'Scheduled for '}<time dateTime={p.date}>{formatDate(p.date)}</time> · {label}
+      <VineBand>
+        <p className="back">
+          <Link href="/notes">← Notes</Link>
         </p>
-        <h1>{p.title}</h1>
-      </header>
+        <header className="cs-head">
+          <p className="cs-kicker">
+            {isDue(p) ? '' : 'Scheduled for '}<time dateTime={p.date}>{formatDate(p.date)}</time> · {label}
+          </p>
+          <h1>{p.title}</h1>
+        </header>
+      </VineBand>
       <aside className="cs-short" aria-label="In short">
         <p className="cs-short-label">In short</p>
         <p>{p.summary}</p>

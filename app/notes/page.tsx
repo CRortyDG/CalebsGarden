@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import '../case-studies/_shared/case-study.css';
 import { formatDate, livePosts, postUrl } from './_parts/posts';
+import { VineBand } from '@/overgrowth/VineBand';
 
 export const revalidate = 3600; // hourly, so a scheduled note appears within the hour of its day
 
@@ -17,17 +18,19 @@ export const metadata: Metadata = {
 export default function Notes() {
   return (
     <main className="cs cs-essay">
-      <p className="back">
-        <Link href="/">← calebs.garden</Link>
-      </p>
-      <header className="cs-head">
-        <p className="cs-kicker">Notes</p>
-        <h1>Notes</h1>
-        <p className="cs-dek">
-          Shorter, dated posts: ideas I haven&apos;t built, opinions I might change, and maths I&apos;m working out. For finished work with the code behind it, see
-          the <Link href="/case-studies">case studies</Link>. There&apos;s an <a href="/notes/feed.xml">RSS feed</a>.
+      <VineBand>
+        <p className="back">
+          <Link href="/">← calebs.garden</Link>
         </p>
-      </header>
+        <header className="cs-head">
+          <p className="cs-kicker">Notes</p>
+          <h1>Notes</h1>
+          <p className="cs-dek">
+            Shorter, dated posts: ideas I haven&apos;t built, opinions I might change, and maths I&apos;m working out. For finished work with the code behind it, see
+            the <Link href="/case-studies">case studies</Link>. There&apos;s an <a href="/notes/feed.xml">RSS feed</a>.
+          </p>
+        </header>
+      </VineBand>
       <ol className="cs-index-list cs-notes-list">
         {livePosts().map((p) => (
           <li key={p.slug}>
