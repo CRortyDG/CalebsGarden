@@ -131,51 +131,23 @@ export const projects: Project[] = [
   },
 ];
 
-/** Where Caleb has worked, newest first. Shown in the soil at the bottom of the home page. */
+/** A few sentences on where Caleb comes from, shown above the job list in Roots. */
+export const about =
+  "Before the garden, I spent years on the parts of the internet people don't see. I aimed point-to-point radios on downtown Madison rooftops for a local ISP and data center, ran hosting for an agency with 150+ client sites, and was the sole developer behind the web side of a regional radio network. Today I'm an infrastructure engineer running Kubernetes and Terraform for a living, which is exactly why I keep these projects small: I know what scale costs, and most community software doesn't need it.";
+
+/** Where Caleb has worked, newest first. */
 export interface Job {
   role: string;
   org: string;
   /** e.g. '2025 – now' */
   when: string;
-  where: string;
-  /** One or two sentences. */
-  what: string;
-  tags: string[];
 }
 
 export const experience: Job[] = [
-  {
-    role: 'Infrastructure Engineer',
-    org: 'N3XT',
-    when: '2025 – now',
-    where: 'Remote',
-    what: 'Cloud infrastructure for a blockchain-based banking startup. I build and run it on GCP with Kubernetes and Terraform, and own deployments, CI/CD and developer tooling.',
-    tags: ['GCP', 'Kubernetes', 'Terraform', 'CI/CD'],
-  },
-  {
-    role: 'Software Engineer',
-    org: 'Civic Media',
-    when: '2024 – 2025',
-    where: 'Madison, WI · Remote',
-    what: "Sole developer for a regional radio network, reporting to the CEO. I built and ran 25 Next.js apps and all of the GCP and Terraform infrastructure under them, managed project intake and worked with a designer and an outside consultant.",
-    tags: ['Next.js', 'GCP', 'Terraform', 'CI/CD'],
-  },
-  {
-    role: 'Software Engineer',
-    org: 'Design.Garden',
-    when: '2021 – 2024',
-    where: 'Madison, WI · Remote',
-    what: 'Full-stack developer and hosting operator for a web agency with 150+ client sites. Custom web apps beyond WordPress, the WHMCS hosting portal end to end, client work from scoping to delivery, and training junior staff.',
-    tags: ['PHP', 'MySQL', 'WordPress', 'WHMCS'],
-  },
-  {
-    role: 'IT Specialist',
-    org: '5NINES',
-    when: '2018 – 2020',
-    where: 'Madison, WI',
-    what: 'A regional ISP and data center. I aimed point-to-point wireless radios on downtown Madison rooftops, helped build out the data center, and worked network alerts and the helpdesk.',
-    tags: ['Networking', 'Ubiquiti', 'Data center'],
-  },
+  { role: 'Infrastructure Engineer', org: 'N3XT', when: '2025 – now' },
+  { role: 'Software Engineer', org: 'Civic Media', when: '2024 – 2025' },
+  { role: 'Software Engineer', org: 'Design.Garden', when: '2021 – 2024' },
+  { role: 'IT Specialist', org: '5NINES', when: '2018 – 2020' },
 ];
 
 export const statusLabel: Record<Status, string> = {

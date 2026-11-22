@@ -2,7 +2,7 @@
 
 import './overgrowth.css';
 import { useEffect, useRef, useState } from 'react';
-import { experience, site, type Project } from '@/projects';
+import { about, experience, site, type Project } from '@/projects';
 import { ProjectDetails } from '@/site/ProjectDetails';
 import { ProjectList } from '@/site/ProjectList';
 import { Flower } from './Flower';
@@ -139,21 +139,13 @@ export function Overgrowth({ projects }: { projects: Project[] }) {
           </nav>
           <section id="experience" className="og-jobs" aria-labelledby="og-jobs-title">
             <h2 id="og-jobs-title">Roots</h2>
-            <p className="og-jobs-sub">Where I learned to build and run things.</p>
+            <p className="og-jobs-about">{about}</p>
             <ol>
               {experience.map((j) => (
                 <li key={j.org + j.when} className="og-job">
-                  <p className="og-job-when">{j.when}</p>
-                  <h3>
-                    {j.role} <span>· {j.org}</span>
-                  </h3>
-                  <p className="og-job-where">{j.where}</p>
-                  <p className="og-job-what">{j.what}</p>
-                  <ul aria-label="Tools">
-                    {j.tags.map((t) => (
-                      <li key={t}>{t}</li>
-                    ))}
-                  </ul>
+                  <span className="og-job-when">{j.when}</span>
+                  <span className="og-job-role">{j.role}</span>
+                  <span className="og-job-org">{j.org}</span>
                 </li>
               ))}
             </ol>
