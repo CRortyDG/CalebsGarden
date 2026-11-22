@@ -8,7 +8,7 @@ import { experience, site, testimonials } from '@/projects';
 export const revalidate = 3600; // the links to notes appear once those notes are out
 
 const description =
-  'Caleb’s experience: infrastructure at a banking startup, sole developer for a radio network’s 25 Next.js apps, hosting for 150+ client sites, rooftop radios for an ISP. Plus the receipts from the two apps he runs: tests, CI, a written threat model, deploys, backups and real incidents.';
+  'Caleb’s experience: infrastructure at a banking startup, sole developer for a statewide radio network’s 25 Next.js apps, hosting for 150+ client sites, rooftop radios for an ISP. Plus the receipts from the two apps he runs: tests, CI, a written threat model, deploys, backups and real incidents.';
 
 export const metadata: Metadata = {
   title: 'Experience',
@@ -38,9 +38,9 @@ export default function Experience() {
         <p className="cs-kicker">Experience</p>
         <h1>Systems I&apos;ve kept running</h1>
         <p className="cs-dek">
-          Eight years on the parts of the internet people don&apos;t see: rooftop radios for an ISP, hosting for an agency, the whole web stack of a radio
-          network, and now a banking startup&apos;s cloud. Below is what each job was and what I personally owned, then the receipts from the two apps I run
-          myself.
+          Eight years, mostly one arc: field and data center work at a Madison tech company, then its web team when that spun out on its own, then one of
+          our clients, a statewide radio network, hiring me as its only developer. Now I run a banking startup&apos;s cloud. Below is what each job was and
+          what I owned, then the receipts from the two apps I run myself.
         </p>
         {site.lookingFor && (
           <p className="xp-looking">

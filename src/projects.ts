@@ -144,7 +144,7 @@ export const projects: Project[] = [
 
 /** A few sentences on where Caleb comes from, shown above the job list in Roots. */
 export const about =
-  "Before the garden, I spent years on the parts of the internet people don't see. I aimed point-to-point radios on downtown Madison rooftops for a local ISP and data center, ran hosting for an agency with 150+ client sites, and was the sole developer behind the web side of a regional radio network. Today I'm an infrastructure engineer running Kubernetes and Terraform for a living, which is exactly why I keep these projects small: I know what scale costs, and most community software doesn't need it.";
+  "My roots are one long job that kept changing shape. It started at 5NINES, a Madison tech company that did a bit of everything: internet service, a data center, managed IT and websites. I aimed point-to-point radios on downtown rooftops and cabled racks. When the web team spun out as Design.Garden in 2021, I went with it, building client websites and running hosting for 150+ of them. One of those clients was Civic Media, a statewide radio network, and when they hired me full time I became the only developer behind their 25 web apps. Then I moved into infrastructure at N3XT, running Kubernetes and Terraform, which taught me what scale really costs. What I miss is software made for a community I can see: local, small and built for a reason. That's what this garden is for.";
 
 /** Where Caleb has worked, newest first. The short fields feed Roots; the rest feed /experience. */
 export interface Job {
@@ -191,10 +191,10 @@ export const experience: Job[] = [
     role: 'Software Engineer',
     org: 'Civic Media',
     when: '2024 – 2025',
-    what: 'Sole developer for a regional radio network: 25 Next.js apps and the GCP and Terraform under them.',
+    what: 'Sole developer for a statewide radio network: 25 Next.js apps and the GCP and Terraform under them.',
     dates: 'Jan 2024 – Jun 2025',
     kind: 'Full-time · Madison, WI · Remote',
-    scope: 'The only developer at a regional radio network, reporting directly to the CEO.',
+    scope: 'The only developer at a statewide radio network, reporting directly to the CEO.',
     owned: [
       'Building and maintaining 25 Next.js applications for the network',
       'All of the GCP and Terraform infrastructure under them, the CI/CD pipelines and production operations',
@@ -208,10 +208,10 @@ export const experience: Job[] = [
     role: 'Software Engineer',
     org: 'Design.Garden',
     when: '2021 – 2024',
-    what: 'Full-stack developer and hosting operator for a web agency with 150+ client sites.',
+    what: 'Full-stack developer and hosting operator for the web team that spun out of 5NINES, with 150+ client sites.',
     dates: 'Jan 2021 – Jan 2024',
     kind: 'Part-time Jan – Jun 2021, full-time from Aug 2021 · Madison, WI · Remote',
-    scope: 'Full-stack developer and hosting operator for a web agency managing 150+ client sites.',
+    scope: 'Full-stack developer and hosting operator at the web team that spun out of 5NINES, managing 150+ client sites.',
     owned: [
       'Custom web applications beyond WordPress',
       'The WHMCS hosting portal, end to end',
@@ -225,10 +225,10 @@ export const experience: Job[] = [
     role: 'IT Specialist',
     org: '5NINES',
     when: '2018 – 2020',
-    what: 'Rooftop point-to-point radios, data center buildouts and network support for a regional ISP.',
+    what: 'Rooftop point-to-point radios, data center buildouts and network support for a Madison ISP and data center.',
     dates: 'Jun 2018 – Dec 2020',
     kind: 'Part-time · Madison, WI',
-    scope: 'Field operations, infrastructure and helpdesk for a regional ISP and data center provider.',
+    scope: 'Field operations, infrastructure and helpdesk at a Madison ISP, data center and managed IT company.',
     owned: [
       'Installing and aiming point-to-point wireless radios on commercial rooftops in downtown Madison',
       'Data center buildouts: switch rewiring and rack cabling',
