@@ -113,6 +113,15 @@ export const projects: Project[] = [
     href: '/case-studies/',
   },
   {
+    id: 'notes',
+    name: 'Notes',
+    blurb: 'ideas and things in progress',
+    about: 'Shorter, dated posts: ideas I haven’t built yet, the maths behind them, and opinions on how I build.',
+    status: 'seedling',
+    type: 'section',
+    href: '/notes',
+  },
+  {
     id: 'seedlings',
     name: 'Seedlings',
     blurb: 'planting soon',
