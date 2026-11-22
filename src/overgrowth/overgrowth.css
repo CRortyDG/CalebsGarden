@@ -114,6 +114,13 @@ html:has(.og) {
   font: 400 0.85rem var(--mono);
   color: #b8c9a8;
 }
+.og-ledger-note {
+  position: relative;
+  z-index: 1;
+  margin: -30px 0 36px;
+  font: 400 0.74rem var(--mono);
+  color: #8fa283;
+}
 .og-ledger b {
   font-weight: 600;
   color: #e9f0df;
@@ -211,28 +218,51 @@ html:has(.og) {
 .og-rows {
   position: relative;
   z-index: 1;
-  max-width: 1120px;
+  max-width: 1240px;
   margin: 0 auto;
   padding: 24px 24px 150px;
-  display: flex;
-  flex-direction: column;
-  gap: clamp(56px, 7vw, 96px);
+  /* projects in pairs, one each side of the stem */
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  column-gap: 120px;
+  row-gap: clamp(56px, 7vw, 96px);
 }
 .og-row {
   display: grid;
-  grid-template-columns: 150px minmax(0, 620px);
-  justify-content: center;
   align-items: start;
   scroll-margin-top: 90px;
 }
+.og-row.is-left {
+  grid-template-columns: minmax(0, 1fr) 64px;
+}
+.og-row.is-right {
+  grid-template-columns: 64px minmax(0, 1fr);
+}
 .og-card {
   grid-row: 1;
-  grid-column: 2;
   width: 100%;
+  max-width: 540px;
   background: var(--og-card);
   border: 1px solid var(--og-card-line);
   border-radius: 16px;
   overflow: hidden;
+}
+.og-row.is-left .og-card {
+  grid-column: 1;
+  justify-self: end;
+}
+.og-row.is-left .og-flower {
+  grid-column: 2;
+  margin-left: 18px;
+}
+.og-row.is-right .og-card {
+  grid-column: 2;
+}
+.og-row.is-right .og-flower {
+  grid-column: 1;
+  margin-left: -18px;
+  /* the right-hand flower of a pair sits a little lower, so the order still reads */
+  margin-top: 36px;
 }
 .og-card.is-small {
   width: min(100%, 460px);
@@ -247,13 +277,9 @@ html:has(.og) {
 }
 .og-flower {
   grid-row: 1;
-  grid-column: 1;
   width: 64px;
   height: 64px;
-  justify-self: end;
-  margin-right: 22px;
-  /* each flower sits a little lower than the last, so the order reads down the stem */
-  margin-top: calc(10px + min(var(--i, 0), 4) * 14px);
+  margin-top: 10px;
   transform: scale(0.2) rotate(-40deg);
   opacity: 0;
   transition: transform 0.7s cubic-bezier(0.2, 1.5, 0.4, 1) 0.3s, opacity 0.25s 0.3s;
@@ -387,18 +413,20 @@ html:has(.og) {
     min-width: 0;
   }
   .og-rows {
+    grid-template-columns: minmax(0, 1fr);
     padding: 8px 16px 110px 0;
     gap: 72px;
   }
-  .og-row {
+  .og-rows .og-row {
     grid-template-columns: 62px minmax(0, 1fr);
   }
-  .og-row .og-card {
+  .og-rows .og-row .og-card {
+    max-width: none;
     grid-column: 2;
     justify-self: stretch;
     width: 100%;
   }
-  .og-row .og-flower {
+  .og-rows .og-row .og-flower {
     grid-column: 1;
     justify-self: end;
     width: 36px;

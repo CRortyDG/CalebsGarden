@@ -70,8 +70,8 @@ export function growStem(root: HTMLElement): { stop: () => void; regrow: () => v
 
     const buds = [...root.querySelectorAll('.og-bud')].map(rel);
     const rowEls = [...root.querySelectorAll<HTMLElement>('.og-row')];
-    // the stem runs down the flower lane, just left of the flowers
-    const stemX = phone || !rowEls.length ? (phone ? 26 : W / 2) : rel(rowEls[0]).x + 40;
+    // down the middle, between the paired cards (on phones, down the left edge)
+    const stemX = phone ? 26 : W / 2;
     const ground = root.querySelector('.og-ground');
     const tips = [...root.querySelectorAll('.og-root-tip')].map(rel);
     if (!buds.length || !ground) return;

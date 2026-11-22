@@ -82,6 +82,11 @@ export function Overgrowth({ projects, usage }: { projects: Project[]; usage?: U
               <b>${fmt(usage.monthlyUsd)}</b> a month to run it all
             </p>
           )}
+          {usage?.projects[0]?.capacityPerDay && (
+            <p className="og-ledger-note">
+              Mostly fixed costs: the same ${fmt(usage.monthlyUsd)} would carry about {fmt(usage.projects[0].capacityPerDay)} people a day.
+            </p>
+          )}
           <nav className="og-buds" aria-label="Projects">
             {projects.map(
               (p) =>
@@ -103,7 +108,7 @@ export function Overgrowth({ projects, usage }: { projects: Project[]; usage?: U
             <section
               key={p.id}
               id={p.id}
-              className="og-row"
+              className={`og-row ${i % 2 ? 'is-right' : 'is-left'}`}
               style={{ '--i': i } as React.CSSProperties}
               aria-labelledby={`og-${p.id}`}
             >
