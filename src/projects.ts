@@ -101,8 +101,8 @@ export const projects: Project[] = [
   {
     id: 'case-studies',
     name: 'Case studies',
-    blurb: 'how they were built',
-    about: 'Engineering write-ups: the decisions, the dead ends and the architecture behind each project.',
+    blurb: 'small software, in four parts',
+    about: 'Small software: why I build free, accountless tools for one city or one group, and how madtown.today and Candlefair do it.',
     status: 'seedling',
     type: 'section',
     href: '/case-studies/',
