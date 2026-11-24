@@ -13,6 +13,14 @@ export const kindLabel: Record<Kind, string> = { idea: 'An idea, not built', wor
 // day; pages under /notes re-check every hour, so it appears within an hour of midnight.
 export const allPosts: Post[] = [
   {
+    slug: 'none-of-this-is-new',
+    title: 'None of this is new',
+    date: '2026-11-24',
+    kind: 'note',
+    summary:
+      'Software sized to one group, cheap and without accounts, isn’t my idea. Clay Shirky called it situated software in 2004, Robin Sloan called an app a home-cooked meal, and the local-first and small web people are building it now. What I can add is two running apps and their receipts.',
+  },
+  {
     slug: 'one-person-fifty-apps',
     title: 'Can one person look after fifty community apps?',
     date: '2026-12-11',

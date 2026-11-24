@@ -47,7 +47,8 @@ export default function Page() {
         <a href="https://shirky.com/essays/situated-software/">situated software</a> back in 2004: software &ldquo;designed in and for a particular social
         situation or context,&rdquo; that leans on the group using it instead of trying to work for everyone. Robin Sloan made an app for his family alone and
         called it <a href="https://www.robinsloan.com/notes/home-cooked-app/">a home-cooked meal</a>. What&apos;s changed is how cheap it&apos;s become to run
-        one, and what you do when a second community wants it too.
+        one, and what you do when a second community wants it too. More on who came first in{' '}
+        <Link href="/notes/none-of-this-is-new">None of this is new</Link>.
       </p>
       <p>I might be wrong about how far this goes. But I&apos;ve built two things this way, and they hold up.</p>
 

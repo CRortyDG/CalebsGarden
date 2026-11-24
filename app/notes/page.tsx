@@ -30,8 +30,8 @@ export default function Notes() {
             the <Link href="/case-studies">case studies</Link>. There&apos;s an <a href="/notes/feed.xml">RSS feed</a>.
           </p>
           <p className="cs-dek">
-            Most of these are ideas I&apos;ve been carrying around for a while. The first four went up together on 21 November 2026, and the rest come out one at
-            a time. Each one is dated the day it was posted, and anything I haven&apos;t built says so.
+            Most of these are ideas I&apos;ve been carrying around for a while, and few of them are new (<Link href="/notes/none-of-this-is-new">here&apos;s who
+            said them first</Link>). The first four went up together on 21 November 2026, and the rest come out one at a time. Each one is dated the day it was posted, and anything I haven&apos;t built says so.
           </p>
         </header>
       </VineBand>
