@@ -7,7 +7,7 @@ export const revalidate = 3600; // a scheduled note goes live within the hour of
 
 export default function Page() {
   return (
-    <Note slug={SLUG} kind="idea">
+    <Note slug={SLUG}>
       <p>
         I haven&apos;t built this, and I might be wrong about parts of it. But it&apos;s the clearest example I have of something I keep coming back to: a lot of
         software is built for global scale when it would work better as many local copies.

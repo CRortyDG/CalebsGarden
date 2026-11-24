@@ -8,7 +8,7 @@ export const revalidate = 3600; // a scheduled note goes live within the hour of
 
 export default function Page() {
   return (
-    <Note slug={SLUG} kind="note">
+    <Note slug={SLUG}>
       <p>
         Candlefair runs every D&amp;D group in its own small Cloudflare room, which sleeps between moves and costs close to nothing while nobody is playing (the
         details are in <Link href="/case-studies/cheap-enough-to-give-away">Cheap enough to give away</Link>). The obvious next question is: how many groups can

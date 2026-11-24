@@ -34,7 +34,7 @@ export default function Page() {
     return { kbps, gb, cost: monthlyCost(gb), peak: (SHOPS * kbps) / 1000 };
   });
   return (
-    <Note slug={SLUG} kind="working">
+    <Note slug={SLUG}>
       <p>
         Third spaces are the places that aren&apos;t home or work: coffee shops, record stores, bars, bookshops. Many of them play music all day, usually from a
         streaming service, and I&apos;d guess very little of it comes from the town they&apos;re in. The idea is giggly radio: a free stream made for those places, of music by

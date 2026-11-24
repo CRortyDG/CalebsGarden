@@ -34,7 +34,7 @@ const fmt = (n: number, d = 0) => n.toLocaleString('en-US', { minimumFractionDig
 
 export default function Page() {
   return (
-    <Note slug={SLUG} kind="working">
+    <Note slug={SLUG}>
       <p>
         In <Link href="/case-studies/cheap-enough-to-give-away">Cheap enough to give away</Link> I wrote that madtown.today&apos;s bill is almost entirely a
         &ldquo;who&apos;s here&rdquo; heartbeat. That came from the README, which I wrote when the heartbeat was the only live thing on the page. Then I opened the
@@ -191,7 +191,7 @@ export default function Page() {
       </p>
 
       <h2>Prices used</h2>
-      <p>Checked on 22 November 2026.</p>
+      <p>Checked on 21 November 2026.</p>
       <ul>
         <li>
           <a href="https://vercel.com/docs/plans/pro-plan">Vercel Pro</a>: $20 a month including $20 of usage.{' '}

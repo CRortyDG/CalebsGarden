@@ -7,7 +7,7 @@ export const revalidate = 3600; // a scheduled note goes live within the hour of
 
 export default function Page() {
   return (
-    <Note slug={SLUG} kind="note">
+    <Note slug={SLUG}>
       <p>
         There&apos;s a developer on TikTok who ships a new free website for teachers every day. That&apos;s the kind of thing I mean when I picture{' '}
         <Link href="/case-studies/sized-to-its-community">software sized to its community</Link> at scale: not one big platform, but lots of small tools, each

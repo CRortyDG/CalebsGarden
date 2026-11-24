@@ -1,5 +1,5 @@
 import { pieces, pieceUrl, SERIES_NAME } from '../case-studies/_shared/series';
-import { livePosts, postUrl } from '../notes/_parts/posts';
+import { kindLabel, livePosts, postUrl } from '../notes/_parts/posts';
 import { projects } from '@/projects';
 
 export const revalidate = 3600; // hourly, so a scheduled note appears within the hour of its day
@@ -27,7 +27,7 @@ ${pieces.map((p) => `- [${p.title}](${SITE}${pieceUrl(p.slug)}): ${p.blurb}`).jo
 
 ## Notes
 
-${livePosts().map((p) => `- [${p.title}](${SITE}${postUrl(p.slug)}) (${p.date}): ${p.summary}`).join('\n')}
+${livePosts().map((p) => `- [${p.title}](${SITE}${postUrl(p.slug)}) (${p.date}${p.kind === 'idea' ? `, ${kindLabel.idea.toLowerCase()}` : ''}): ${p.summary}`).join('\n')}
 
 ## Optional
 

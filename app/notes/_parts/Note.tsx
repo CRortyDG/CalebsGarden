@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import '../../case-studies/_shared/case-study.css';
-import { allPosts, formatDate, isDue, isLive, livePosts, postUrl } from './posts';
+import { allPosts, formatDate, isDue, isLive, kindLabel, livePosts, postUrl } from './posts';
 import { VineBand } from '@/overgrowth/VineBand';
 
 const SITE = 'https://calebs.garden';
@@ -20,10 +20,10 @@ export function noteMetadata(slug: string): Metadata {
 }
 
 /** The frame for one note: date, title, the summary as a standalone "In short", the post, and other notes. */
-export function Note({ slug, kind, children }: { slug: string; kind: 'idea' | 'working' | 'note'; children: React.ReactNode }) {
+export function Note({ slug, children }: { slug: string; children: React.ReactNode }) {
   const p = allPosts.find((x) => x.slug === slug)!;
   if (!isLive(p)) notFound();
-  const label = { idea: 'An idea, not built', working: 'Working it out', note: 'Note' }[kind];
+  const label = kindLabel[p.kind];
   const jsonLd = {
     '@context': 'https://schema.org',
     '@type': 'BlogPosting',
@@ -61,7 +61,10 @@ export function Note({ slug, kind, children }: { slug: string; kind: 'idea' | 'w
             .map((x) => (
               <li key={x.slug}>
                 <Link href={postUrl(x.slug)}>{x.title}</Link>
-                <span>{formatDate(x.date)}</span>
+                <span>
+                  {formatDate(x.date)}
+                  {x.kind === 'idea' ? ` · ${kindLabel.idea}` : ''}
+                </span>
               </li>
             ))}
           <li>

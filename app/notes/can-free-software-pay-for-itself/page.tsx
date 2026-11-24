@@ -7,7 +7,7 @@ export const revalidate = 3600; // a scheduled note goes live within the hour of
 
 export default function Page() {
   return (
-    <Note slug={SLUG} kind="note">
+    <Note slug={SLUG}>
       <p>
         I&apos;ve written a fair amount about keeping hosting cheap enough to give software away. That&apos;s the easy half. A free app also needs someone&apos;s
         time: fixing it, upgrading it, writing whatever it needs every day, and building what people ask for next. So the harder question is whether software like
@@ -17,8 +17,8 @@ export default function Page() {
 
       <h2>What madtown.today has brought in</h2>
       <p>
-        I built madtown.today expecting no money at all. It launched at the start of October. In under two months, two local businesses offered to sponsor it and
-        three people bought me a coffee, which comes to $390 before card fees. That&apos;s a happy accident, not a plan, and it covers{' '}
+        I built madtown.today expecting no money at all. It launched at the start of October. By late November, two local businesses had offered to sponsor it and
+        three people had bought me a coffee, which comes to $390 before card fees. That&apos;s a happy accident, not a plan, and it covers{' '}
         <Link href="/notes/what-madtown-today-actually-costs">the hosting</Link> and none of the time. But it says something: people will pay for a small free
         thing they use, even when nobody asks them to.
       </p>
@@ -83,7 +83,7 @@ export default function Page() {
 
       <h2>Where I might be wrong</h2>
       <ul>
-        <li>$390 in under two months, mostly from people I know, is not a trend. I&apos;d want a year of it before saying this works.</li>
+        <li>$390 in its first two months, mostly from people I know, is not a trend. I&apos;d want a year of it before saying this works.</li>
         <li>Creators earn on Patreon because they keep showing up with something new. A finished app that never changes may be easy to forget to support.</li>
         <li>&ldquo;Left alone&rdquo; is a goal, not a promise. Browsers, hosts and security problems all move, whether I do or not.</li>
       </ul>
