@@ -42,6 +42,13 @@ export default function Page() {
         for the whole country. A tool for a group of friends playing D&amp;D doesn&apos;t need a sign-up flow. When software is built for a scale it will never reach,
         the people using it pay for that scale anyway, in ads, in fees, in friction.
       </p>
+      <p>
+        None of this is a new idea. Clay Shirky called it{' '}
+        <a href="https://shirky.com/essays/situated-software/">situated software</a> back in 2004: software &ldquo;designed in and for a particular social
+        situation or context,&rdquo; that leans on the group using it instead of trying to work for everyone. Robin Sloan made an app for his family alone and
+        called it <a href="https://www.robinsloan.com/notes/home-cooked-app/">a home-cooked meal</a>. What&apos;s changed is how cheap it&apos;s become to run
+        one, and what you do when a second community wants it too.
+      </p>
       <p>I might be wrong about how far this goes. But I&apos;ve built two things this way, and they hold up.</p>
 
       <h2>What &ldquo;sized to its community&rdquo; means</h2>

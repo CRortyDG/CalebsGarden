@@ -947,11 +947,10 @@ button.cs-cell:hover {
 .cs-notes-list li::before {
   content: none;
 }
-.cs-notes-list time {
-  display: block;
+.cs-notes-list .cs-note-meta {
   font: 500 0.72rem var(--mono);
   color: var(--cs-moss);
-  margin-bottom: 4px;
+  margin: 0 0 4px;
 }
 
 /* ---------- calculator (radio note) ---------- */

@@ -7,7 +7,7 @@ export const revalidate = 3600; // a scheduled note goes live within the hour of
 
 export default function Page() {
   return (
-    <Note slug={SLUG} kind="note">
+    <Note slug={SLUG}>
       <p>
         I use AI for nearly everything I make. Claude Code wrote almost all of Candlefair&apos;s code under my direction, and I use AI for graphics, for writing,
         for networking and for running my computer. But open either of my apps and you won&apos;t find a chatbot, an &ldquo;Ask AI&rdquo; button or a sparkle icon.

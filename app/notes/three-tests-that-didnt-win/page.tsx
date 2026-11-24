@@ -9,7 +9,7 @@ const pct = (n: number, d: number) => `${Math.round((n / d) * 100)}%`;
 
 export default function Page() {
   return (
-    <Note slug={SLUG} kind="note">
+    <Note slug={SLUG}>
       <p>
         madtown.today is a free homepage for Madison with daily puzzles, a question for the whole city and a few other small things. In October I wanted to know
         whether changing what a brand-new visitor sees first would bring more of them back. So I ran three A/B tests. None of them won.

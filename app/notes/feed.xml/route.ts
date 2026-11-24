@@ -1,4 +1,4 @@
-import { livePosts, postUrl } from '../_parts/posts';
+import { kindLabel, livePosts, postUrl } from '../_parts/posts';
 
 export const revalidate = 3600; // hourly, so a scheduled note appears within the hour of its day
 
@@ -13,6 +13,7 @@ export function GET() {
       <title>${esc(p.title)}</title>
       <link>${SITE}${postUrl(p.slug)}</link>
       <guid>${SITE}${postUrl(p.slug)}</guid>
+      <category>${kindLabel[p.kind]}</category>
       <pubDate>${new Date(`${p.date}T18:00:00Z`).toUTCString()}</pubDate>
       <description>${esc(p.summary)}</description>
     </item>`,

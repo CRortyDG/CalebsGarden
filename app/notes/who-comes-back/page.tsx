@@ -35,7 +35,7 @@ const ENDINGS = [
 
 export default function Page() {
   return (
-    <Note slug={SLUG} kind="note">
+    <Note slug={SLUG}>
       <p>
         madtown.today has had {fmt(8195)} visitors since launch. That number is the one people ask about, and it&apos;s the one I watch
         least. A homepage is only worth anything if people come back to it, so most of the stats page is about who returns, and what they did the day before. Three
