@@ -33,8 +33,10 @@ export function Overgrowth({ projects, usage }: { projects: Project[]; usage?: U
       stem.regrow();
       vines.regrow();
     };
-    // a shared link such as calebs.garden/#candlefair lands on that section
-    const id = decodeURIComponent(window.location.hash.slice(1));
+    // a shared link such as calebs.garden/#dungeon-garden lands on that section
+    // (#candlefair, from before the rename, still lands on Dungeon Garden)
+    const hash = decodeURIComponent(window.location.hash.slice(1));
+    const id = hash === 'candlefair' ? 'dungeon-garden' : hash;
     if (id) document.getElementById(id)?.scrollIntoView();
     return () => {
       stem.stop();

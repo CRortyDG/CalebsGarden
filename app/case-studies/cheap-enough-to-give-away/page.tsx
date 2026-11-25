@@ -8,7 +8,7 @@ import SyncDemo from '../_shared/SyncDemo';
 
 const SLUG = 'cheap-enough-to-give-away';
 const dek =
-  'Free software is only free if someone can afford to keep it running. The question that decides it isn’t how many people use it, but what an idle user and an idle group cost. Here is how Candlefair was rebuilt around that question, and where madtown.today’s bill comes from.';
+  'Free software is only free if someone can afford to keep it running. The question that decides it isn’t how many people use it, but what an idle user and an idle group cost. Here is how Dungeon Garden was rebuilt around that question, and where madtown.today’s bill comes from.';
 
 export const metadata = essayMetadata(SLUG, dek);
 const IMG = '/case-studies/candlefair';
@@ -22,13 +22,13 @@ export default function Page() {
       slug={SLUG}
       dek={dek}
       about={[
-        { name: 'Candlefair', url: 'https://dnd.calebs.garden' },
+        { name: 'Dungeon Garden', url: 'https://dnd.calebs.garden' },
         { name: 'madtown.today', url: 'https://madtown.today' },
       ]}
       inShort={
         <>
           <p>
-            To give software away, make the bill grow with what people <em>do</em>, not with how long they keep it open. Candlefair&apos;s first online version kept
+            To give software away, make the bill grow with what people <em>do</em>, not with how long they keep it open. Dungeon Garden&apos;s first online version kept
             a server function running for every open screen. Within a day it was rebuilt so each D&amp;D group gets its own tiny Cloudflare Durable Object, which
             can sleep between moves and sends updates for free.
           </p>
@@ -41,11 +41,11 @@ export default function Page() {
     >
       <h2>The first version couldn&apos;t be given away</h2>
       <p>
-        Candlefair runs a game of D&amp;D across a few screens: a TV view everyone watches (a TV in the room, or a screen shared on a Discord call), each
+        Dungeon Garden runs a game of D&amp;D across a few screens: a TV view everyone watches (a TV in the room, or a screen shared on a Discord call), each
         player&apos;s phone, and the DM&apos;s console. Change something on one and the others update.
       </p>
       <figure>
-        <img src={`${IMG}/tv-map.jpg`} width={2000} height={1125} alt="The Candlefair TV view: a town map of Marrowmere with numbered places, the party's tokens and a party purse in the corner" loading="lazy" />
+        <img src={`${IMG}/tv-map.jpg`} width={2000} height={1125} alt="The Dungeon Garden TV view: a town map of Marrowmere with numbered places, the party's tokens and a party purse in the corner" loading="lazy" />
         <figcaption>The TV view, showing the built-in example campaign. Screenshots come from a throwaway test campaign.</figcaption>
       </figure>
       <p>
@@ -126,16 +126,16 @@ export default function Page() {
         </table>
       </div>
       <p>
-        Cost wasn&apos;t the only reason to move. My Vercel account is paid for through madtown.today, and I wanted Candlefair&apos;s hosting to stand on its own.
+        Cost wasn&apos;t the only reason to move. My Vercel account is paid for through madtown.today, and I wanted Dungeon Garden&apos;s hosting to stand on its own.
       </p>
 
       <h2>One room per group</h2>
       <p>
         A Durable Object is a small server Cloudflare keeps for a name you give it, with its own storage. Cloudflare runs at most one copy of a given one at a time,
-        so every screen in a game talks to the same copy. Candlefair calls each one a <em>room</em>, and the campaign code is its name. There&apos;s no central
+        so every screen in a game talks to the same copy. Dungeon Garden calls each one a <em>room</em>, and the campaign code is its name. There&apos;s no central
         database to look up first, and no shared table where one group&apos;s data sits next to another&apos;s.
       </p>
-      <Code file="worker/index.ts" at="Candlefair f8de4ba">{`
+      <Code file="worker/index.ts" at="Dungeon Garden f8de4ba">{`
 function room(env: Env, game: string) {
   return env.ROOMS.get(env.ROOMS.idFromName(game));
 }
@@ -159,13 +159,13 @@ function room(env: Env, game: string) {
         Phones lock and drop Wi-Fi, so each screen checks in every 25 seconds and replaces a connection it hasn&apos;t heard from in 75. Those check-ins are answered
         without waking the room:
       </p>
-      <Code file="worker/room.ts" at="Candlefair f8de4ba">{`
+      <Code file="worker/room.ts" at="Dungeon Garden f8de4ba">{`
 // Keep-alive pings from the browser are answered without waking the room.
 ctx.setWebSocketAutoResponse(new WebSocketRequestResponsePair("ping", "pong"));
 `}</Code>
       <details className="cs-simplifies">
         <summary>How a save and an update look in the code</summary>
-        <Code file="worker/room.ts" at="Candlefair f8de4ba" note="trimmed">{`
+        <Code file="worker/room.ts" at="Dungeon Garden f8de4ba" note="trimmed">{`
 async commit(game: string, expected: number, state: GameState, ledger: LedgerEntry[]) {
   const d = this.load();
   if (d.version !== expected) return null; // someone saved first: the caller retries
@@ -252,7 +252,7 @@ async publish(_game: string, _version: number) {
         </table>
       </div>
       <p>
-        I&apos;m not putting a number on how many groups fit in Candlefair&apos;s free plan. That depends on how people play, and I&apos;d rather measure it than
+        I&apos;m not putting a number on how many groups fit in Dungeon Garden&apos;s free plan. That depends on how people play, and I&apos;d rather measure it than
         guess. The DM console has a Hosting costs box that counts what each campaign actually uses, so that number will come from real games.
       </p>
 
@@ -266,7 +266,7 @@ async publish(_game: string, _version: number) {
 
       <h2>How it was built</h2>
       <p>
-        I didn&apos;t type most of Candlefair&apos;s code. Every code commit in its repository was written by Claude Code, working from my direction. My part was
+        I didn&apos;t type most of Dungeon Garden&apos;s code. Every code commit in its repository was written by Claude Code, working from my direction. My part was
         deciding what it should be and what it shouldn&apos;t: the product, every feature, the calls in this piece, having my own site attacked to find holes, and
         merging each change. The Redis version went up on the evening of 12 November 2026 (US Central), the room-per-group version the next morning.
       </p>

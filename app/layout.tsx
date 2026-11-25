@@ -6,7 +6,7 @@ const display = Bricolage_Grotesque({ subsets: ['latin'], weight: ['500', '800']
 const body = Inter({ subsets: ['latin'], variable: '--font-body' });
 const mono = IBM_Plex_Mono({ subsets: ['latin'], weight: ['400', '500', '600'], variable: '--font-mono' });
 
-const description = 'A garden of things Caleb has made: Candlefair, madtown.today and the engineering case studies behind them.';
+const description = 'A garden of things Caleb has made: Dungeon Garden, madtown.today and the engineering case studies behind them.';
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://calebs.garden'),

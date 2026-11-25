@@ -17,8 +17,8 @@ export const metadata: Metadata = {
   openGraph: { type: 'profile', title: 'Experience · calebs.garden', description, url: '/experience', images: ['/og.jpg'] },
 };
 
-const CANDLEFAIR_REPO = 'https://github.com/CRortyDG/DnDBeyondTheWick';
-const cf = (path: string) => `${CANDLEFAIR_REPO}/${path}`;
+const DUNGEON_GARDEN_REPO = 'https://github.com/CRortyDG/DnDBeyondTheWick';
+const cf = (path: string) => `${DUNGEON_GARDEN_REPO}/${path}`;
 
 /** A link to a note once it's out, plain text before that. */
 function NoteLink({ slug, children }: { slug: string; children: React.ReactNode }) {
@@ -160,13 +160,13 @@ export default function Experience() {
         <h2 id="receipts">Receipts from my own apps</h2>
         <p>
           I can&apos;t show you my employers&apos; code. I can show you the two things I run in my own time, for real people, on my own bill:{' '}
-          <a href="https://dnd.calebs.garden">Candlefair</a>, a companion for D&amp;D night, and <a href="https://madtown.today">madtown.today</a>, a daily
-          homepage for Madison. Candlefair&apos;s code is public, so most of these link straight to it. madtown.today&apos;s repository is private.
+          <a href="https://dnd.calebs.garden">Dungeon Garden</a>, a companion for D&amp;D night, and <a href="https://madtown.today">madtown.today</a>, a daily
+          homepage for Madison. Dungeon Garden&apos;s code is public, so most of these link straight to it. madtown.today&apos;s repository is private.
         </p>
 
-        <section className="xp-receipt" aria-labelledby="r-candlefair">
-          <h3 id="r-candlefair">
-            Candlefair <a href={CANDLEFAIR_REPO}>source</a>
+        <section className="xp-receipt" aria-labelledby="r-dungeon-garden">
+          <h3 id="r-dungeon-garden">
+            Dungeon Garden <a href={DUNGEON_GARDEN_REPO}>source</a>
           </h3>
           <dl>
             <dt>Tests and CI</dt>
@@ -248,7 +248,7 @@ export default function Experience() {
         </section>
 
         <h2 id="incidents">Two incidents</h2>
-        <p>Both from Candlefair, both found by using it rather than by a test, and both fixed in public.</p>
+        <p>Both from Dungeon Garden, both found by using it rather than by a test, and both fixed in public.</p>
 
         <section className="xp-incident" aria-labelledby="i-dice">
           <h3 id="i-dice">The dice that wouldn&apos;t leave the TV</h3>
@@ -290,13 +290,13 @@ export default function Experience() {
 
         <h2 id="ai">How I build with AI</h2>
         <p>
-          Claude Code writes most of the code in Candlefair and madtown.today. I&apos;m not going to apologise for that, and I don&apos;t think it&apos;s the
+          Claude Code writes most of the code in Dungeon Garden and madtown.today. I&apos;m not going to apologise for that, and I don&apos;t think it&apos;s the
           interesting part. The interesting part is what stays mine:
         </p>
         <ul>
           <li>
             <strong>The architecture and the constraints.</strong> One Durable Object per campaign, no accounts, free-tier economics as a hard limit. Moving
-            Candlefair off Vercel and Upstash onto Cloudflare was my call, for cost and account reasons (the{' '}
+            Dungeon Garden off Vercel and Upstash onto Cloudflare was my call, for cost and account reasons (the{' '}
             <Link href="/case-studies/cheap-enough-to-give-away">case study</Link> has the numbers).
           </li>
           <li>
@@ -307,7 +307,7 @@ export default function Experience() {
             the capacity report, and the audit that planted bugs to see what the tests missed.
           </li>
           <li>
-            <strong>Using it for real.</strong> I run my own games on Candlefair. Both incidents above were things I hit while using it, not things a test
+            <strong>Using it for real.</strong> I run my own games on Dungeon Garden. Both incidents above were things I hit while using it, not things a test
             caught.
           </li>
           <li>
@@ -337,7 +337,7 @@ export default function Experience() {
         <ol>
           <li>
             <Link href="/case-studies">Small software</Link>
-            <span>The case studies: how madtown.today and Candlefair are built, and why they&apos;re small on purpose.</span>
+            <span>The case studies: how madtown.today and Dungeon Garden are built, and why they&apos;re small on purpose.</span>
           </li>
           <li>
             <Link href="/notes">Notes</Link>

@@ -3,7 +3,7 @@ import { Essay, essayMetadata } from '../_shared/Essay';
 
 const SLUG = 'the-browser-is-the-account';
 const dek =
-  'Neither madtown.today nor Candlefair has a sign-up. One treats your browser as your account; the other treats a link plus a key on your device as one. Here is how each works and what it gives up.';
+  'Neither madtown.today nor Dungeon Garden has a sign-up. One treats your browser as your account; the other treats a link plus a key on your device as one. Here is how each works and what it gives up.';
 
 export const metadata = essayMetadata(SLUG, dek);
 const IMG = '/case-studies/candlefair';
@@ -15,13 +15,13 @@ export default function Page() {
       dek={dek}
       about={[
         { name: 'madtown.today', url: 'https://madtown.today' },
-        { name: 'Candlefair', url: 'https://dnd.calebs.garden' },
+        { name: 'Dungeon Garden', url: 'https://dnd.calebs.garden' },
       ]}
       inShort={
         <>
           <p>
             <strong>Accountless software</strong> remembers people without asking them to sign up. madtown.today gives each browser a random id the first time it
-            visits and keeps game history in that browser. Candlefair puts a secret key in the link a group&apos;s organiser gets, and ties each player&apos;s name to
+            visits and keeps game history in that browser. Dungeon Garden puts a secret key in the link a group&apos;s organiser gets, and ties each player&apos;s name to
             the first device that uses it.
           </p>
           <p>
@@ -80,17 +80,17 @@ export function getVisitorId(): string {
         instead of adding accounts for everyone.
       </p>
 
-      <h2>Candlefair: a link and a key</h2>
+      <h2>Dungeon Garden: a link and a key</h2>
       <p>
         A game of D&amp;D needs more than a browser id, because one person, the DM, has powers the others don&apos;t, and players need to be told apart at the
-        table. So Candlefair uses links that carry identity.
+        table. So Dungeon Garden uses links that carry identity.
       </p>
       <p>
         When someone starts a campaign, the server makes 24 random bytes as the DM&apos;s key, hands it over once inside the DM&apos;s link, and keeps only its
         SHA-256 hash. The key sits after the <code>#</code> in the link, the part browsers don&apos;t send to servers. The app saves it on the device and removes it
         from the address bar.
       </p>
-      <Code file="src/server/auth.ts" at="Candlefair f8de4ba">{`
+      <Code file="src/server/auth.ts" at="Dungeon Garden f8de4ba">{`
 /** A new campaign's DM key: 24 random bytes, URL-safe. Only its hash is stored. */
 export function newDmKey(): string {
   return randomBytes(24).toString("base64url");
@@ -110,7 +110,7 @@ export function newDmKey(): string {
         </div>
         <figure className="cs-phone">
           <img src={`${IMG}/phone.jpg`} width={780} height={1688} alt="A phone screen headed 'That name is taken', explaining that sam is signed in on another device and offering a sign-in link or a key" loading="lazy" />
-          <figcaption>What a second device sees in Candlefair when the name is already locked.</figcaption>
+          <figcaption>What a second device sees in Dungeon Garden when the name is already locked.</figcaption>
         </figure>
       </div>
 
@@ -121,7 +121,7 @@ export function newDmKey(): string {
             <tr>
               <th scope="col" />
               <th scope="col">madtown.today</th>
-              <th scope="col">Candlefair</th>
+              <th scope="col">Dungeon Garden</th>
             </tr>
           </thead>
           <tbody>
@@ -156,7 +156,7 @@ export function newDmKey(): string {
 
       <h2>What I&apos;d tell someone trying this</h2>
       <ul>
-        <li>Decide what the server truly needs to know. For madtown.today it&apos;s &ldquo;have I counted this browser?&rdquo;. For Candlefair it&apos;s &ldquo;is this the DM?&rdquo;.</li>
+        <li>Decide what the server truly needs to know. For madtown.today it&apos;s &ldquo;have I counted this browser?&rdquo;. For Dungeon Garden it&apos;s &ldquo;is this the DM?&rdquo;.</li>
         <li>Keep people&apos;s own history on their own device when you can. It&apos;s the cheapest storage there is, and the most private.</li>
         <li>Write down what it doesn&apos;t protect, in plain words. Both projects do, and it keeps the claims honest.</li>
         <li>When the accountless model breaks, fix that one moment, like the home-screen transfer, before reaching for accounts.</li>

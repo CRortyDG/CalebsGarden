@@ -10,7 +10,7 @@ export default function Page() {
   return (
     <Note slug={SLUG} kind="note">
       <p>
-        Candlefair runs every D&amp;D group in its own small Cloudflare room, which sleeps between moves and costs close to nothing while nobody is playing (the
+        Dungeon Garden runs every D&amp;D group in its own small Cloudflare room, which sleeps between moves and costs close to nothing while nobody is playing (the
         details are in <Link href="/case-studies/cheap-enough-to-give-away">Cheap enough to give away</Link>). The obvious next question is: how many groups can
         it host before the free plan runs out?
       </p>
@@ -22,7 +22,7 @@ export default function Page() {
         uploaded. A box in the DM&apos;s settings, Hosting costs, shows those counts against Cloudflare&apos;s free daily limits, and what they would cost at the
         paid plan&apos;s published prices.
       </p>
-      <Code file="src/shared/hosting.ts" at="Candlefair f8de4ba" note="trimmed">{`
+      <Code file="src/shared/hosting.ts" at="Dungeon Garden f8de4ba" note="trimmed">{`
 /**
  * What running the app costs on Cloudflare, for the DM's Hosting costs box.
  *
@@ -60,7 +60,7 @@ export default function Page() {
         few seconds. The estimate was careful and still wrong, because it was an estimate. That story is in{' '}
         <Link href="/notes/what-madtown-today-actually-costs">What madtown.today actually costs</Link>.
       </p>
-      <p>When Candlefair has enough real games behind it, the capacity number will go there too, with the meter&apos;s readings next to it.</p>
+      <p>When Dungeon Garden has enough real games behind it, the capacity number will go there too, with the meter&apos;s readings next to it.</p>
     </Note>
   );
 }

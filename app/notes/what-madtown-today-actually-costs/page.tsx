@@ -38,7 +38,7 @@ export default function Page() {
       <p>
         In <Link href="/case-studies/cheap-enough-to-give-away">Cheap enough to give away</Link> I wrote that madtown.today&apos;s bill is almost entirely a
         &ldquo;who&apos;s here&rdquo; heartbeat. That came from the README, which I wrote when the heartbeat was the only live thing on the page. Then I opened the
-        actual bill. The heartbeat is a small part of it. This note is what I found, and the plan to make madtown.today cost about as much as Candlefair does,
+        actual bill. The heartbeat is a small part of it. This note is what I found, and the plan to make madtown.today cost about as much as Dungeon Garden does,
         written before I start, so I can check it against what really happens.
       </p>
 
@@ -110,11 +110,11 @@ export default function Page() {
 
       <h2>The plan</h2>
       <p>
-        The rule I took from Candlefair is that the bill should grow with what people <em>do</em>, not with how long they keep a tab open. madtown.today breaks it in
+        The rule I took from Dungeon Garden is that the bill should grow with what people <em>do</em>, not with how long they keep a tab open. madtown.today breaks it in
         the most literal way: a tab open on a quiet afternoon costs money every 4 seconds.
       </p>
       <p>
-        Candlefair fixed the same problem with a{' '}
+        Dungeon Garden fixed the same problem with a{' '}
         <a href="https://developers.cloudflare.com/durable-objects/">Cloudflare Durable Object</a>: one small server-side object that browsers keep a WebSocket open to.
         Being connected is being here, so there&apos;s no heartbeat. When someone waves or paints, the object tells everyone. When nothing happens, it sleeps and
         isn&apos;t billed. Only the connection counts as a request, messages from browsers count as one request per 20, and messages to browsers are free. At

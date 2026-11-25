@@ -1,4 +1,4 @@
-/* The Candlefair case study. Everything is scoped under .cs so it can't leak into the themes. */
+/* The Dungeon Garden case study. Everything is scoped under .cs so it can't leak into the themes. */
 .cs {
   --cs-paper: #101913;
   --cs-raised: #15211a;

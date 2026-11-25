@@ -1,4 +1,4 @@
-/** The "Small software" series: one hub essay and three case studies drawn from Candlefair and madtown.today. */
+/** The "Small software" series: one hub essay and three case studies drawn from Dungeon Garden and madtown.today. */
 export type Piece = { slug: string; title: string; blurb: string };
 
 export const SERIES_NAME = 'Small software';
@@ -12,7 +12,7 @@ export const pieces: Piece[] = [
   {
     slug: 'the-browser-is-the-account',
     title: 'The browser is the account',
-    blurb: 'How madtown.today and Candlefair let people in without sign-ups, and what that gives up.',
+    blurb: 'How madtown.today and Dungeon Garden let people in without sign-ups, and what that gives up.',
   },
   {
     slug: 'cheap-enough-to-give-away',

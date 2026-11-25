@@ -38,7 +38,7 @@ export const allPosts: Post[] = [
     title: 'Build the meter first',
     date: '2026-11-22',
     summary:
-      'Before I put a number on how many groups Candlefair can host for free, I had it count what each game actually uses and price it against Cloudflare’s limits. The meter came first; the claim waits for real games.',
+      'Before I put a number on how many groups Dungeon Garden can host for free, I had it count what each game actually uses and price it against Cloudflare’s limits. The meter came first; the claim waits for real games.',
   },
   {
     slug: 'three-tests-that-didnt-win',

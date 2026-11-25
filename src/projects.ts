@@ -57,18 +57,18 @@ export const site = {
    * /experience. Hidden while empty. Only Caleb fills this in.
    */
   lookingFor:
-    "The work I love most is full-stack product work: making something people use, from the screen down to the servers. It's why I made madtown.today and Candlefair. If you're making something like that, say hello.",
+    "The work I love most is full-stack product work: making something people use, from the screen down to the servers. It's why I made madtown.today and Dungeon Garden. If you're making something like that, say hello.",
   /** Public code. */
   github: 'https://github.com/CRortyDG',
 };
 
 export const projects: Project[] = [
   {
-    id: 'candlefair',
-    name: 'Candlefair',
+    id: 'dungeon-garden',
+    name: 'Dungeon Garden',
     blurb: 'D&D at the table',
     about:
-      'A companion for D&D game night, around a real table or on a call with the TV view screen-shared. The TV becomes the table, every player plays from their phone, and the DM runs the night from one console that remembers every name, place and loose thread so nobody has to keep the books.',
+      'A companion for D&D game night, around a real table or on a call with the TV view screen-shared. The TV becomes the table, every player plays from their phone, and the DM runs the night from one console that remembers every name, place and loose thread so nobody has to keep the books. It was called Candlefair until November 2026.',
     highlights: [
       'The TV shows the map, the fights and every dice roll, live',
       'Players keep their character sheet, gold and journal on their phone',
@@ -80,8 +80,8 @@ export const projects: Project[] = [
     href: 'https://dnd.calebs.garden',
     hostLabel: 'dnd.calebs.garden',
     image: {
-      src: '/projects/candlefair.png',
-      alt: 'Candlefair: D&D at the table, with a TV map, a phone and a candle',
+      src: '/projects/dungeon-garden.png',
+      alt: 'Dungeon Garden: D&D at the table, with a TV map, a phone and a candle',
       width: 1200,
       height: 630,
     },
@@ -118,7 +118,7 @@ export const projects: Project[] = [
     id: 'case-studies',
     name: 'Case studies',
     blurb: 'small software, in four parts',
-    about: 'Small software: why I build free, accountless tools for one city or one group, and how madtown.today and Candlefair do it.',
+    about: 'Small software: why I build free, accountless tools for one city or one group, and how madtown.today and Dungeon Garden do it.',
     status: 'seedling',
     type: 'section',
     href: '/case-studies/',
