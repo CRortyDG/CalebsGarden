@@ -4,6 +4,7 @@ import '../case-studies/_shared/case-study.css';
 import { MADTOWN_EVENTS } from '@/madtown-events';
 import { getMadtownTimeline, type TimelineDay } from '@/madtown-timeline';
 import Timeline from '@/timeline/Timeline';
+import { ogImage } from '@/og/image';
 
 export const revalidate = 900; // rebuilt every 15 minutes, but the fetch below keeps a good answer for 12 hours, so madtown is still asked at most twice a day; a failed read (not cached) is retried on the next rebuild
 
@@ -14,7 +15,8 @@ export const metadata: Metadata = {
   title: 'madtown.today, day by day',
   description,
   alternates: { canonical: '/madtown' },
-  openGraph: { type: 'article', title: 'madtown.today, day by day · calebs.garden', description, url: '/madtown', images: ['/og.jpg'] },
+  openGraph: { type: 'article', title: 'madtown.today, day by day · calebs.garden', description, url: '/madtown', images: [ogImage('madtown')] },
+  twitter: { card: 'summary_large_image', images: [ogImage('madtown')] },
 };
 
 const fmt = (n: number) => n.toLocaleString('en-US');

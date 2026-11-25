@@ -4,18 +4,20 @@ import { notFound } from 'next/navigation';
 import '../../case-studies/_shared/case-study.css';
 import { allPosts, formatDate, isDue, isLive, livePosts, postUrl } from './posts';
 import { VineBand } from '@/overgrowth/VineBand';
+import { ogImage } from '@/og/image';
 
 const SITE = 'https://calebs.garden';
 
 export function noteMetadata(slug: string): Metadata {
   const p = allPosts.find((x) => x.slug === slug)!;
   const url = postUrl(slug);
+  const image = ogImage(`notes/${slug}`);
   return {
     title: p.title,
     description: p.summary,
     alternates: { canonical: url, types: { 'application/rss+xml': '/notes/feed.xml' } },
-    openGraph: { type: 'article', title: p.title, description: p.summary, url, publishedTime: p.date, images: ['/og.jpg'] },
-    twitter: { card: 'summary_large_image', title: p.title, description: p.summary },
+    openGraph: { type: 'article', title: p.title, description: p.summary, url, publishedTime: p.date, images: [{ url: image, width: 1200, height: 630, alt: p.title }] },
+    twitter: { card: 'summary_large_image', title: p.title, description: p.summary, images: [image] },
   };
 }
 

@@ -511,3 +511,48 @@ html:has(.og-band) body {
     0 0 2px var(--night),
     0 0 8px var(--night);
 }
+
+/* a link-preview card (npm run og): the first screen's vines around one page's title, at 1200×630 */
+.og-share {
+  width: 1200px;
+  height: 630px;
+}
+.og-share .og-hero {
+  min-height: 0;
+  height: 630px;
+  box-sizing: border-box;
+  padding: 72px 120px;
+}
+.og-share .og-hero canvas {
+  -webkit-mask-image: none;
+  mask-image: none;
+}
+.og-share .og-mark {
+  top: 34px;
+  left: 40px;
+  font-size: 1.15rem;
+}
+.og-share .og-mark svg {
+  width: 20px;
+  height: 20px;
+}
+.og-share .og-share-label {
+  margin: 0 0 22px;
+  font: 500 1.3rem var(--mono);
+  letter-spacing: 0.02em;
+  color: #8dbb62;
+}
+.og-share h1 {
+  max-width: 15ch;
+  font-size: 96px;
+  line-height: 1;
+}
+.og-share h1.is-mid {
+  max-width: 17ch;
+  font-size: 84px;
+}
+.og-share h1.is-long {
+  max-width: 19ch;
+  font-size: 70px;
+  line-height: 1.04;
+}

@@ -4,6 +4,7 @@ import '../case-studies/_shared/case-study.css';
 import './experience.css';
 import { allPosts, isLive, postUrl } from '../notes/_parts/posts';
 import { experience, site, testimonials } from '@/projects';
+import { ogImage } from '@/og/image';
 
 export const revalidate = 3600; // the links to notes appear once those notes are out
 
@@ -14,7 +15,8 @@ export const metadata: Metadata = {
   title: 'Experience',
   description,
   alternates: { canonical: '/experience' },
-  openGraph: { type: 'profile', title: 'Experience · calebs.garden', description, url: '/experience', images: ['/og.jpg'] },
+  openGraph: { type: 'profile', title: 'Experience · calebs.garden', description, url: '/experience', images: [ogImage('experience')] },
+  twitter: { card: 'summary_large_image', images: [ogImage('experience')] },
 };
 
 const DUNGEON_GARDEN_REPO = 'https://github.com/CRortyDG/DnDBeyondTheWick';

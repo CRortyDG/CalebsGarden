@@ -3,6 +3,7 @@ import Link from 'next/link';
 import './_shared/case-study.css';
 import { pieces, pieceUrl, SERIES_NAME } from './_shared/series';
 import { VineBand } from '@/overgrowth/VineBand';
+import { ogImage } from '@/og/image';
 
 const description =
   'A short series on software sized to its community: free or nearly free, accountless, and built for one city or one group. Drawn from madtown.today and Dungeon Garden.';
@@ -11,7 +12,8 @@ export const metadata: Metadata = {
   title: SERIES_NAME,
   description,
   alternates: { canonical: '/case-studies' },
-  openGraph: { type: 'website', title: SERIES_NAME, description, url: '/case-studies', images: ['/case-studies/candlefair/og.jpg'] },
+  openGraph: { type: 'website', title: SERIES_NAME, description, url: '/case-studies', images: [ogImage('case-studies')] },
+  twitter: { card: 'summary_large_image', images: [ogImage('case-studies')] },
 };
 
 export default function CaseStudies() {
