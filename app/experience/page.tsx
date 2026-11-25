@@ -222,7 +222,10 @@ export default function Experience() {
             </dd>
             <dt>Where CI is now</dt>
             <dd>
-              Red on main since early November, and I haven&apos;t fixed it yet. I&apos;d rather say that here than have you find it.
+              Red on main since 4 November, though no code was broken: lint passed, and 1,496 tests passed with 2 failing. Those 2 check that the repo
+              holds puzzle and question files for the next 14 days. New days are now written and published from the admin page, so the repo&apos;s files stop
+              at 16 November and those tests can&apos;t see the live schedule. A pull request in review turns them into a warning, so a short runway still
+              gets flagged without failing the build.
             </dd>
             <dt>Staging</dt>
             <dd>
