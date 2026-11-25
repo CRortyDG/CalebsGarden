@@ -4,7 +4,7 @@
 // spike of new browsers from one place stands out. The widget adds each day's own numbers
 // (how many were new, how many came back), so the text here only says what happened.
 
-export type EventKind = 'post' | 'press' | 'feature' | 'test';
+export type EventKind = 'post' | 'story' | 'press' | 'feature' | 'test';
 
 export interface MadtownEvent {
   /** The Madison day it happened, YYYY-MM-DD. */
@@ -14,10 +14,13 @@ export interface MadtownEvent {
   title: string;
   /** One or two sentences. */
   body: string;
+  /** A Gazette story's slug: its card then shows who landed on the story and what they did next. */
+  article?: string;
 }
 
 export const EVENT_KINDS: Record<EventKind, string> = {
   post: 'Shared',
+  story: 'Gazette',
   press: 'Press',
   feature: 'Shipped',
   test: 'Tested',
@@ -101,11 +104,19 @@ export const MADTOWN_EVENTS: MadtownEvent[] = [
     kind: 'post',
     title: 'Reddit, Election Day',
     body: 'A Reddit thread on Election Day, the same day a Gazette satire ran.',
+    article: 'overaged-patrons',
+  },
+  {
+    date: '2026-11-04',
+    kind: 'story',
+    title: 'A Gazette satire takes off',
+    body: 'A satire piece in the Madtown Gazette, about a neighborhood that wanted a concert moved close enough to object to, went round Reddit. About 1,600 people read it, most of them in two days.',
+    article: 'noah-kahan-petition',
   },
   {
     date: '2026-11-05',
-    kind: 'post',
-    title: 'Reddit, and comments',
-    body: 'Another Reddit thread, the day Gazette stories got comments and nicknames.',
+    kind: 'feature',
+    title: 'Comments on stories',
+    body: 'Gazette stories got a comment box and nicknames, the day after the satire took off.',
   },
 ];

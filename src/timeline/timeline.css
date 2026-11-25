@@ -15,6 +15,7 @@
   --tl-test: #b9a7e0;
   --tl-post: #e08a5b;
   --tl-press: #8fc3d9;
+  --tl-story: #f1e4cd;
   --tl-panel: #121b15;
   --tl-line: var(--line);
   margin: 0;
@@ -185,6 +186,10 @@
 .tl-src-unknown {
   fill: var(--tl-unknown);
 }
+.tl-read {
+  fill: var(--tl-story);
+  opacity: 0.55;
+}
 .tl-st-new {
   fill: var(--tl-new);
   opacity: 0.28;
@@ -233,6 +238,9 @@
 }
 .tl-kind-post {
   --tl-kind: var(--tl-post);
+}
+.tl-kind-story {
+  --tl-kind: var(--tl-story);
 }
 .tl-kind-press {
   --tl-kind: var(--tl-press);
@@ -407,7 +415,11 @@
 .tl-funnel-track svg {
   display: block;
 }
-.tl-funnel .tl-st-new {
+.tl-funnel .tl-read {
+  fill: var(--tl-story);
+  opacity: 0.55;
+}
+.tl-st-new {
   opacity: 0.45;
 }
 

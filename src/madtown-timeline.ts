@@ -27,6 +27,24 @@ export type TimelineDay = {
   regulars: number | null;
   weekBrowsers: number | null;
   gamesFinished: number;
+  /** Browsers that landed straight on a Gazette story that day, and of them, never opened the homepage. Not in `visitors`. */
+  articleReaders?: number;
+  articleOnly?: number;
+};
+
+export type FirstTimers = { total: number; played: number; sameDay: number; week: number; later: number; notYet: number; recent: number };
+
+/** One Gazette story: browsers that landed on it from outside, and what they did next. */
+export type MadtownArticle = {
+  slug: string;
+  runs: string;
+  satire: boolean;
+  readers: number;
+  knewSite: number;
+  openedSite: number;
+  onlyRead: number;
+  sources: Record<Source, number>;
+  firstTimers: FirstTimers;
 };
 
 export type MadtownTimeline = {
@@ -34,6 +52,7 @@ export type MadtownTimeline = {
   visitorsSinceLaunch: number;
   regularDays: number;
   days: TimelineDay[];
+  articles: MadtownArticle[];
 };
 
 export const MADTOWN_TIMELINE_URL = process.env.MADTOWN_TIMELINE_URL ?? 'https://madtown.today/api/public-timeline';
@@ -56,7 +75,7 @@ export async function getMadtownTimeline(): Promise<MadtownTimeline | null> {
     if (!res.ok) return null;
     const body: unknown = await res.json();
     if (!valid(body)) return null;
-    return { updated: body.updated, visitorsSinceLaunch: body.visitorsSinceLaunch, regularDays: body.regularDays ?? 3, days: body.days };
+    return { updated: body.updated, visitorsSinceLaunch: body.visitorsSinceLaunch, regularDays: body.regularDays ?? 3, days: body.days, articles: Array.isArray(body.articles) ? body.articles : [] };
   } catch {
     return null;
   }
