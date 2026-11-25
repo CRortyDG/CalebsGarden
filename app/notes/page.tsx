@@ -3,6 +3,7 @@ import Link from 'next/link';
 import '../case-studies/_shared/case-study.css';
 import { formatDate, livePosts, postUrl } from './_parts/posts';
 import { VineBand } from '@/overgrowth/VineBand';
+import { ogImage } from '@/og/image';
 
 export const revalidate = 3600; // hourly, so a scheduled note appears within the hour of its day
 
@@ -12,7 +13,8 @@ export const metadata: Metadata = {
   title: 'Notes',
   description,
   alternates: { canonical: '/notes', types: { 'application/rss+xml': '/notes/feed.xml' } },
-  openGraph: { type: 'website', title: 'Notes', description, url: '/notes', images: ['/og.jpg'] },
+  openGraph: { type: 'website', title: 'Notes', description, url: '/notes', images: [ogImage('notes')] },
+  twitter: { card: 'summary_large_image', images: [ogImage('notes')] },
 };
 
 export default function Notes() {

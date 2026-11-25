@@ -3,11 +3,12 @@ import Link from 'next/link';
 import './case-study.css';
 import { pieces, pieceUrl, SERIES_NAME } from './series';
 import { VineBand } from '@/overgrowth/VineBand';
+import { ogImage } from '@/og/image';
 
 const SITE = 'https://calebs.garden';
 
 /** Metadata for one piece of the series, with its own Open Graph card. */
-export function essayMetadata(slug: string, description: string, image = '/case-studies/candlefair/og.jpg'): Metadata {
+export function essayMetadata(slug: string, description: string, image = ogImage(`case-studies/${slug}`)): Metadata {
   const p = pieces.find((x) => x.slug === slug)!;
   const url = pieceUrl(slug);
   return {

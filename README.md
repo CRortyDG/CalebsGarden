@@ -23,6 +23,21 @@ Add an entry to [`src/projects.ts`](src/projects.ts). The bud, the card and the
 Index pick it up. A card image is 1200×630 (the same shape as a link preview)
 and goes in `public/projects/`.
 
+## Link previews
+
+Every case study, note and inner page has its own link-preview card in
+`public/og/`: the first screen's vines with the page's title on top. Each
+card's vines grow from a seed (the page's address), so a page always gets the
+same garden. After adding a note or changing a title, draw them again:
+
+```sh
+npm run dev      # in one terminal
+npm run og       # in another; needs Playwright
+```
+
+The cards are listed in [`src/og/cards.ts`](src/og/cards.ts). A page without a
+drawn card uses the home page's (`public/og.jpg`) until `npm run og` is run.
+
 ## Where things live
 
 | Path | What |

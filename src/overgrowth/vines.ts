@@ -7,6 +7,9 @@
 // kind 'band' is the same vines as a calling card across the top of an inner
 // page (a case study or a note): they grow in from the edges and on behind the
 // page's header text, faint where they cross it, at every width.
+//
+// A seed makes the growth the same every time (the link-preview cards use the
+// page's address as the seed, so each page has its own garden that never changes).
 
 const TAU = Math.PI * 2;
 
@@ -25,7 +28,29 @@ interface Box {
   h: number;
 }
 
-export function growVines(hero: HTMLElement, kind: 'hero' | 'band' = 'hero'): { stop: () => void; regrow: () => void } {
+/** A small seeded random number generator (mulberry32), so a seed always grows the same vines. */
+export function seededRandom(seed: number): () => number {
+  let t = seed >>> 0;
+  return () => {
+    t = (t + 0x6d2b79f5) >>> 0;
+    let r = Math.imul(t ^ (t >>> 15), 1 | t);
+    r = (r + Math.imul(r ^ (r >>> 7), 61 | r)) ^ r;
+    return ((r ^ (r >>> 14)) >>> 0) / 4294967296;
+  };
+}
+
+/** A number from a string, for seeding: the same text always gives the same number. */
+export function seedFrom(text: string): number {
+  let h = 2166136261;
+  for (let i = 0; i < text.length; i++) h = Math.imul(h ^ text.charCodeAt(i), 16777619);
+  return h >>> 0;
+}
+
+export function growVines(
+  hero: HTMLElement,
+  kind: 'hero' | 'band' = 'hero',
+  seed?: number,
+): { stop: () => void; regrow: () => void } {
   const canvas = hero.querySelector('canvas');
   const ctx = canvas?.getContext('2d');
   if (!canvas || !ctx) return { stop: () => {}, regrow: () => {} };
@@ -40,7 +65,7 @@ export function growVines(hero: HTMLElement, kind: 'hero' | 'band' = 'hero'): { 
   let raf = 0;
   let visible = true;
 
-  const R = Math.random;
+  const R = seed === undefined ? Math.random : seededRandom(seed);
 
   function leaf(x: number, y: number, len: number, a: number, col: string) {
     ctx!.save();
