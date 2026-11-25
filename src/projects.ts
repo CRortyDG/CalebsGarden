@@ -178,7 +178,7 @@ export const experience: Job[] = [
     what: 'Cloud infrastructure on GCP with Kubernetes and Terraform; deployments, CI/CD and developer tooling.',
     dates: 'Jun 2025 – now',
     kind: 'Full-time · Remote',
-    scope: 'Infrastructure engineer at a blockchain-based banking startup.',
+    scope: 'Infrastructure engineer at a blockchain-based banking startup. I came in as an L2 and was promoted to L3 after about ten months.',
     owned: [
       'Building and maintaining the cloud infrastructure on GCP, with Kubernetes and Terraform',
       'Deployments and the CI/CD pipelines for the organization',
