@@ -21,7 +21,7 @@ export default function Page() {
         <>
           <p>
             <strong>Accountless software</strong> remembers people without asking them to sign up. madtown.today gives each browser a random id the first time it
-            visits and keeps game history in that browser. Dungeon Garden puts a secret key in the link a group&apos;s organiser gets, and ties each player&apos;s name to
+            visits and keeps game history in that browser. Dungeon Garden puts a secret key in the link a group&apos;s organizer gets, and ties each player&apos;s name to
             the first device that uses it.
           </p>
           <p>
@@ -33,9 +33,9 @@ export default function Page() {
     >
       <h2>Why skip accounts at all</h2>
       <p>
-        An account is a wall between someone and the thing they came for. For a bank, the wall is the point. For a daily puzzle someone found from a friend&apos;s
-        text, or a game night where five people need to be playing in the next two minutes, it&apos;s mostly a reason to leave. Accounts also mean storing emails and
-        passwords, resetting them, and protecting them. Software that doesn&apos;t hold them can&apos;t leak them.
+        An account is a wall between someone and the thing they came for. A bank should have accounts. A puzzle your friend texted you probably shouldn&apos;t, and
+        neither should a game night where five people need to be playing in the next two minutes. There it&apos;s mostly a reason to leave. Accounts also mean storing emails and
+        passwords, resetting them, and protecting them. If I don&apos;t store them, I can&apos;t leak them.
       </p>
       <p>So both projects start from the same question: what is the least we need to know about someone to give them a good experience?</p>
 
@@ -76,8 +76,8 @@ export function getVisitorId(): string {
         missing day is added, a finished day beats an unfinished one, and the streak is worked out again from the merged days.
       </p>
       <p>
-        That one feature is the whole philosophy in miniature: find the exact moment where &ldquo;the browser is the account&rdquo; fails, and fix that moment,
-        instead of adding accounts for everyone.
+        This is basically the whole idea. Find the one spot where &ldquo;the browser is the account&rdquo; breaks and fix that spot, don&apos;t add accounts for
+        everyone.
       </p>
 
       <h2>Dungeon Garden: a link and a key</h2>
@@ -104,8 +104,8 @@ export function newDmKey(): string {
             lock.
           </p>
           <p>
-            That is trust on first use. If someone claims your name before you do, it&apos;s theirs until the DM steps in. Among friends, that&apos;s a conversation,
-            not an attack.
+            That is trust on first use. If someone claims your name before you do, it&apos;s theirs until the DM steps in. With friends that&apos;s not really a
+            security problem, you just tell them to knock it off.
           </p>
         </div>
         <figure className="cs-phone">
@@ -157,7 +157,7 @@ export function newDmKey(): string {
       <h2>What I&apos;d tell someone trying this</h2>
       <ul>
         <li>Decide what the server truly needs to know. For madtown.today it&apos;s &ldquo;have I counted this browser?&rdquo;. For Dungeon Garden it&apos;s &ldquo;is this the DM?&rdquo;.</li>
-        <li>Keep people&apos;s own history on their own device when you can. It&apos;s the cheapest storage there is, and the most private.</li>
+        <li>Keep people&apos;s own history on their own device when you can. It&apos;s free storage and I never see it.</li>
         <li>Write down what it doesn&apos;t protect, in plain words. Both projects do, and it keeps the claims honest.</li>
         <li>When the accountless model breaks, fix that one moment, like the home-screen transfer, before reaching for accounts.</li>
       </ul>
