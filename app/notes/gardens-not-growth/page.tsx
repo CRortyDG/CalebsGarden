@@ -56,8 +56,8 @@ export default function Page() {
         </li>
       </ul>
       <p>
-        The one bit of shared ground I do care about is the name. Dungeon Garden lives at dnd.calebs.garden, and the trip board will start at
-        travel.calebs.garden. I&apos;d like every pot to end in .garden, so you can tell from the address what kind of thing it is.
+        None of that depends on the address. My own pots end in .garden because that&apos;s my corner of it, but a garden site is about how it&apos;s built and
+        who it&apos;s for, not what it&apos;s called. Anyone else&apos;s can live wherever they like.
       </p>
 
       <h2>Gardening, not growing</h2>
@@ -102,7 +102,6 @@ export default function Page() {
           Pots that don&apos;t share accounts can&apos;t easily share anything else either. Moving from one to the next is a link, not a smooth handoff, and some
           people will want the smooth handoff.
         </li>
-        <li>Nice .garden names cost real money. A short one can run hundreds of dollars, which is a lot for a pot meant to cost nothing.</li>
         <li>
           Giant apps win partly because everything is in one place. A field of small sites has to be easy to find, or people won&apos;t walk the paths.
         </li>
