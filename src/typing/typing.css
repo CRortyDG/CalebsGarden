@@ -575,3 +575,11 @@
     order: -1;
   }
 }
+
+/* A note's words, lit up while the note is showing. */
+.ww-lit {
+  background: color-mix(in srgb, var(--ww-moss) 28%, transparent);
+  color: inherit;
+  border-radius: 3px;
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--ww-moss) 28%, transparent);
+}

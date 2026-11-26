@@ -1,11 +1,12 @@
 'use client';
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { BREAK_CARD_MS, MASK, applyText, markers, snapshots, stepsAt, textAt, timeline, wordCount, type Recording } from './format';
+import { BREAK_CARD_MS, MASK, applyIds, applyText, markers, noteRange, replay, snapshots, stepsAt, textAt, timeline, wordCount, type Recording } from './format';
 import './typing.css';
 
 const SPEEDS = [1, 2, 8, 32];
 const GHOST_MS = 450; // how long deleted text stays struck through, in real time
+const NOTE_MS = 6000; // how long a note stays up after its moment, in real time
 const EVERY = 400;
 
 const clock = (ms: number) => {
@@ -128,6 +129,23 @@ export function Player({ rec, autoplay = true, onClose, startAt = 0 }: { rec: Re
   if (last) cache.current = { n, text };
   const caretAt = last ? last[1] + last[3].length : 0;
   const ghost = !reduced && last && last[2] > 0 && (t - tl.end[n - 1]) / speed < GHOST_MS ? before.slice(last[1], last[1] + last[2]) : '';
+  // The note for this moment, and where its words are now.
+  const note = (rec.notes ?? []).filter((nt) => nt.at > 0 && nt.at <= n && (t - tl.end[nt.at - 1]) / speed < NOTE_MS).slice(-1)[0];
+  const ids = useRef<{ n: number; ids: number[]; next: number } | null>(null);
+  let lit: [number, number] | null = null;
+  if (note && note.from !== undefined && note.from >= 0) {
+    let c = ids.current;
+    if (!c || c.n > n || n - c.n > 4000) {
+      const d = replay(rec.steps, n);
+      c = { n, ids: d.ids, next: d.next };
+    } else {
+      const d = { ids: c.ids, next: c.next };
+      for (let i = c.n; i < n; i++) applyIds(d, rec.steps[i]);
+      c = { n, ids: d.ids, next: d.next };
+    }
+    ids.current = c;
+    lit = noteRange(c.ids, note.from, note.to);
+  }
   const brk = tl.breaks.find((b) => t >= b.from && t < b.from + BREAK_CARD_MS);
   const session = 1 + tl.breaks.filter((b) => b.at < n || (b.at === n && t >= b.from)).length;
 
@@ -157,15 +175,24 @@ export function Player({ rec, autoplay = true, onClose, startAt = 0 }: { rec: Re
     else if (e.key === 'ArrowRight') seek(t + 5000 * speed);
   };
 
-  const pre = text.slice(0, caretAt);
-  const post = text.slice(caretAt);
+  // Cut the text where the cursor and the lit-up note words start and end.
+  const cuts = [...new Set([0, caretAt, ...(lit ?? []), text.length])].filter((x) => x >= 0 && x <= text.length).sort((a, b) => a - b);
+  const pieces: React.ReactNode[] = [];
+  for (let i = 0; i < cuts.length; i++) {
+    const at = cuts[i];
+    if (at === caretAt) {
+      if (ghost) pieces.push(<del key="g" className="ww-ghost">{ghost}</del>);
+      pieces.push(<span key="c" className={`ww-caret${playing ? '' : ' is-still'}`} ref={caret} />);
+    }
+    if (i === cuts.length - 1) break;
+    const part = text.slice(at, cuts[i + 1]);
+    const on = lit && at >= lit[0] && at < lit[1];
+    pieces.push(on ? <mark key={at} className="ww-lit"><Runs text={part} /></mark> : <Runs key={at} text={part} />);
+  }
   return (
     <section className="ww" aria-label="Watch me write this" onKeyDown={onKey} tabIndex={-1}>
       <div className="ww-page" ref={box} aria-hidden={playing ? true : undefined}>
-        <Runs text={pre} />
-        {ghost && <del className="ww-ghost">{ghost}</del>}
-        <span className={`ww-caret${playing ? '' : ' is-still'}`} ref={caret} />
-        <Runs text={post} />
+        {pieces}
         {brk && (
           <div className="ww-break" role="status">
             {brk.wall ? <span>{new Date(brk.wall).toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric' })}</span> : null}
@@ -229,14 +256,12 @@ export function Player({ rec, autoplay = true, onClose, startAt = 0 }: { rec: Re
       <p className="ww-stats">
         {wordCount(text)} words · {minutes(writingBefore[n])} of writing · session {session} of {rec.sessions.length || 1}
       </p>
-      {(rec.notes ?? [])
-        .filter((nt) => nt.at <= n && nt.at > n - 60)
-        .slice(-1)
-        .map((nt, i) => (
-          <p key={i} className="ww-margin">
-            <span>Note to self</span> {nt.text}
-          </p>
-        ))}
+      {note && (
+        <p className="ww-margin">
+          <span>Note to self</span> {note.text}
+          {lit ? null : note.from !== undefined && note.from >= 0 ? <em> (its words were later deleted)</em> : null}
+        </p>
+      )}
       <p className="ww-what">
         <strong>What this shows:</strong> every change to this note&rsquo;s text, in order, with the real pauses, recorded while it was written. Pastes are marked on the
         timeline.{rec.hidden ? ` ${rec.hidden} characters of deleted text are blanked out.` : ''} It&rsquo;s a record of the writing, not proof: it can&rsquo;t show where the words in

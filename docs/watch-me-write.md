@@ -23,7 +23,8 @@ libraries and no server.
 
 1. Press **Publish** at the desk. Tick any deleted text to blank out (it plays as a gray bar,
    and the real letters are replaced in the file before it's downloaded). Tick any notes
-   readers should see. Then **Download recording**.
+   readers should see; in the replay they show at the moment you wrote them, with their
+   words lit up. Then **Download recording**.
 2. Hand Claude the file with the note's title and its "In short" line. The note's text is
    not copied anywhere: the page renders the recording's final text, so the page and the
    replay can't disagree. A `# Title` first line is dropped from the page body.

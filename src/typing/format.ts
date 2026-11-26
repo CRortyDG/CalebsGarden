@@ -27,8 +27,19 @@ export type DeskNote = {
   done?: boolean;
 };
 
-/** A note shown to readers: only the words and the moment, never character ids. */
-export type ShownNote = { at: number; text: string };
+/** A note in a replay: what it says, the moment it was written, and the characters it points at (-1: a point, not words). */
+export type ShownNote = { at: number; text: string; from?: number; to?: number };
+
+/** Where a note's characters are in text with these ids, as [start, end), or null if they're gone or it's a point. */
+export function noteRange(ids: number[], from: number | undefined, to: number | undefined): [number, number] | null {
+  if (from === undefined || to === undefined || from < 0) return null;
+  const a = ids.indexOf(from);
+  const b = ids.indexOf(to);
+  if (a === -1 && b === -1) return null;
+  const lo = a === -1 ? b : a;
+  const hi = b === -1 ? a : b;
+  return [Math.min(lo, hi), Math.max(lo, hi) + 1];
+}
 
 export type Recording = {
   v: 1;
@@ -65,6 +76,13 @@ export function apply(doc: Doc, s: Step): { text: string; ids: number[] } {
   doc.text = doc.text.slice(0, pos) + ins + doc.text.slice(pos + del);
   doc.ids.splice(pos, del, ...newIds);
   return { text: gone, ids: goneIds };
+}
+
+/** Just the ids, no text: how the player follows a note's words. */
+export function applyIds(d: { ids: number[]; next: number }, s: Step) {
+  const n = s[3].length;
+  d.ids.splice(s[1], s[2], ...Array.from({ length: n }, (_, i) => d.next + i));
+  d.next += n;
 }
 
 /** Just the text, no ids: fast enough for the player. */

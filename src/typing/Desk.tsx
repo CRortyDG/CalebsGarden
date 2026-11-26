@@ -359,7 +359,7 @@ function Editor({ id, onBack }: { id: string; onBack: () => void }) {
       {panel && (
         <div className="desk-overlay" role="dialog" aria-modal="true" aria-label={panel.kind === 'publish' ? 'Publish' : 'Watch it'} onKeyDown={(e) => e.key === 'Escape' && setPanel(null)}>
           <div className="desk-sheet">
-            {panel.kind === 'watch' && <Player rec={{ v: 1, steps: x.steps, sessions: x.sessions }} startAt={panel.startAt} onClose={() => setPanel(null)} />}
+            {panel.kind === 'watch' && <Player rec={{ v: 1, steps: x.steps, sessions: x.sessions, notes: x.notes.map((n) => ({ at: n.at, text: n.text, from: n.from, to: n.to })) }} startAt={panel.startAt} onClose={() => setPanel(null)} />}
             {panel.kind === 'preview' && (
               <>
                 <p className="desk-sheet-label">Preview: what readers will see</p>
@@ -472,7 +472,7 @@ function Publish({
       v: 1,
       steps: maskSteps(draft.steps, ids),
       sessions: draft.sessions,
-      notes: draft.notes.filter((n) => show.has(n.id)).map((n) => ({ at: n.at, text: n.text })),
+      notes: draft.notes.filter((n) => show.has(n.id)).map((n) => ({ at: n.at, text: n.text, from: n.from, to: n.to })),
       hidden: ids.size || undefined,
     };
   };
@@ -528,7 +528,7 @@ function Publish({
         <p className="desk-hint">No notes on this draft.</p>
       ) : (
         <>
-          <p className="desk-hint">Notes stay private unless you tick them. A ticked note shows in the replay at the moment you wrote it.</p>
+          <p className="desk-hint">Notes stay private unless you tick them. A ticked note shows in the replay at the moment you wrote it, with its words lit up.</p>
           <ul className="desk-spans">
             {draft.notes.map((n) => (
               <li key={n.id}>
