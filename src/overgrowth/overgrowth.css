@@ -557,7 +557,7 @@ html:has(.og-band) body {
   line-height: 1.04;
 }
 
-/* vines down the margins of a case study or note, grown as you read (ScrollVines) */
+/* vines that grow around the words when the page is left still (IdleVines) */
 .cs-vines {
   position: fixed;
   inset: 0;
@@ -565,8 +565,11 @@ html:has(.og-band) body {
   height: 100%;
   pointer-events: none;
   z-index: 0;
-  /* quieter than the band at the top: they're at the edge of your eye while you read */
-  opacity: 0.62;
+  opacity: 0.8;
+  transition: opacity 0.7s ease;
+}
+.cs-vines.is-fading {
+  opacity: 0;
 }
 main:has(> .cs-vines) > :not(.cs-vines) {
   position: relative;

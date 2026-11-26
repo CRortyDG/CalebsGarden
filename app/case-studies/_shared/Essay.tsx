@@ -3,7 +3,7 @@ import Link from 'next/link';
 import './case-study.css';
 import { pieces, pieceUrl, SERIES_NAME } from './series';
 import { VineBand } from '@/overgrowth/VineBand';
-import { ScrollVines } from '@/overgrowth/ScrollVines';
+import { IdleVines } from '@/overgrowth/IdleVines';
 import { ogImage } from '@/og/image';
 
 const SITE = 'https://calebs.garden';
@@ -52,7 +52,7 @@ export function Essay({
   };
   return (
     <main className="cs cs-essay">
-      <ScrollVines />
+      <IdleVines />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       <VineBand>
         <p className="back">
