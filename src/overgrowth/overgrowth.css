@@ -556,3 +556,19 @@ html:has(.og-band) body {
   font-size: 70px;
   line-height: 1.04;
 }
+
+/* vines down the margins of a case study or note, grown as you read (ScrollVines) */
+.cs-vines {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 0;
+  /* quieter than the band at the top: they're at the edge of your eye while you read */
+  opacity: 0.62;
+}
+main:has(> .cs-vines) > :not(.cs-vines) {
+  position: relative;
+  z-index: 1;
+}
