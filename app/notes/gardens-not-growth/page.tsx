@@ -9,13 +9,9 @@ export default function Page() {
   return (
     <Note slug={SLUG} kind="working">
       <p>
-        People call the internet a web. I&apos;ve always liked thinking of it as a garden instead. A web is one thing, spun to catch something. A garden is lots of
-        small things growing next to each other, and somebody tends each one.
-      </p>
-      <p>
-        I&apos;ve started calling what I build <strong>garden sites</strong>. Each one is a pot: a small, independent website that does one job for one group. On
-        its own a pot is a nice thing to have. Put enough of them side by side and you get a farm, a set of small sites that together cover a lot of what people use
-        the internet for, without any of them being built to harvest money.
+        People call the internet a web. I&apos;ve always liked a garden better: a web is one thing spun to catch something, and a garden is lots of small things
+        growing side by side, each one tended. It&apos;s where my sites got their names, too. calebs.garden and Dungeon Garden are seedlings of Design.Garden, where
+        I used to work.
       </p>
 
       <h2>A pot</h2>
