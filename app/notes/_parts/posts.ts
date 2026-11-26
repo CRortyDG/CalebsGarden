@@ -6,6 +6,13 @@ export type Post = { slug: string; title: string; date: string; summary: string 
 // day; pages under /notes re-check every hour, so it appears within an hour of midnight.
 export const allPosts: Post[] = [
   {
+    slug: 'gardens-not-growth',
+    title: 'Gardens, not growth',
+    date: '2026-11-26',
+    summary:
+      'I call what I build garden sites. Each one is a pot: a small, independent website for one group. Put enough side by side and you get a farm, small sites that together do what people need without any of them being built to harvest money. The goal is a healthy garden next year, not a bigger one.',
+  },
+  {
     slug: 'one-person-fifty-apps',
     title: 'Can one person look after fifty community apps?',
     date: '2026-11-22',
