@@ -557,7 +557,8 @@ html:has(.og-band) body {
   line-height: 1.04;
 }
 
-/* vines that grow around the words when the page is left still (IdleVines) */
+/* vines that overgrow the words when the page is left still (IdleVines):
+   one layer under the text and two over it, so they can wind round the lines */
 .cs-vines {
   position: fixed;
   inset: 0;
@@ -565,8 +566,10 @@ html:has(.og-band) body {
   height: 100%;
   pointer-events: none;
   z-index: 0;
-  opacity: 0.8;
   transition: opacity 0.7s ease;
+}
+.cs-vines.is-over {
+  z-index: 2;
 }
 .cs-vines.is-fading {
   opacity: 0;
