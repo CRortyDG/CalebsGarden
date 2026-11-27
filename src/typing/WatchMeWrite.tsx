@@ -6,13 +6,14 @@ import { SLOT_ID, isRecording, type Recording } from './format';
 import { Player } from './Player';
 import './typing.css';
 
-
 /**
  * A small "Human written" tag in a note's header. Pressing it opens a short
- * explanation at the top of the note with the way into the replay. The
- * recording only downloads when someone asks to watch.
+ * explanation at the top of the note with the way into the replay. With
+ * `invite`, a small "Watch me write this" button also sits at the top of the
+ * note and opens the same explanation. The recording only downloads when
+ * someone asks to watch.
  */
-export function HumanTag({ slug, minutesOfWriting, sessions }: { slug: string; minutesOfWriting: number; sessions: number }) {
+export function HumanTag({ slug, minutesOfWriting, sessions, invite = false }: { slug: string; minutesOfWriting: number; sessions: number; invite?: boolean }) {
   const [rec, setRec] = useState<Recording | null>(null);
   const [state, setState] = useState<'closed' | 'info' | 'loading' | 'open' | 'failed'>('closed');
   const [slot, setSlot] = useState<HTMLElement | null>(null);
@@ -55,6 +56,10 @@ export function HumanTag({ slug, minutesOfWriting, sessions }: { slug: string; m
           </button>
         </div>
       </div>
+    ) : invite ? (
+      <button type="button" className="ww-invite-small" aria-expanded={false} aria-controls="ww-info" onClick={() => setState('info')}>
+        <span aria-hidden>▶</span> Watch me write this
+      </button>
     ) : null;
 
   return (

@@ -2,7 +2,9 @@
 
 Notes written at [calebs.garden/desk](https://calebs.garden/desk) carry a replay of every
 change to their text, with the real pauses. A small "Human written" tag next to the date
-opens a short explanation and the way into the replay. The code is in `src/typing/`, with no outside
+opens a short explanation and the way into the replay. Pass `invite: true` in `recording`
+(`{ ...recordingInfo(SLUG, rec), invite: true }`) to also show a small "Watch me write this"
+button at the top of the note. The code is in `src/typing/`, with no outside
 libraries and no server.
 
 ## Writing
