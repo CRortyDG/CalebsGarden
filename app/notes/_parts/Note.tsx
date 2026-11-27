@@ -4,6 +4,7 @@ import { notFound } from 'next/navigation';
 import '../../case-studies/_shared/case-study.css';
 import { allPosts, formatDate, isDue, isLive, livePosts, postUrl } from './posts';
 import { VineBand } from '@/overgrowth/VineBand';
+import { IdleVines } from '@/overgrowth/IdleVines';
 import { ogImage } from '@/og/image';
 
 const SITE = 'https://calebs.garden';
@@ -38,6 +39,7 @@ export function Note({ slug, kind, children }: { slug: string; kind: 'idea' | 'w
   };
   return (
     <main className="cs cs-essay">
+      <IdleVines />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       <VineBand>
         <p className="back">
