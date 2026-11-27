@@ -5,6 +5,7 @@ import { useEffect, useRef, useState } from 'react';
 import { about, experience, site, type Project } from '@/projects';
 import { ProjectDetails } from '@/site/ProjectDetails';
 import { ProjectList } from '@/site/ProjectList';
+import { SeedList } from '@/site/SeedList';
 import type { Usage } from '@/usage';
 import { Flower } from './Flower';
 import { growStem } from './stem';
@@ -99,7 +100,7 @@ export function Overgrowth({ projects, usage }: { projects: Project[]; usage?: U
           <nav className="og-buds" aria-label="Projects">
             {projects.map(
               (p) =>
-                p.type !== 'empty' && (
+                (p.type !== 'empty' || p.seeds?.length) && (
                   <a key={p.id} className="og-bud" href={`#${p.id}`}>
                     <span className="og-bud-name">{p.name}</span>
                     {p.blurb && <span className="og-bud-note">{p.blurb}</span>}
@@ -132,6 +133,7 @@ export function Overgrowth({ projects, usage }: { projects: Project[]; usage?: U
                     <h2 id={`og-${p.id}`}>{p.name}</h2>
                     {p.blurb && <p className="sheet-blurb">{p.blurb}</p>}
                     {p.about && <p className="sheet-about">{p.about}</p>}
+                    {p.seeds && p.seeds.length > 0 && <SeedList seeds={p.seeds} />}
                     {p.href && (
                       <div className="sheet-actions">
                         <a className="button is-primary" href={p.href}>

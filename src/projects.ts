@@ -38,6 +38,15 @@ export interface Project {
   habitat?: string;
   /** The year it went live. */
   year?: number;
+  /** Small free tools growing here, each a page on this site. Shown as a list in the card. */
+  seeds?: Seed[];
+}
+
+/** One small free tool: a name, one line on what it does, and where it lives. */
+export interface Seed {
+  name: string;
+  what: string;
+  href: string;
 }
 
 export const site = {
@@ -135,8 +144,21 @@ export const projects: Project[] = [
   {
     id: 'seedlings',
     name: 'Seedlings',
-    blurb: 'planting soon',
-    about: 'Whatever comes next.',
+    blurb: 'small free tools',
+    about:
+      'Little tools I made for something of my own and left out for anyone to use. They run in your browser: no account, and nothing you put in leaves your device.',
+    seeds: [
+      {
+        name: 'The writing desk',
+        what: 'A place to write that records every keystroke and pause, so readers can press “Watch me write this” and see the draft come together.',
+        href: '/desk',
+      },
+      {
+        name: 'Reel maker',
+        what: 'Drop in photos or clips and a song. It finds the beat, cuts on it and hands you a vertical video for Reels, TikTok or Shorts.',
+        href: '/reels',
+      },
+    ],
     status: 'seedling',
     type: 'empty',
   },

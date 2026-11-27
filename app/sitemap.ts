@@ -11,6 +11,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${SITE}/` },
     { url: `${SITE}/experience` },
     { url: `${SITE}/madtown` },
+    { url: `${SITE}/reels` },
     { url: `${SITE}/case-studies` },
     ...pieces.map((p) => ({ url: `${SITE}${pieceUrl(p.slug)}` })),
     { url: `${SITE}/notes` },

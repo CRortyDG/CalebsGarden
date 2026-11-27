@@ -366,6 +366,39 @@ button {
   background: #8dbb62;
   transform: rotate(-20deg);
 }
+.sheet-seeds {
+  margin: 4px 0 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+}
+.sheet-seeds li {
+  padding: 12px 0;
+  border-top: 1px solid var(--sheet-line);
+}
+.sheet-seeds a {
+  font: 600 1.05rem var(--display);
+  color: var(--sheet-fg);
+  text-decoration: underline;
+  text-decoration-color: var(--sheet-line);
+  text-underline-offset: 4px;
+}
+.sheet-seeds a:hover {
+  color: var(--sheet-accent);
+  text-decoration-color: currentColor;
+}
+.sheet-seeds p {
+  margin: 4px 0 0;
+  font-size: 0.9rem;
+  line-height: 1.45;
+  color: var(--sheet-muted);
+}
+.project-list .seed {
+  font: 400 0.9rem var(--body);
+  color: var(--sheet-fg);
+  text-underline-offset: 3px;
+}
 .sheet-stats {
   display: flex;
   flex-wrap: wrap;
