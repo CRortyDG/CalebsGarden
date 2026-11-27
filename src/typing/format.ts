@@ -49,6 +49,9 @@ export type Recording = {
   hidden?: number; // how many characters were blanked out, for the "What this shows" line
 };
 
+/** Where a note's replay opens: the top of its text (RecordedNote puts an element with this id there). */
+export const SLOT_ID = 'ww-slot';
+
 /** Blanked-out characters are replaced with this; the player draws them as a gray bar. */
 export const MASK = '█';
 
