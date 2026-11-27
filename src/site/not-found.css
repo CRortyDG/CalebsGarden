@@ -1,0 +1,141 @@
+/* The 404 page: an empty pot on the home page's first screen (src/site/NotFound.tsx). */
+.nf {
+  --nf-clay: #b5643c;
+  --nf-clay-rim: #c97a4e;
+  --nf-clay-shade: #8f4a2b;
+  --nf-stake: #c9a77c;
+}
+.nf .og-hero h1 {
+  max-width: 18ch;
+}
+.nf .og-tagline {
+  max-width: 50ch;
+  margin-bottom: 36px;
+}
+
+/* the pot sits above the words, in an og-buds box so the vines keep clear of it */
+.nf .nf-pot {
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  margin-bottom: 18px;
+}
+.nf-art {
+  display: block;
+  width: clamp(130px, 16vw, 170px);
+  height: auto;
+  overflow: visible;
+}
+.nf-soil {
+  fill: var(--og-soil);
+}
+.nf-speck {
+  fill: #3a2818;
+}
+.nf-pot-body {
+  fill: var(--nf-clay);
+}
+.nf-pot-shade {
+  fill: var(--nf-clay-shade);
+  opacity: 0.55;
+}
+.nf-pot-rim {
+  fill: var(--nf-clay-rim);
+}
+.nf-stake {
+  fill: var(--nf-stake);
+}
+.nf-tag {
+  fill: #efe3c8;
+}
+.nf-tag-text {
+  font: 600 11px var(--mono);
+  fill: var(--og-soil);
+}
+
+/* the sprout: the stem draws up out of the soil, then the leaves, then the flower */
+.nf-stem {
+  fill: none;
+  stroke: var(--og-leaf-dark);
+  stroke-width: 3.5;
+  stroke-linecap: round;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  /* the round cap would show as a dot before anything's planted */
+  opacity: 0;
+}
+.nf-leaf {
+  fill: var(--og-leaf);
+  transform-box: fill-box;
+  transform-origin: center;
+  scale: 0;
+}
+.nf-leaf-l {
+  transform-origin: right center;
+}
+.nf-leaf-r {
+  transform-origin: left center;
+}
+.nf-bloom {
+  transform-box: fill-box;
+  transform-origin: center;
+  scale: 0;
+  rotate: -40deg;
+}
+.is-growing .nf-stem {
+  stroke-dashoffset: 0;
+  opacity: 1;
+  transition: stroke-dashoffset 0.9s cubic-bezier(0.3, 0.6, 0.3, 1);
+}
+.is-growing .nf-leaf {
+  scale: 1;
+  transition: scale 0.45s cubic-bezier(0.2, 1.5, 0.4, 1) 0.45s;
+}
+.is-growing .nf-leaf-r {
+  transition-delay: 0.6s;
+}
+.is-growing .nf-bloom {
+  scale: 1;
+  rotate: 0deg;
+  transition:
+    scale 0.7s cubic-bezier(0.2, 1.5, 0.4, 1) 0.85s,
+    rotate 0.7s cubic-bezier(0.2, 1.5, 0.4, 1) 0.85s;
+}
+
+.nf-plant {
+  padding: 6px 12px;
+  font: 500 0.78rem var(--mono);
+  color: #b8c9a8;
+  background: rgba(14, 22, 14, 0.78);
+  border: 1px solid #3c5a2e;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: color 0.18s, border-color 0.18s;
+}
+.nf-plant:hover {
+  color: #e9f0df;
+  border-color: #9bd077;
+}
+
+/* the links go sideways here, not down the page */
+.nf .og-bud {
+  min-width: 200px;
+}
+.nf .og-bud:hover .og-bud-arrow,
+.nf .og-bud:focus-visible .og-bud-arrow {
+  transform: translateX(3px);
+}
+
+@media (max-width: 760px) {
+  .nf .og-hero {
+    justify-content: flex-start;
+    padding-top: 84px;
+  }
+  .nf .nf-pot {
+    align-items: flex-start;
+    margin-bottom: 8px;
+  }
+  .nf-art {
+    width: 120px;
+  }
+}
