@@ -2,16 +2,22 @@ import type { ReactNode } from 'react';
 
 /**
  * Just enough Markdown for a note written at the desk: paragraphs, ## headings,
- * > quotes, - and 1. lists, [links](url), **bold**, *italics* and `code`.
+ * > quotes, - and 1. lists, [links](url), **bold**, *italics*, `code` and bare email addresses.
  * Anything else shows as typed. The published note is this, run over the
  * recording's final text, so the page and the replay can't disagree.
  */
 export function Markdown({ text }: { text: string }) {
-  const blocks = text.replace(/\r/g, '').split(/\n{2,}/).map((b) => b.trim()).filter(Boolean);
+  // A heading is its own block even when the next line follows it straight away.
+  const blocks = text
+    .replace(/\r/g, '')
+    .replace(/^(#{1,3}\s.*)$/gm, '\n$1\n')
+    .split(/\n{2,}/)
+    .map((b) => b.trim())
+    .filter(Boolean);
   return (
     <>
       {blocks.map((b, i) => {
-        const h = b.match(/^(#{1,3})\s+(.*)$/s);
+        const h = b.match(/^(#{1,3})\s+(.*)$/);
         if (h) return h[1].length === 3 ? <h3 key={i}>{inline(h[2])}</h3> : <h2 key={i}>{inline(h[2])}</h2>;
         const lines = b.split('\n');
         if (lines.every((l) => /^>\s?/.test(l))) return <blockquote key={i}><p>{inline(lines.map((l) => l.replace(/^>\s?/, '')).join(' '))}</p></blockquote>;
@@ -23,7 +29,7 @@ export function Markdown({ text }: { text: string }) {
   );
 }
 
-const TOKEN = /\[([^\]]+)\]\(([^)\s]+)\)|\*\*([^*]+)\*\*|\*([^*]+)\*|`([^`]+)`/g;
+const TOKEN = /\[([^\]]+)\]\(([^)\s]+)\)|\*\*([^*]+)\*\*|\*([^*]+)\*|`([^`]+)`|([\w.+-]+@[\w-]+(?:\.[\w-]+)+)/g;
 
 function inline(s: string, prefix = ''): ReactNode[] {
   const out: ReactNode[] = [];
@@ -37,7 +43,8 @@ function inline(s: string, prefix = ''): ReactNode[] {
       out.push(<a key={key} href={href}>{m[1]}</a>);
     } else if (m[3] !== undefined) out.push(<strong key={key}>{m[3]}</strong>);
     else if (m[4] !== undefined) out.push(<em key={key}>{m[4]}</em>);
-    else out.push(<code key={key}>{m[5]}</code>);
+    else if (m[5] !== undefined) out.push(<code key={key}>{m[5]}</code>);
+    else out.push(<a key={key} href={`mailto:${m[6]}`}>{m[6]}</a>);
     last = m.index + m[0].length;
   }
   if (last < s.length) out.push(s.slice(last));

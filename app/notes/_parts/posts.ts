@@ -6,6 +6,13 @@ export type Post = { slug: string; title: string; date: string; summary: string 
 // day; pages under /notes re-check every hour, so it appears within an hour of midnight.
 export const allPosts: Post[] = [
   {
+    slug: 'proving-it-wasnt-ai-written',
+    title: 'Proving it wasn’t AI written',
+    date: '2026-11-26',
+    summary:
+      'Like SynthID - Is a system to help prove something is human written useful or desired in society. If so, what would that look like?',
+  },
+  {
     slug: 'one-person-fifty-apps',
     title: 'Can one person look after fifty community apps?',
     date: '2026-11-22',
