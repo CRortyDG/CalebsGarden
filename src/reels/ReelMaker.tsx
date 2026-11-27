@@ -24,10 +24,23 @@ import {
   type Media,
   type Timeline,
 } from './engine';
+import type { JumpStyle } from './jumps';
 import { SCRIPTS } from './scripts';
 
 type Clip = Card & { id: number; hint: string; beats: number | null; name: string; url: string | null };
 type Song = { name: string; buffer: AudioBuffer; an: Analysis };
+type Mode = 'story' | 'recap' | JumpStyle;
+/** The styles, in the order they're offered: every one but Story needs only photos. */
+const STYLES: { id: Mode; label: string; about: string }[] = [
+  { id: 'recap', label: 'Photo recap', about: 'A photo dump for your friends: photos pop in around a black screen on the beat, then build into a collage.' },
+  { id: 'zoom', label: 'Zoom jump', about: 'Each photo rushes in toward the camera and punches through into the next one on the beat.' },
+  { id: 'whip', label: 'Whip pan', about: 'The photos fly sideways past each other on every cut, like a fast camera swing.' },
+  { id: 'polaroid', label: 'Polaroid stack', about: 'Prints drop onto a table one per beat and pile up into a messy stack.' },
+  { id: 'strips', label: 'Strips', about: 'Three tall panels slide in from the top and bottom, one per beat, then the next three.' },
+  { id: 'glitch', label: 'Glitch', about: 'Hard cuts with a shake, a colour split and torn lines on every beat. Best with fast songs.' },
+  { id: 'story', label: 'Story with text', about: 'One clip at a time with a line of text on each, ending on a card. Good for telling a story or showing something off.' },
+];
+
 type Exported = { url: string; file: File; type: string };
 
 const EXAMPLE = {
@@ -76,7 +89,7 @@ export default function ReelMaker() {
   const [bpm, setBpm] = useState(120);
   const [startAt, setStartAt] = useState(0);
   const [cutEvery, setCutEvery] = useState(2);
-  const [mode, setMode] = useState<'story' | 'recap'>('recap');
+  const [mode, setMode] = useState<Mode>('recap');
   const [alone, setAlone] = useState(3);
   const [clips, setClips] = useState<Clip[]>([]);
   const [end, setEnd] = useState<EndCard & { url: string | null; beats: number }>({ media: null, url: null, tagline: '', small: '', beats: 8 });
@@ -297,7 +310,7 @@ export default function ReelMaker() {
       return out;
     });
 
-  async function loadExample(as: 'story' | 'recap' = mode) {
+  async function loadExample(as: Mode = mode) {
     stop();
     setError(null);
     setBusy('Loading the example…');
@@ -319,7 +332,7 @@ export default function ReelMaker() {
       setStartAt(a.beats.find((b) => b > 3.2) ?? a.beats[0] ?? 0);
       setCutEvery(2);
       setScriptId(s.id);
-      if (as === 'recap') {
+      if (as !== 'story') {
         // A photo dump: every picture, no lines of text, and a title on the last beat.
         const all = [...pics.filter((p): p is NonNullable<typeof p> => !!p), endPic];
         setClips(all.map((p, i) => ({ id: nextId++, media: p.media, url: p.url, name: `photo ${i + 1}`, text: '', hint: '', fit: 'fill' as const, beats: null })));
@@ -463,21 +476,19 @@ export default function ReelMaker() {
         <section className="reel-step">
           <h2>Style</h2>
           <div className="reel-row">
-            {(['recap', 'story'] as const).map((v) => (
+            {STYLES.map(({ id: v, label }) => (
               <button key={v} type="button" className={`reel-chip${mode === v ? ' on' : ''}`} onClick={() => {
                   setMode(v);
                   // A recap is a post for friends, not an ad: drop the board's tagline and address.
-                  if (v === 'recap')
+                  if (v !== 'story')
                     setEnd((x) => ({ ...x, tagline: SCRIPTS.some((sc) => sc.tagline === x.tagline) ? '' : x.tagline, small: x.small === 'travel.calebs.garden' ? '' : x.small }));
                 }} aria-pressed={mode === v}>
-                {v === 'recap' ? 'Photo recap' : 'Story with text'}
+                {label}
               </button>
             ))}
           </div>
           <p className="reel-hint">
-            {mode === 'recap'
-              ? 'A photo dump for your friends: photos pop in around a black screen on the beat, then build into a collage. No text needed.'
-              : 'One clip at a time with a line of text on each, ending on a card. Good for telling a story or showing something off.'}
+            {STYLES.find((x) => x.id === mode)?.about}
           </p>
           {mode === 'recap' && (
             <div className="reel-row">
@@ -604,7 +615,7 @@ export default function ReelMaker() {
             }}
           >
             <strong>Drop photos or video clips here</strong>
-            <span>{mode === 'story' ? 'or tap to choose. They fill the script\'s empty slots in order.' : `or tap to choose. Up to ${RECAP_MAX} make the collage.`}</span>
+            <span>{mode === 'story' ? 'or tap to choose. They fill the script\'s empty slots in order.' : mode === 'recap' ? `or tap to choose. Up to ${RECAP_MAX} make the collage.` : 'or tap to choose. One photo per cut, in this order.'}</span>
             <input type="file" accept="image/*,video/*" multiple hidden onChange={(e) => e.target.files && addFiles(e.target.files)} />
           </label>
           <ol className="reel-clips">
@@ -662,7 +673,7 @@ export default function ReelMaker() {
           <h2>
             <span>{mode === 'story' ? 4 : 3}</span> {mode === 'story' ? 'End card' : 'Last beat'}
           </h2>
-          {mode === 'recap' && <p className="reel-hint">Every photo lands in the collage. A title is optional: leave it empty for photos only.</p>}
+          {mode !== 'story' && <p className="reel-hint">{mode === 'recap' ? 'Every photo lands in the collage.' : 'The last photo holds.'} A title is optional: leave it empty for photos only.</p>}
           {mode === 'story' && <div className="reel-row">
             <label className="reel-btn">
               {end.media ? 'Change picture' : 'Add a picture of the board'}
