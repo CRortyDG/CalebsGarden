@@ -2,6 +2,8 @@
 // the reel onto a 1080×1920 canvas. No libraries and no server: Web Audio decodes the song,
 // this file finds the beats, and the page records the canvas with MediaRecorder.
 
+import { drawJump, type JumpStyle } from './jumps';
+
 export const W = 1080;
 export const H = 1920;
 export const FPS = 30;
@@ -271,7 +273,7 @@ export type Look = {
   /** CSS font family list for the captions. */
   font: string;
   /** 'story': one clip at a time with a line of text. 'recap': a photo dump that builds into a collage. */
-  mode?: 'story' | 'recap';
+  mode?: 'story' | 'recap' | JumpStyle;
   /** Recap only: how many photos pop in on their own (the rest of the screen black) before the collage starts to build. */
   alone?: number;
 };
@@ -298,8 +300,9 @@ export function drawFrame(ctx: CanvasRenderingContext2D, t: number, tl: Timeline
     ctx.restore();
     return;
   }
-  if (look.mode === 'recap') {
-    drawRecap(ctx, t, seg, tl, cards, end, look);
+  if (look.mode && look.mode !== 'story') {
+    if (look.mode === 'recap') drawRecap(ctx, t, seg, tl, cards, end, look);
+    else drawJump(ctx, t, seg, tl, cards, end, look, look.mode);
     fadeOut(ctx, t, tl);
     ctx.restore();
     return;
@@ -438,7 +441,7 @@ function drawRecap(ctx: CanvasRenderingContext2D, t: number, seg: Segment, tl: T
   if (end.small && t >= third) drawSmall(ctx, end.small, H * 0.5 + 190, t - third, look);
 }
 
-function drawCover(ctx: CanvasRenderingContext2D, m: Media, scale: number) {
+export function drawCover(ctx: CanvasRenderingContext2D, m: Media, scale: number) {
   const s = Math.max(W / m.w, H / m.h) * scale;
   const w = m.w * s;
   const h = m.h * s;
@@ -497,7 +500,7 @@ function wrap(ctx: CanvasRenderingContext2D, text: string, max: number): string[
   return lines;
 }
 
-function drawCaption(ctx: CanvasRenderingContext2D, text: string, cy: number, dt: number, look: Look, ink: string | null) {
+export function drawCaption(ctx: CanvasRenderingContext2D, text: string, cy: number, dt: number, look: Look, ink: string | null) {
   const pop = easeOutBack(clamp01(dt / 0.16));
   const s = 0.82 + 0.18 * pop;
   const alpha = clamp01(dt / 0.05);
@@ -544,7 +547,7 @@ function drawCaption(ctx: CanvasRenderingContext2D, text: string, cy: number, dt
   ctx.restore();
 }
 
-function drawSmall(ctx: CanvasRenderingContext2D, text: string, cy: number, dt: number, look: Look) {
+export function drawSmall(ctx: CanvasRenderingContext2D, text: string, cy: number, dt: number, look: Look) {
   const pop = easeOutBack(clamp01(dt / 0.16));
   ctx.save();
   ctx.globalAlpha = clamp01(dt / 0.05);
