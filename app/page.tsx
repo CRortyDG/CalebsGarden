@@ -1,6 +1,7 @@
 import { projects } from '@/projects';
 import { Overgrowth } from '@/overgrowth/Overgrowth';
 import { getUsage } from '@/usage';
+import { livePosts } from './notes/_parts/posts';
 
 // The live counts are fetched on the server and the page is rebuilt at most twice a day.
 export const revalidate = 43200; // REVALIDATE_SECONDS in src/madtown-stats.ts
@@ -11,7 +12,7 @@ export default async function Home() {
   const usage = await getUsage();
   return (
     <main>
-      <Overgrowth projects={projects} usage={usage} />
+      <Overgrowth projects={projects} usage={usage} notes={livePosts().slice(0, 3)} />
     </main>
   );
 }
