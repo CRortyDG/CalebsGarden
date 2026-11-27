@@ -24,7 +24,8 @@ const minutes = (ms: number) => {
 
 export function gapWords(ms: number) {
   const min = ms / 60000;
-  if (min < 60) return `${Math.max(10, Math.round(min))} minutes later`;
+  if (min < 1) return 'a few seconds later';
+  if (min < 60) return Math.round(min) === 1 ? 'a minute later' : `${Math.round(min)} minutes later`;
   const h = min / 60;
   if (h < 20) return Math.round(h) === 1 ? 'an hour later' : `${Math.round(h)} hours later`;
   const d = Math.round(h / 24);

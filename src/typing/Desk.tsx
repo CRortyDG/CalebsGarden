@@ -136,6 +136,8 @@ function Editor({ id, onBack }: { id: string; onBack: () => void }) {
   const d = useRef<Draft | null>(null);
   const doc = useRef<Doc | null>(null);
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  // Opening a draft starts a new sitting with the first change, however soon you came back.
+  const reopened = useRef(true);
 
   useEffect(() => {
     getDraft(id).then((x) => {
@@ -186,7 +188,9 @@ function Editor({ id, onBack }: { id: string; onBack: () => void }) {
     if (!ch) return;
     const now = Date.now();
     const gap = x.lastWall === null ? 0 : now - x.lastWall;
-    if (x.lastWall === null || gap > BREAK_MS) x.sessions.push({ at: x.steps.length, wall: now });
+    const fresh = reopened.current && x.steps.length > 0;
+    reopened.current = false;
+    if (x.lastWall === null || gap > BREAK_MS || fresh) x.sessions.push({ at: x.steps.length, wall: now });
     const type = (e.nativeEvent as InputEvent).inputType ?? '';
     const step: Step = [gap, ch.pos, ch.del, ch.ins];
     if (/^insertFrom(Paste|Drop)/.test(type) && ch.ins.length > 1) step.push('p');

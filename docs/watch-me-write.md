@@ -14,7 +14,7 @@ libraries and no server.
 - Every change is one step: `[ms since the last step, position, characters removed, text typed, 'p' if pasted]`.
   The desk compares the text before and after each change, so paste, autocorrect, undo and
   phone keyboards all record correctly.
-- A gap of more than 10 minutes starts a new sitting. The replay shows it as a short
+- Opening a draft and typing starts a new sitting, and so does a gap of more than 10 minutes. The replay shows it as a short
   "Came back 2 days later" card.
 - **Notes to yourself**: select words, press Add note. Notes stay pinned to those words as
   you edit, are private, and "Back to then" replays from the moment you wrote one.
