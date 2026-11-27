@@ -3,9 +3,10 @@
 // Nothing happens while you're reading along. Leave the page still for a while
 // (no scrolling, typing or moving the pointer) and vines creep in from the
 // edges of the screen and take the page over, like a building left to the
-// weeds: they climb across the text and wrap around the lines, passing over a
-// word, under the next, and over again, and around the code and figures. Run the
-// pointer over them and the leaves it touches come loose and fall; scroll (as
+// weeds: they climb the margins and the edges of the text, and wrap around the
+// headings, passing over a letter, under the next, and over again. They keep
+// off the paragraphs, lists, code and boxes, so the reading stays clear. Run the
+// pointer over them and the leaves it touches come loose, drift down a little way and fade; scroll (as
 // you will) and every leaf drops at once and the bare vines fade, ready to grow
 // again the next time the page is left alone.
 //
@@ -48,6 +49,9 @@ interface Leaf {
   vy: number;
   va: number;
   phase: number;
+  /** how far it has fallen, and how far it falls before it's gone (5-10% of the screen) */
+  fell: number;
+  reach: number;
 }
 
 export function idleVines(
@@ -71,6 +75,7 @@ export function idleVines(
   let agents: Agent[] = [];
   // lines of text, and code, figures and boxes whole: what the vines wind round
   let lines: Box[] = [];
+  let keepOff: Box[] = [];
   let leaves: Leaf[] = [];
   let frame = 0;
   const last = { x: -1, y: -1 };
@@ -82,7 +87,9 @@ export function idleVines(
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
   }
 
-  // every line of text on screen, and figures and code as whole blocks
+  // what's on screen: the reading (paragraphs, lists, code, figures, boxes)
+  // as whole blocks the vines keep off, and each line of every heading,
+  // which they're free to climb over and wrap around
   function measure() {
     const solid: Box[] = [];
     const text: Box[] = [];
@@ -90,17 +97,17 @@ export function idleVines(
       if (r.width <= 0 || r.height <= 0 || r.bottom < -40 || r.top > vh + 40) return;
       boxes.push({ x: r.left - pad, y: r.top - pad, w: r.width + pad * 2, h: r.height + pad * 2 });
     };
-    for (const el of root.querySelectorAll('figure, pre, table, img, svg, .cs-short, button, input')) {
-      if (el.closest('.og-band')) continue;
-      add(solid, el.getBoundingClientRect(), 6);
+    for (const el of root.querySelectorAll('p, ul, ol, dl, blockquote, figure, pre, table, img, svg, .cs-short, nav, button, input')) {
+      if (el.closest('.og-band') && !el.matches('p')) continue;
+      add(solid, el.getBoundingClientRect(), 10);
     }
-    for (const el of root.querySelectorAll('h1, h2, h3, h4, p, li, dt, dd, blockquote, .back, .cs-kicker')) {
-      if (el.closest('figure, pre, .cs-short')) continue;
+    for (const el of root.querySelectorAll('h1, h2, h3, h4')) {
+      if (el.closest('figure, pre, .cs-short, nav')) continue;
       const r = el.getBoundingClientRect();
       if (r.bottom < -40 || r.top > vh + 40) continue;
       const range = document.createRange();
       range.selectNodeContents(el);
-      for (const line of range.getClientRects()) add(text, line, 1);
+      for (const line of range.getClientRects()) add(text, line, 2);
     }
     return { solid, text };
   }
@@ -113,7 +120,8 @@ export function idleVines(
     size(leafCanvas, lx!);
     wipe();
     const m = measure();
-    lines = [...m.text, ...m.solid];
+    lines = m.text;
+    keepOff = m.solid;
     leaves = [];
     agents = [];
     const phone = vw < 760;
@@ -122,9 +130,9 @@ export function idleVines(
       agents.push({
         x, y, a, home: a, wrap: Math.random() * TAU,
         width: thick * (0.75 + Math.random() * 0.5),
-        life: (phone ? 600 : 1000) + Math.random() * (phone ? 500 : 800),
+        life: (phone ? 450 : 750) + Math.random() * (phone ? 400 : 600),
       });
-    const n = phone ? 3 : 5;
+    const n = phone ? 2 : 3;
     // in from both edges, toward the text, at spread-out heights
     for (let i = 0; i < n; i++) {
       seed(-4, vh * ((i + 0.2 + Math.random() * 0.6) / n), (Math.random() - 0.5) * 0.7);
@@ -133,7 +141,6 @@ export function idleVines(
     // and up from the bottom of the screen
     seed(vw * (0.15 + Math.random() * 0.2), vh + 4, -Math.PI / 2 + (Math.random() - 0.5) * 0.5);
     seed(vw * (0.65 + Math.random() * 0.2), vh + 4, -Math.PI / 2 + (Math.random() - 0.5) * 0.5);
-    seed(vw * (0.4 + Math.random() * 0.2), vh + 4, -Math.PI / 2 + (Math.random() - 0.5) * 0.5);
     // and down from the top corners
     seed(vw * (0.05 + Math.random() * 0.1), -4, Math.PI / 2 + (Math.random() - 0.5) * 0.6);
     seed(vw * (0.85 + Math.random() * 0.1), -4, Math.PI / 2 + (Math.random() - 0.5) * 0.6);
@@ -158,7 +165,16 @@ export function idleVines(
     const next: Agent[] = [];
     for (const g of agents) {
       g.a = turn(g.a, g.home, 0.015) + (Math.random() - 0.5) * 0.32;
-      // on the text, creep along the line, winding over and under it
+      // keep off the reading: turn aside before a paragraph or box, and
+      // climb along its edge like ivy up a wall; one that ends up on it stops
+      const ahead = hit(keepOff, g.x + Math.cos(g.a) * 16, g.y + Math.sin(g.a) * 16);
+      if (ahead) {
+        const away = Math.atan2(g.y - (ahead.y + ahead.h / 2), (g.x - (ahead.x + ahead.w / 2)) * (ahead.h / ahead.w));
+        g.a = turn(g.a, away, 0.35);
+        g.home = Math.sin(g.a) >= 0 ? Math.PI / 2 : -Math.PI / 2;
+      }
+      if (hit(keepOff, g.x, g.y)) continue;
+      // on a heading, creep along the line, winding over and under it
       const on = hit(lines, g.x, g.y);
       if (on) {
         g.a = turn(g.a, Math.cos(g.a) >= 0 ? 0 : Math.PI, 0.03);
@@ -183,7 +199,7 @@ export function idleVines(
         const side = Math.random() < 0.5 ? 1 : -1;
         leaves.push(leaf(g.x, g.y, g.a + side * (0.8 + Math.random() * 0.6), 4 + g.width * 2.4, false));
       }
-      if (Math.random() < 0.007 && agents.length + next.length < (vw < 760 ? 50 : 90) && g.width > 1) {
+      if (Math.random() < 0.007 && agents.length + next.length < (vw < 760 ? 25 : 45) && g.width > 1) {
         const a = g.a + (Math.random() < 0.5 ? 1 : -1) * (0.6 + Math.random() * 0.6);
         next.push({ x: g.x, y: g.y, a, home: a, wrap: Math.random() * TAU, width: g.width * 0.7, life: 200 + Math.random() * 400 });
       }
@@ -197,11 +213,11 @@ export function idleVines(
     return {
       x, y, a, len, flower,
       col: flower ? PETALS[Math.floor(Math.random() * PETALS.length)] : LEAF_COLS[Math.floor(Math.random() * LEAF_COLS.length)],
-      open: 0, drop: -1, vx: 0, vy: 0, va: 0, phase: Math.random() * TAU,
+      open: 0, drop: -1, vx: 0, vy: 0, va: 0, phase: Math.random() * TAU, fell: 0, reach: 0,
     };
   }
   function bud(g: Agent) {
-    if (g.x > 0 && g.x < vw && g.y > 0 && g.y < vh && Math.random() < 0.35) leaves.push(leaf(g.x, g.y, Math.random() * TAU, vw < 760 ? 3.5 : 5, true));
+    if (g.x > 0 && g.x < vw && g.y > 0 && g.y < vh && !hit(keepOff, g.x, g.y) && Math.random() < 0.35) leaves.push(leaf(g.x, g.y, Math.random() * TAU, vw < 760 ? 3.5 : 5, true));
   }
 
   function fall(l: Leaf, delay: number) {
@@ -210,12 +226,15 @@ export function idleVines(
     l.vx = (Math.random() - 0.5) * 0.8;
     l.vy = -0.2 - Math.random() * 0.4;
     l.va = (Math.random() - 0.5) * 0.08;
+    l.reach = vh * (0.05 + Math.random() * 0.05);
   }
 
   function drawLeaves() {
     lx!.clearRect(0, 0, vw, vh);
     for (const l of leaves) {
       lx!.save();
+      // a falling leaf fades over the second half of its fall
+      if (l.drop === 0) lx!.globalAlpha = Math.max(0, Math.min(1, 2 * (1 - l.fell / l.reach)));
       lx!.translate(l.x, l.y);
       lx!.rotate(l.a);
       lx!.fillStyle = l.col;
@@ -247,7 +266,7 @@ export function idleVines(
   function tick() {
     raf = 0;
     frame++;
-    if (state === 'growing') for (let i = 0; i < 3 && agents.length; i++) grow();
+    if (state === 'growing' && agents.length) grow();
     let moving = false;
     const kept: Leaf[] = [];
     for (const l of leaves) {
@@ -259,13 +278,15 @@ export function idleVines(
         l.drop--;
         moving = true;
       } else if (l.drop === 0) {
-        // drift down, swaying side to side and turning over
-        l.vy = Math.min(1.3, l.vy + 0.03);
-        l.x += l.vx + Math.sin(frame * 0.05 + l.phase) * 0.6;
+        // drift down slowly, swaying side to side and turning over, and fade
+        // away a short way down rather than falling right off the screen
+        l.vy = Math.min(0.55, l.vy + 0.02);
+        l.x += l.vx * 0.5 + Math.sin(frame * 0.05 + l.phase) * 0.4;
         l.y += l.vy;
+        l.fell += Math.max(0, l.vy);
         l.a += l.va + Math.sin(frame * 0.04 + l.phase) * 0.02;
         moving = true;
-        if (l.y > vh + 20) continue;
+        if (l.fell >= l.reach) continue;
       }
       kept.push(l);
     }
