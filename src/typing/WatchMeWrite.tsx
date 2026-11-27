@@ -13,7 +13,7 @@ import './typing.css';
  * note and opens the same explanation. The recording only downloads when
  * someone asks to watch.
  */
-export function HumanTag({ slug, minutesOfWriting, sessions, invite = false }: { slug: string; minutesOfWriting: number; sessions: number; invite?: boolean }) {
+export function HumanTag({ slug, minutesOfWriting, sessions, invite = false, ai }: { slug: string; minutesOfWriting: number; sessions: number; invite?: boolean; ai?: number }) {
   const [rec, setRec] = useState<Recording | null>(null);
   const [state, setState] = useState<'closed' | 'info' | 'loading' | 'open' | 'failed'>('closed');
   const [slot, setSlot] = useState<HTMLElement | null>(null);
@@ -38,10 +38,17 @@ export function HumanTag({ slug, minutesOfWriting, sessions, invite = false }: {
       <Player rec={rec} onClose={() => setState('closed')} />
     ) : state !== 'closed' ? (
       <div className="ww-info" id="ww-info">
-        <p>
-          I typed this note myself at my writing desk, which recorded every keystroke, deletion and pause. You can watch it being written, as a way of showing it&rsquo;s
-          human written. It&rsquo;s a record of the writing, not proof.
-        </p>
+        {ai === undefined ? (
+          <p>
+            I typed this note myself at my writing desk, which recorded every keystroke, deletion and pause. You can watch it being written, as a way of showing it&rsquo;s
+            human written. It&rsquo;s a record of the writing, not proof.
+          </p>
+        ) : (
+          <p>
+            I wrote this at my writing desk with some help from an AI. The desk recorded every keystroke, and every time I pasted in its words, with what I asked. About{' '}
+            {ai}% of the text is still its words as it wrote them; the note below marks which. You can also watch it being written.
+          </p>
+        )}
         <div className="ww-info-actions">
           <button type="button" className="ww-watch" onClick={watch} disabled={state === 'loading'}>
             <span aria-hidden>▶</span> {state === 'loading' ? 'Loading…' : 'Watch me write this'}
@@ -74,7 +81,7 @@ export function HumanTag({ slug, minutesOfWriting, sessions, invite = false }: {
           if (state === 'closed') slot?.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
         }}
       >
-        Human written <span className="ww-tag-i" aria-hidden>ⓘ</span>
+        {ai === undefined ? 'Human written' : 'Written with AI help'} <span className="ww-tag-i" aria-hidden>ⓘ</span>
       </button>
       {slot && panel ? createPortal(panel, slot) : null}
     </>

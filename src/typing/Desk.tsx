@@ -1,7 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { BREAK_MS, deletedSpans, diff, finalText, maskSteps, replay, wordCount, type DeskNote, type Doc, type Recording, type Step } from './format';
+import { BREAK_MS, deletedSpans, diff, finalText, maskSteps, replay, wordCount, type Ask, type DeskNote, type Doc, type Recording, type Step } from './format';
 import { Player } from './Player';
 import { askToKeep, deleteDraft, download, getDraft, listDrafts, newDraft, putDraft, type Backup, type Draft } from './store';
 import './typing.css';
@@ -132,6 +132,9 @@ function Editor({ id, onBack }: { id: string; onBack: () => void }) {
   const [panel, setPanel] = useState<Panel>(null);
   const [adding, setAdding] = useState<null | { from: number; to: number; quote: string }>(null);
   const [noteText, setNoteText] = useState('');
+  // AI help: a paste waiting to be marked (or not), and the "what did you ask?" form.
+  const [pasted, setPasted] = useState<null | { step: number; len: number }>(null);
+  const [asking, setAsking] = useState<null | { step: number | null; prompt: string; reply: string; tool: string }>(null);
   const ta = useRef<HTMLTextAreaElement>(null);
   const d = useRef<Draft | null>(null);
   const doc = useRef<Doc | null>(null);
@@ -189,7 +192,10 @@ function Editor({ id, onBack }: { id: string; onBack: () => void }) {
     if (x.lastWall === null || gap > BREAK_MS) x.sessions.push({ at: x.steps.length, wall: now });
     const type = (e.nativeEvent as InputEvent).inputType ?? '';
     const step: Step = [gap, ch.pos, ch.del, ch.ins];
-    if (/^insertFrom(Paste|Drop)/.test(type) && ch.ins.length > 1) step.push('p');
+    if (/^insertFrom(Paste|Drop)/.test(type) && ch.ins.length > 1) {
+      step.push('p');
+      setPasted({ step: x.steps.length, len: ch.ins.length });
+    }
     x.steps.push(step);
     // replay() and apply() agree; apply keeps the ids notes are pinned to.
     const before = dc.text;
@@ -255,6 +261,30 @@ function Editor({ id, onBack }: { id: string; onBack: () => void }) {
     window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY + line * 28 - window.innerHeight / 3, behavior: 'smooth' });
   };
 
+  /** Mark a paste as text from an AI (a new ask, or more from one already logged), or log an ask whose reply wasn't pasted. */
+  const lastTool = () => [...(d.current?.asks ?? [])].reverse().find((a) => a.tool)?.tool ?? 'Claude';
+  const markPaste = (k: number) => {
+    const x = d.current;
+    if (!x || !pasted) return;
+    x.steps[pasted.step][4] = `a${k}`;
+    x.updated = Date.now();
+    setPasted(null);
+    setVersion((v) => v + 1);
+    soon();
+  };
+  const saveAsk = () => {
+    const x = d.current;
+    if (!x || !asking || !asking.prompt.trim()) return;
+    const a: Ask = { at: asking.step ?? x.steps.length, prompt: asking.prompt.trim(), tool: asking.tool.trim() || undefined, reply: asking.reply.trim() || undefined };
+    x.asks = [...(x.asks ?? []), a];
+    if (asking.step !== null) x.steps[asking.step][4] = `a${x.asks.length - 1}`;
+    x.updated = Date.now();
+    setAsking(null);
+    setPasted(null);
+    setVersion((v) => v + 1);
+    soon();
+  };
+
   const backup = () => {
     const x = d.current;
     if (!x) return;
@@ -286,6 +316,9 @@ function Editor({ id, onBack }: { id: string; onBack: () => void }) {
         <button type="button" onMouseDown={(e) => e.preventDefault()} onClick={startNote}>
           Add note
         </button>
+        <button type="button" onClick={() => setAsking({ step: null, prompt: '', reply: '', tool: lastTool() })} title="Log something you asked an AI, even if you don't use its answer">
+          AI ask{x.asks?.length ? ` · ${x.asks.length}` : ''}
+        </button>
         <button type="button" onClick={() => setPanel({ kind: 'watch', startAt: 0 })} disabled={!x.steps.length}>
           Watch it
         </button>
@@ -303,6 +336,59 @@ function Editor({ id, onBack }: { id: string; onBack: () => void }) {
             Save a backup
           </button>
         </p>
+      )}
+
+      {pasted && !asking && (
+        <div className="desk-paste" role="status">
+          <span>
+            You pasted {pasted.len} characters. Was it from an AI?
+          </span>
+          <button
+            type="button"
+            className="desk-primary"
+            onClick={() => setAsking({ step: pasted.step, prompt: '', reply: x.steps[pasted.step][3], tool: lastTool() })}
+          >
+            Yes, mark it
+          </button>
+          {(x.asks?.length ?? 0) > 0 && (
+            <button type="button" onClick={() => markPaste(x.asks!.length - 1)} title={x.asks![x.asks!.length - 1].prompt}>
+              More from ask {x.asks!.length}
+            </button>
+          )}
+          <button type="button" onClick={() => setPasted(null)}>
+            No, it&rsquo;s mine
+          </button>
+        </div>
+      )}
+      {asking && (
+        <div className="desk-ask">
+          <h2>{asking.step === null ? 'Log an AI ask' : 'Where this paste came from'}</h2>
+          <p className="desk-hint">
+            {asking.step === null
+              ? 'For something you asked and didn’t paste in. Readers see it in the list of everything you asked, as not used.'
+              : 'The pasted words show as the AI’s until you type over them. Readers see what you asked and, if you keep it here, the whole reply.'}
+          </p>
+          <label className="desk-field">
+            <span>Which AI</span>
+            <input value={asking.tool} onChange={(e) => setAsking({ ...asking, tool: e.target.value })} />
+          </label>
+          <label className="desk-field">
+            <span>What you asked</span>
+            <textarea rows={3} value={asking.prompt} onChange={(e) => setAsking({ ...asking, prompt: e.target.value })} autoFocus />
+          </label>
+          <label className="desk-field">
+            <span>What it gave back (optional)</span>
+            <textarea rows={4} value={asking.reply} onChange={(e) => setAsking({ ...asking, reply: e.target.value })} />
+          </label>
+          <div className="desk-actions">
+            <button type="button" className="desk-primary" onClick={saveAsk} disabled={!asking.prompt.trim()}>
+              Save
+            </button>
+            <button type="button" onClick={() => setAsking(null)}>
+              Cancel
+            </button>
+          </div>
+        </div>
       )}
 
       <div className="desk-grid">
@@ -359,7 +445,7 @@ function Editor({ id, onBack }: { id: string; onBack: () => void }) {
       {panel && (
         <div className="desk-overlay" role="dialog" aria-modal="true" aria-label={panel.kind === 'publish' ? 'Publish' : 'Watch it'} onKeyDown={(e) => e.key === 'Escape' && setPanel(null)}>
           <div className="desk-sheet">
-            {panel.kind === 'watch' && <Player rec={{ v: 1, steps: x.steps, sessions: x.sessions, notes: x.notes.map((n) => ({ at: n.at, text: n.text, from: n.from, to: n.to })) }} startAt={panel.startAt} onClose={() => setPanel(null)} />}
+            {panel.kind === 'watch' && <Player rec={{ v: 1, steps: x.steps, sessions: x.sessions, notes: x.notes.map((n) => ({ at: n.at, text: n.text, from: n.from, to: n.to })), asks: x.asks }} startAt={panel.startAt} onClose={() => setPanel(null)} />}
             {panel.kind === 'preview' && (
               <>
                 <p className="desk-sheet-label">Preview: what readers will see</p>
@@ -474,6 +560,7 @@ function Publish({
       sessions: draft.sessions,
       notes: draft.notes.filter((n) => show.has(n.id)).map((n) => ({ at: n.at, text: n.text, from: n.from, to: n.to })),
       hidden: ids.size || undefined,
+      asks: draft.asks?.length ? draft.asks : undefined,
     };
   };
   const kb = Math.round(JSON.stringify(build()).length / 1024);
@@ -536,6 +623,37 @@ function Publish({
                   <input type="checkbox" checked={show.has(n.id)} onChange={(e) => set('show', n.id, e.target.checked)} />
                   <span>{n.text}</span>
                 </label>
+              </li>
+            ))}
+          </ul>
+        </>
+      )}
+
+      <h3>AI help ({draft.asks?.length ?? 0})</h3>
+      {!draft.asks?.length ? (
+        <p className="desk-hint">Nothing pasted from an AI or logged as an ask. The note will say it was typed.</p>
+      ) : (
+        <>
+          <p className="desk-hint">
+            Readers see every ask, what it gave back and what you did with it, and each sentence is marked as typed or the AI&rsquo;s. Add a line on why, if you
+            like, especially for ones you didn&rsquo;t use.
+          </p>
+          <ul className="desk-spans">
+            {draft.asks.map((a, k) => (
+              <li key={k}>
+                <span>
+                  <strong>Ask {k + 1}:</strong> {a.prompt}
+                  <input
+                    className="desk-why"
+                    placeholder="Why (optional)"
+                    value={a.why ?? ''}
+                    onChange={(e) => {
+                      a.why = e.target.value || undefined;
+                      force((v) => v + 1);
+                      onChange();
+                    }}
+                  />
+                </span>
               </li>
             ))}
           </ul>

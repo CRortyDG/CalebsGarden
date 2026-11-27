@@ -2,7 +2,7 @@
 // Run: npm run typing:check   (node 22.18+ runs TypeScript directly)
 import { readdirSync, readFileSync, existsSync } from 'node:fs';
 import assert from 'node:assert/strict';
-import { MASK, deletedSpans, diff, finalText, isRecording, maskSteps, replay, snapshots, stepsAt, textAt, timeline, type Recording, type Step } from '../src/typing/format.ts';
+import { MASK, blocks, deletedSpans, diff, finalOrigins, finalText, isRecording, maskSteps, outcomes, replay, share, snapshots, stepsAt, textAt, timeline, who, type Recording, type Step } from '../src/typing/format.ts';
 
 // Type a string the way the desk records it: diff before/after each change.
 function record(states: string[], dt = 120): Step[] {
@@ -67,6 +67,53 @@ assert.equal(stepsAt(real, 0), 1);
 assert.equal(stepsAt(real, 4999), 1);
 assert.equal(stepsAt(real, 5000), 2);
 assert.equal(stepsAt(real, real.total), 3);
+
+// AI help: pasted text is the AI's until typed over; asks know what became of them
+{
+  const ai: Recording = {
+    v: 1,
+    sessions: [{ at: 0, wall: 0 }],
+    asks: [
+      { at: 1, prompt: 'opening line?', reply: 'The cat sat.' },
+      { at: 3, prompt: 'a list?', reply: '- a\n- b' },
+      { at: 4, prompt: 'warmer?', reply: 'nope' },
+    ],
+    steps: [
+      [100, 0, 0, 'Hi. '], // typed
+      [100, 4, 0, 'The cat sat.', 'a0'], // pasted from ask 1
+      [100, 8, 3, 'dog'], // "cat" typed over
+      [100, 16, 0, ' More.', 'a1'], // pasted from ask 2...
+      [100, 16, 6, ''], // ...and cut
+    ],
+  };
+  assert.ok(isRecording(ai));
+  const { text, origin } = finalOrigins(ai);
+  assert.equal(text, 'Hi. The dog sat.');
+  assert.deepEqual([...origin].map((o) => (o < 0 ? 'm' : String(o))).join(''), 'mmmm0000mmm00000');
+  assert.deepEqual(share(text, origin), { mine: 6, ai: 7, aiPct: 54 });
+  assert.deepEqual(
+    outcomes(ai).map((o) => o.kind),
+    ['edited', 'cut', 'unused'],
+  );
+  const segs = blocks(text).flatMap((b) => b.items.flat());
+  assert.deepEqual(
+    segs.map((g) => who(text, origin, g).who),
+    ['mine', 'mixed'],
+  );
+  // An ask number past the end of asks is a broken file
+  assert.ok(!isRecording({ ...ai, asks: ai.asks!.slice(0, 1) }));
+  // Headings, list items and quotes are cut without their markers
+  const b = blocks('## Head\n\n- one. two\n- three\n\n> said it');
+  const t = '## Head\n\n- one. two\n- three\n\n> said it';
+  assert.deepEqual(
+    b.map((x) => [x.kind, x.items.map((it) => it.map((g) => t.slice(g.start, g.end)))]),
+    [
+      ['h2', [['Head']]],
+      ['ul', [['one.', 'two'], ['three']]],
+      ['quote', [['said it']]],
+    ],
+  );
+}
 
 // Every published recording is well formed
 const dir = new URL('../public/typing/', import.meta.url);

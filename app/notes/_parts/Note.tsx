@@ -33,7 +33,7 @@ export function Note({
   slug: string;
   kind: 'idea' | 'working' | 'note';
   /** For a note written at the desk: adds the "Human written" tag that opens the replay. */
-  recording?: { slug: string; minutesOfWriting: number; sessions: number; invite?: boolean };
+  recording?: { slug: string; minutesOfWriting: number; sessions: number; invite?: boolean; ai?: number };
   children: React.ReactNode;
 }) {
   const p = allPosts.find((x) => x.slug === slug)!;

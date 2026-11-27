@@ -13,7 +13,21 @@
  * and in node (scripts/typing-check.ts).
  */
 
-export type Step = [dt: number, pos: number, del: number, ins: string, flag?: 'p'];
+export type Step = [dt: number, pos: number, del: number, ins: string, flag?: StepFlag];
+
+/** 'p': a paste or drop. 'a0', 'a1'…: text pasted from an AI, from that ask (an index into `asks`). */
+export type StepFlag = 'p' | `a${number}`;
+
+/**
+ * One time the writer asked an AI for help: what they asked, what came back,
+ * and the moment it happened (step count, like a note). Text pasted from the
+ * reply is flagged on its step, so every character knows where it came from.
+ * An ask with nothing pasted from it is a suggestion the writer didn't use.
+ */
+export type Ask = { at: number; prompt: string; reply?: string; tool?: string; why?: string };
+
+/** Which ask a step's text came from, or -1 if it was typed (or pasted from somewhere else). */
+export const askOf = (s: Step): number => (s[4] && s[4] !== 'p' ? Number(s[4].slice(1)) : -1);
 
 export type Session = { at: number; wall: number }; // first step of the session, wall clock (ms)
 
@@ -47,6 +61,7 @@ export type Recording = {
   sessions: Session[];
   notes?: ShownNote[];
   hidden?: number; // how many characters were blanked out, for the "What this shows" line
+  asks?: Ask[]; // AI help, in the order it was asked
 };
 
 /** Where a note's replay opens: the top of its text (RecordedNote puts an element with this id there). */
@@ -253,7 +268,7 @@ export function textAt(steps: Step[], snaps: string[], n: number, every = 400): 
 }
 
 /** Markers for the scrubber: big deletions, pastes, new sessions, shown notes. */
-export type Marker = { step: number; kind: 'delete' | 'paste' | 'session' | 'note'; label: string };
+export type Marker = { step: number; kind: 'delete' | 'paste' | 'session' | 'note' | 'ai'; label: string };
 
 export function markers(rec: Recording): Marker[] {
   const out: Marker[] = [];
@@ -262,6 +277,7 @@ export function markers(rec: Recording): Marker[] {
     if (s[2] >= BIG_DELETE) out.push({ step: i, kind: 'delete', label: `Deleted ${s[2]} characters` });
     if (s[4] === 'p') out.push({ step: i, kind: 'paste', label: `Pasted ${s[3].length} characters` });
   });
+  (rec.asks ?? []).forEach((a, k) => out.push({ step: Math.max(0, a.at - 1), kind: 'ai', label: `Ask ${k + 1}: ${a.prompt}` }));
   (rec.notes ?? []).forEach((n) => out.push({ step: Math.max(0, n.at - 1), kind: 'note', label: n.text }));
   return out.sort((a, b) => a.step - b.step);
 }
@@ -274,6 +290,151 @@ export function isRecording(x: unknown): x is Recording {
     r.v === 1 &&
     Array.isArray(r.steps) &&
     Array.isArray(r.sessions) &&
-    r.steps.every((s) => Array.isArray(s) && typeof s[0] === 'number' && typeof s[1] === 'number' && typeof s[2] === 'number' && typeof s[3] === 'string')
+    r.steps.every((s) => Array.isArray(s) && typeof s[0] === 'number' && typeof s[1] === 'number' && typeof s[2] === 'number' && typeof s[3] === 'string') &&
+    (r.asks === undefined || (Array.isArray(r.asks) && r.asks.every((a) => typeof a.at === 'number' && typeof a.prompt === 'string'))) &&
+    r.steps.every((s) => askOf(s) < (r.asks?.length ?? 0))
   );
+}
+
+// ---------- "How this was made": who wrote what ----------
+/*
+ * Who wrote each part of a piece, worked out from its
+ * recording. Text pasted from an AI is flagged on its step (see `askOf`), and
+ * every character keeps its id, so the final text can say, character by
+ * character, whether it was typed or came from an AI and is still exactly as
+ * the AI wrote it. A character the writer typed over an AI draft counts as
+ * theirs.
+ */
+
+export const MINE = -1;
+
+/** For every character id ever typed, the ask it came from (MINE if typed). */
+export function originById(steps: Step[]): Int16Array {
+  let n = 0;
+  for (const s of steps) n += s[3].length;
+  const out = new Int16Array(n).fill(MINE);
+  let id = 0;
+  for (const s of steps) {
+    const k = askOf(s);
+    if (k >= 0) out.fill(k, id, id + s[3].length);
+    id += s[3].length;
+  }
+  return out;
+}
+
+/** The final text and, for each of its characters, where it came from. */
+export function finalOrigins(rec: Pick<Recording, 'steps'>): { text: string; origin: Int16Array } {
+  const byId = originById(rec.steps);
+  const d = emptyDoc();
+  for (const s of rec.steps) apply(d, s);
+  return { text: d.text, origin: Int16Array.from(d.ids, (id) => byId[id]) };
+}
+
+const solid = (c: string) => !/\s/.test(c);
+
+export type Share = { mine: number; ai: number; aiPct: number };
+
+/** Characters (spaces left out) typed by the writer vs still as the AI wrote them. */
+export function share(text: string, origin: Int16Array, from = 0, to = text.length): Share {
+  let mine = 0;
+  let ai = 0;
+  for (let i = from; i < to; i++) {
+    if (!solid(text[i])) continue;
+    if (origin[i] === MINE) mine++;
+    else ai++;
+  }
+  const all = mine + ai;
+  return { mine, ai, aiPct: all ? Math.round((100 * ai) / all) : 0 };
+}
+
+export type Outcome = { kind: 'unused' | 'kept' | 'edited' | 'cut'; offered: number; kept: number; pct: number };
+
+/** What became of each ask: never pasted, pasted and kept as written, partly kept, or pasted then cut. */
+export function outcomes(rec: Recording): Outcome[] {
+  const asks = rec.asks ?? [];
+  const offered = new Array(asks.length).fill(0);
+  for (const s of rec.steps) {
+    const k = askOf(s);
+    if (k >= 0) for (const c of s[3]) if (solid(c)) offered[k]++;
+  }
+  const kept = new Array(asks.length).fill(0);
+  const { text, origin } = finalOrigins(rec);
+  for (let i = 0; i < text.length; i++) if (origin[i] >= 0 && solid(text[i])) kept[origin[i]]++;
+  return asks.map((_, k) => {
+    const o = offered[k];
+    const c = kept[k];
+    const pct = o ? Math.round((100 * c) / o) : 0;
+    const kind = o === 0 ? 'unused' : c === 0 ? 'cut' : c >= o ? 'kept' : 'edited';
+    return { kind, offered: o, kept: c, pct };
+  });
+}
+
+// ---------- the text cut into sentences, for the "who wrote what" view ----------
+
+export type Seg = { start: number; end: number };
+export type Block = { kind: 'h2' | 'h3' | 'p' | 'ul' | 'ol' | 'quote'; items: Seg[][] };
+
+/** Sentences in a run of text, as [start, end) offsets with the spaces around them left out. */
+function sentences(text: string, from: number, to: number): Seg[] {
+  const out: Seg[] = [];
+  let a = from;
+  for (let i = from; i < to; i++) {
+    const end = i === to - 1 || (/[.!?]/.test(text[i]) && /\s/.test(text[i + 1] ?? ' ') && !/[.!?]/.test(text[i + 1] ?? ''));
+    if (!end) continue;
+    let s = a;
+    let e = i + 1;
+    while (s < e && /\s/.test(text[s])) s++;
+    while (e > s && /\s/.test(text[e - 1])) e--;
+    if (e > s) out.push({ start: s, end: e });
+    a = i + 1;
+  }
+  return out;
+}
+
+/**
+ * The same blocks the note's Markdown makes (paragraphs, ## headings, lists,
+ * quotes), but as offsets into the text, cut into sentences. List items and
+ * quote lines are cut the same way, with their markers left out.
+ */
+export function blocks(text: string, from = 0): Block[] {
+  const lines: { start: number; end: number }[] = [];
+  let at = from;
+  for (const l of text.slice(from).split('\n')) {
+    lines.push({ start: at, end: at + l.length });
+    at += l.length + 1;
+  }
+  const groups: { start: number; end: number }[][] = [];
+  let cur: { start: number; end: number }[] = [];
+  const flush = () => (cur.length && groups.push(cur), (cur = []));
+  for (const l of lines) {
+    const t = text.slice(l.start, l.end);
+    if (!t.trim()) flush();
+    else if (/^#{1,3}\s/.test(t)) {
+      flush();
+      groups.push([l]);
+    } else cur.push(l);
+  }
+  flush();
+  return groups.map((g) => {
+    const first = text.slice(g[0].start, g[0].end);
+    const h = first.match(/^(#{1,3})\s+/);
+    if (h) return { kind: h[1].length === 3 ? 'h3' : 'h2', items: [sentences(text, g[0].start + h[0].length, g[0].end)] };
+    const lineItems = (re: RegExp) => g.map((l) => sentences(text, l.start + (text.slice(l.start, l.end).match(re)?.[0].length ?? 0), l.end));
+    const all = (re: RegExp) => g.every((l) => re.test(text.slice(l.start, l.end)));
+    if (all(/^>\s?/)) return { kind: 'quote', items: [lineItems(/^>\s?/).flat()] };
+    if (all(/^[-*]\s+/)) return { kind: 'ul', items: lineItems(/^[-*]\s+/) };
+    if (all(/^\d+\.\s+/)) return { kind: 'ol', items: lineItems(/^\d+\.\s+/) };
+    return { kind: 'p', items: [sentences(text, g[0].start, g[g.length - 1].end)] };
+  });
+}
+
+export type Who = 'mine' | 'ai' | 'mixed';
+
+/** Who wrote a sentence: all typed, all still the AI's words, or a mix. `ask` is the ask most of its AI words came from. */
+export function who(text: string, origin: Int16Array, seg: Seg): { who: Who; ask: number; aiPct: number } {
+  const sh = share(text, origin, seg.start, seg.end);
+  const count = new Map<number, number>();
+  for (let i = seg.start; i < seg.end; i++) if (origin[i] >= 0) count.set(origin[i], (count.get(origin[i]) ?? 0) + 1);
+  const ask = [...count.entries()].sort((a, b) => b[1] - a[1])[0]?.[0] ?? MINE;
+  return { who: sh.ai === 0 ? 'mine' : sh.mine === 0 ? 'ai' : 'mixed', ask, aiPct: sh.aiPct };
 }
