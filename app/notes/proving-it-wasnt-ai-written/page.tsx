@@ -9,7 +9,7 @@ export const revalidate = 3600; // a scheduled note goes live within the hour of
 
 export default function Page() {
   return (
-    <Note slug={SLUG} kind="working" recording={recordingInfo(SLUG, rec)}>
+    <Note slug={SLUG} kind="working" recording={{ ...recordingInfo(SLUG, rec), invite: true }}>
       <RecordedNote slug={SLUG} rec={rec} />
     </Note>
   );

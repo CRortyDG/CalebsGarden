@@ -650,3 +650,25 @@
 .ww-tag-i {
   text-transform: none;
 }
+/* With `invite`: a small "Watch me write this" button at the top of the note. */
+.ww-invite-small {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 28px;
+  padding: 5px 14px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: transparent;
+  font-size: 0.85rem;
+  color: var(--muted);
+  cursor: pointer;
+}
+.ww-invite-small span {
+  color: var(--lamp);
+  font-size: 0.75rem;
+}
+.ww-invite-small:hover {
+  border-color: var(--lamp);
+  color: var(--ink);
+}
