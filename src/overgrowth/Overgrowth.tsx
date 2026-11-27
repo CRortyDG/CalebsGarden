@@ -7,6 +7,7 @@ import { ProjectDetails } from '@/site/ProjectDetails';
 import { ProjectList } from '@/site/ProjectList';
 import { SeedList } from '@/site/SeedList';
 import type { Usage } from '@/usage';
+import { formatDate, postUrl, type Post } from '../../app/notes/_parts/posts';
 import { Flower } from './Flower';
 import { growStem } from './stem';
 import { growVines } from './vines';
@@ -19,7 +20,7 @@ import { growVines } from './vines';
  */
 const fmt = (n: number) => n.toLocaleString('en-US');
 
-export function Overgrowth({ projects, usage }: { projects: Project[]; usage?: Usage }) {
+export function Overgrowth({ projects, usage, notes = [] }: { projects: Project[]; usage?: Usage; notes?: Post[] }) {
   const ref = useRef<HTMLDivElement>(null);
   const indexRef = useRef<HTMLDialogElement>(null);
   const regrowRef = useRef<() => void>(() => {});
@@ -134,10 +135,23 @@ export function Overgrowth({ projects, usage }: { projects: Project[]; usage?: U
                     {p.blurb && <p className="sheet-blurb">{p.blurb}</p>}
                     {p.about && <p className="sheet-about">{p.about}</p>}
                     {p.seeds && p.seeds.length > 0 && <SeedList seeds={p.seeds} />}
+                    {p.id === 'notes' && notes.length > 0 && (
+                      <ol className="og-latest" aria-label="Latest notes">
+                        {notes.map((n) => (
+                          <li key={n.slug}>
+                            <a href={postUrl(n.slug)}>
+                              <time dateTime={n.date}>{formatDate(n.date)}</time>
+                              <span className="og-latest-title">{n.title}</span>
+                              <span className="og-latest-summary">{n.summary}</span>
+                            </a>
+                          </li>
+                        ))}
+                      </ol>
+                    )}
                     {p.href && (
                       <div className="sheet-actions">
                         <a className="button is-primary" href={p.href}>
-                          Open {p.name.toLowerCase()}
+                          {p.id === 'notes' && notes.length > 0 ? 'All notes' : `Open ${p.name.toLowerCase()}`}
                         </a>
                       </div>
                     )}
@@ -185,6 +199,19 @@ export function Overgrowth({ projects, usage }: { projects: Project[]; usage?: U
               <a href="/experience">The full story: what I owned at each job, and the receipts →</a>
             </p>
           </section>
+          {site.gate.welcome.length > 0 && site.links[0] && (
+            <section id="say-hello" className="og-gate" aria-labelledby="og-gate-title">
+              <h2 id="og-gate-title">{site.gate.title}</h2>
+              <ul>
+                {site.gate.welcome.map((w) => (
+                  <li key={w}>{w}</li>
+                ))}
+              </ul>
+              <p className="og-gate-write">
+                Write to me at <a href={site.links[0].href}>{site.links[0].href.replace(/^mailto:/, '')}</a>
+              </p>
+            </section>
+          )}
           <p>
             © {new Date().getFullYear()} Caleb · {site.name}
           </p>

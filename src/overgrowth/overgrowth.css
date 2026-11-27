@@ -299,6 +299,46 @@ html:has(.og) {
   opacity: 1;
 }
 
+/* the latest few notes, inside the Notes card */
+.og-latest {
+  list-style: none;
+  margin: 18px 0 4px;
+  padding: 0;
+  border-top: 1px solid var(--og-card-line);
+}
+.og-latest li {
+  border-bottom: 1px solid var(--og-card-line);
+}
+.og-latest a {
+  display: grid;
+  gap: 3px;
+  padding: 12px 0 13px;
+  color: inherit;
+  text-decoration: none;
+}
+.og-latest time {
+  font: 500 0.75rem var(--mono);
+  letter-spacing: 0.04em;
+  color: #8dbb62;
+}
+.og-latest-title {
+  font: 600 1.05rem/1.3 var(--display);
+  color: #f2f5ec;
+}
+.og-latest a:hover .og-latest-title {
+  color: var(--lamp);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+.og-latest-summary {
+  font: 400 0.9rem/1.5 var(--body);
+  color: #a9b99b;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
 /* below ground */
 .og-ground {
   position: relative;
@@ -395,7 +435,65 @@ html:has(.og) {
   color: #b8a284;
 }
 
+/* who's welcome to write, by the gate at the bottom */
+.og-gate {
+  max-width: 640px;
+  margin: 0 auto 64px;
+  padding: 26px 28px 28px;
+  text-align: left;
+  border: 1px solid #3d2c1c;
+  border-top: 3px solid var(--og-root);
+  border-radius: 10px;
+  background: #22170e;
+  scroll-margin-top: 90px;
+}
+.og-gate h2 {
+  margin: 0 0 14px;
+  font: 800 clamp(1.6rem, 4vw, 2.1rem) / 1.1 var(--display);
+  letter-spacing: -0.02em;
+  color: #f1e4cd;
+}
+.og-gate ul {
+  list-style: none;
+  margin: 0 0 20px;
+  padding: 0;
+}
+.og-gate li {
+  position: relative;
+  padding: 5px 0 5px 24px;
+  font: 400 1rem/1.5 var(--body);
+  color: #e2d4bd;
+}
+/* a little leaf for a bullet */
+.og-gate li::before {
+  content: '';
+  position: absolute;
+  left: 2px;
+  top: 0.75em;
+  width: 11px;
+  height: 7px;
+  border-radius: 0 100% 0 100%;
+  background: var(--og-leaf);
+  transform: rotate(-20deg);
+}
+.og-ground .og-gate-write {
+  font: 500 1rem/1.5 var(--body);
+  color: #e2d4bd;
+}
+.og-gate-write a {
+  font-family: var(--mono);
+  color: var(--lamp);
+  text-underline-offset: 4px;
+  overflow-wrap: anywhere;
+}
+.og-gate-write a:hover {
+  color: #f4e8d2;
+}
+
 @media (max-width: 760px) {
+  .og-gate {
+    padding: 22px 20px 24px;
+  }
   .og-job {
     grid-template-columns: 1fr auto;
   }

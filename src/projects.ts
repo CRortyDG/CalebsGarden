@@ -62,6 +62,19 @@ export const site = {
   /** Ways to reach you, shown among the roots in the footer and on /experience. */
   links: [{ label: 'Email', href: 'mailto:hello@calebs.garden' }] as { label: string; href: string }[],
   /**
+   * The note at the bottom of the home page, down in the soil: who's welcome to
+   * write, then the email from `links`. Hidden while empty.
+   */
+  gate: {
+    title: "The gate's open",
+    welcome: [
+      'Have an idea for a small community tool?',
+      'Want to collaborate?',
+      'Interested in how something was built?',
+      'Just want to say hello?',
+    ],
+  },
+  /**
    * One or two sentences on the kind of role you want next, shown at the top of
    * /experience. Hidden while empty. Only Caleb fills this in.
    */
@@ -124,15 +137,6 @@ export const projects: Project[] = [
     habitat: 'Madison, WI',
   },
   {
-    id: 'case-studies',
-    name: 'Case studies',
-    blurb: 'small software, in four parts',
-    about: 'Small software: why I build free, accountless tools for one city or one group, and how madtown.today and Dungeon Garden do it.',
-    status: 'seedling',
-    type: 'section',
-    href: '/case-studies/',
-  },
-  {
     id: 'notes',
     name: 'Notes',
     blurb: 'ideas and things in progress',
@@ -140,6 +144,15 @@ export const projects: Project[] = [
     status: 'seedling',
     type: 'section',
     href: '/notes',
+  },
+  {
+    id: 'case-studies',
+    name: 'Case studies',
+    blurb: 'small software, in four parts',
+    about: 'Small software: why I build free, accountless tools for one city or one group, and how madtown.today and Dungeon Garden do it.',
+    status: 'seedling',
+    type: 'section',
+    href: '/case-studies/',
   },
   {
     id: 'seedlings',
