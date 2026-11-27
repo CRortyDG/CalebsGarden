@@ -1,0 +1,369 @@
+/* The reel maker (/reels). Scoped under .reel-page; colours come from globals.css and the case-study tokens. */
+.reel-page {
+  --reel-raised: var(--cs-raised);
+  --reel-radius: 12px;
+}
+.reel {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 28px;
+  margin-top: 36px;
+}
+@media (min-width: 880px) {
+  .reel {
+    grid-template-columns: minmax(300px, 380px) 1fr;
+    align-items: start;
+  }
+  .reel-stage {
+    position: sticky;
+    top: 16px;
+  }
+}
+
+/* ---------- preview ---------- */
+.reel-frame {
+  position: relative;
+  width: min(100%, 380px);
+  margin: 0 auto;
+  aspect-ratio: 9 / 16;
+  border-radius: 22px;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  background: var(--night);
+}
+@media (max-width: 879px) {
+  .reel-frame {
+    width: min(100%, 300px);
+  }
+}
+.reel-frame canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.reel-recording {
+  position: absolute;
+  inset: auto 12px 12px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: var(--chrome-bg);
+  color: var(--chrome-fg);
+  font: 600 0.9rem var(--mono);
+}
+.reel-recording small {
+  display: block;
+  font: 400 0.75rem var(--body);
+  color: var(--muted);
+}
+.reel-transport {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  max-width: 380px;
+  margin: 12px auto 0;
+}
+.reel-transport input[type='range'] {
+  flex: 1;
+  min-width: 0;
+  accent-color: var(--lamp);
+}
+.reel-time,
+.reel-note {
+  font: 500 0.75rem var(--mono);
+  color: var(--muted);
+  white-space: nowrap;
+}
+.reel-note {
+  max-width: 380px;
+  margin: 6px auto 0;
+  text-align: center;
+  white-space: normal;
+}
+
+/* ---------- steps ---------- */
+.reel-panel {
+  display: grid;
+  gap: 14px;
+  min-width: 0;
+}
+.reel-step {
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: var(--reel-radius);
+  background: var(--cs-paper);
+  display: grid;
+  gap: 12px;
+  min-width: 0;
+}
+.reel-step h2 {
+  margin: 0;
+  font: 800 1.15rem var(--display);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.reel-step h2 span {
+  display: inline-grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: var(--lamp);
+  color: var(--sheet-accent-ink);
+  font: 600 0.8rem var(--mono);
+}
+.reel-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+.reel-label,
+.reel-meta,
+.reel-hint {
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--muted);
+}
+.reel-meta strong {
+  color: var(--ink);
+}
+.reel-hint {
+  font-size: 0.82rem;
+}
+.reel-btn,
+.reel-chip,
+.reel-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 40px;
+  padding: 0 14px;
+  border-radius: 999px;
+  border: 1px solid var(--chrome-line);
+  background: var(--reel-raised);
+  color: var(--ink);
+  font-size: 0.92rem;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+}
+.reel-btn:hover,
+.reel-chip:hover,
+.reel-icon:hover {
+  border-color: var(--lamp);
+}
+.reel-btn:disabled,
+.reel-icon:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+.reel-primary {
+  background: var(--lamp);
+  border-color: var(--lamp);
+  color: var(--sheet-accent-ink);
+}
+.reel-small {
+  min-height: 34px;
+  padding: 0 12px;
+  font-size: 0.82rem;
+}
+.reel-chip {
+  min-height: 34px;
+  font-size: 0.85rem;
+}
+.reel-chip.on {
+  background: var(--lamp);
+  border-color: var(--lamp);
+  color: var(--sheet-accent-ink);
+}
+.reel-icon {
+  width: 34px;
+  min-height: 34px;
+  padding: 0;
+}
+.reel-select,
+.reel-num,
+.reel-field input,
+.reel-clip-body input {
+  min-height: 40px;
+  padding: 0 12px;
+  border-radius: 10px;
+  border: 1px solid var(--line);
+  background: var(--night);
+  color: var(--ink);
+  font: inherit;
+  font-size: 0.95rem;
+}
+.reel-select.reel-small {
+  min-height: 34px;
+  font-size: 0.82rem;
+}
+.reel-num {
+  width: 5.5em;
+}
+.reel-field {
+  display: grid;
+  gap: 4px;
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+.reel-wave {
+  display: block;
+  width: 100%;
+  height: 64px;
+  border-radius: 8px;
+  background: var(--night);
+  cursor: pointer;
+}
+.reel-busy,
+.reel-error {
+  margin: 0;
+  padding: 10px 14px;
+  border-radius: 10px;
+  border: 1px solid var(--line);
+  font-size: 0.9rem;
+}
+.reel-busy {
+  color: var(--lamp);
+}
+.reel-error {
+  color: var(--cs-rust);
+  border-color: var(--cs-rust);
+}
+
+/* ---------- script ---------- */
+.reel-script p {
+  margin: 0 0 8px;
+  font-size: 0.92rem;
+  color: var(--muted);
+}
+.reel-script .reel-needs {
+  color: var(--cs-rust);
+}
+.reel-script ol {
+  margin: 0;
+  padding-left: 1.4em;
+  display: grid;
+  gap: 4px;
+  font-size: 0.9rem;
+}
+.reel-script li span {
+  color: var(--muted);
+}
+.reel-script li span::before {
+  content: '· ';
+}
+
+/* ---------- clips ---------- */
+.reel-drop {
+  display: grid;
+  gap: 2px;
+  padding: 18px;
+  border: 2px dashed var(--line);
+  border-radius: var(--reel-radius);
+  text-align: center;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+.reel-drop span {
+  color: var(--muted);
+}
+.reel-drop.over,
+.reel-drop:hover {
+  border-color: var(--lamp);
+}
+.reel-clips {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 10px;
+}
+.reel-clip {
+  display: grid;
+  grid-template-columns: 56px 1fr;
+  gap: 10px;
+  align-items: start;
+  min-width: 0;
+}
+.reel-thumb {
+  width: 56px;
+  aspect-ratio: 9 / 16;
+  padding: 0;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  background: var(--reel-raised);
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+}
+.reel-thumb img,
+.reel-thumb video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.reel-thumb span {
+  font: 500 0.6rem var(--mono);
+  color: var(--muted);
+  text-align: center;
+}
+.reel-clip-body {
+  display: grid;
+  gap: 6px;
+  min-width: 0;
+}
+.reel-clip-body input {
+  width: 100%;
+}
+.reel-clip-body small {
+  font-size: 0.78rem;
+  color: var(--muted);
+}
+.reel-endthumb {
+  height: 64px;
+  border-radius: 6px;
+  border: 1px solid var(--line);
+}
+.reel-check {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 2px 10px;
+  font-size: 0.92rem;
+  align-items: center;
+}
+.reel-check input {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--lamp);
+}
+.reel-check small {
+  grid-column: 2;
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+.reel-done {
+  display: grid;
+  gap: 10px;
+}
+.reel-result {
+  width: min(100%, 240px);
+  border-radius: 12px;
+  border: 1px solid var(--line);
+}
+
+/* ---------- how it works ---------- */
+.reel-how {
+  margin-top: 56px;
+}
+.reel-how h2 {
+  font: 800 1.5rem var(--display);
+  margin: 32px 0 12px;
+}
+.reel-how ol {
+  padding-left: 1.2em;
+  display: grid;
+  gap: 10px;
+}

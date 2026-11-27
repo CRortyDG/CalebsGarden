@@ -50,6 +50,7 @@ drawn card uses the home page's (`public/og.jpg`) until `npm run og` is run.
 | `src/overgrowth/Flower.tsx` | A project's flower, drawn by its growth stage |
 | `src/site/ProjectDetails.tsx` | What a project card shows |
 | `src/site/ProjectList.tsx` | The list in the Index panel |
+| `app/reels/`, `src/reels/` | Reel maker at `/reels`: beat detection + canvas drawing in `engine.ts`, trip board scripts in `scripts.ts`, example song and pictures in `public/reels/example/` |
 | `app/case-studies/` | Case studies (the Dungeon Garden one goes at `/case-studies/candlefair`) |
 
 A shared link to `calebs.garden/#dungeon-garden` lands on that project (the old `#candlefair` still works).
