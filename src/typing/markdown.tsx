@@ -31,7 +31,7 @@ export function Markdown({ text }: { text: string }) {
 
 const TOKEN = /\[([^\]]+)\]\(([^)\s]+)\)|\*\*([^*]+)\*\*|\*([^*]+)\*|`([^`]+)`|([\w.+-]+@[\w-]+(?:\.[\w-]+)+)/g;
 
-function inline(s: string, prefix = ''): ReactNode[] {
+export function inline(s: string, prefix = ''): ReactNode[] {
   const out: ReactNode[] = [];
   let last = 0;
   let k = 0;

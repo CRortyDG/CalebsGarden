@@ -56,3 +56,27 @@ export default function Page() {
 
 The body supports paragraphs, `##` headings, `>` quotes, `-` and `1.` lists, links, bold,
 italics and `code`. Anything else shows as typed.
+
+## Written with AI help ("How this was made")
+
+The same recording can show how an AI helped. Prototype and example: `/desk/how-it-was-made`
+(a made-up piece; `node --no-warnings scripts/make-ai-example.mts` rebuilds its recording).
+
+- **At the desk**: paste something and a bar asks "Was it from an AI?". **Yes, mark it** asks
+  which AI, what you asked and (prefilled) what it gave back. **More from ask N** marks a second
+  paste from the same reply. **AI ask** in the top bar logs something you asked but didn't paste,
+  which readers see as "Not used". At Publish, each ask can get a "why" line.
+- **In the file**: `asks: [{ at, prompt, reply?, tool?, why? }]`, and the step that pasted the
+  AI's text carries flag `a0`, `a1`… (which ask). Each character keeps its id, so the final
+  text knows, letter by letter, whether it's still the AI's words. Anything typed over AI text
+  counts as typed.
+- **For readers**: a meter (typed vs still the AI's words), AI words underlined in blue, and on
+  wide screens a margin bar beside each stretch with a short line to it, saying "Typed by me",
+  "Claude wrote this" or "Claude draft, edited by me". Tapping a sentence (or a label) opens what
+  was asked and what came back. Below the text, every ask in order with what became of it (kept
+  as written, kept N%, pasted then cut, not used). The replay shows AI text in blue and the ask
+  at the moment it was made.
+- A recorded note with `asks` renders this view automatically (`RecordedNote`), and its header
+  tag reads "Written with AI help" instead of "Human written".
+
+It's as honest as the marking: the desk can't tell where a paste came from, so it asks.

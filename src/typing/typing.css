@@ -672,3 +672,424 @@
   border-color: var(--lamp);
   color: var(--ink);
 }
+
+/* ---------- AI text in the replay ---------- */
+.ww-ai {
+  color: var(--ww-sky);
+}
+.ww-margin.is-ai {
+  border-left-color: var(--ww-sky);
+}
+.ww-margin.is-ai span {
+  color: var(--ww-sky);
+}
+.ww-mark.is-ai::after {
+  background: var(--ww-sky);
+  height: 12px;
+  top: 0;
+}
+
+/* ---------- "How this was made" (.hm): who wrote what ---------- */
+.hm {
+  --hm-ai: #8fc3d9;
+  --hm-ai-soft: rgba(143, 195, 217, 0.14);
+  --hm-mine: #8dbb62;
+  --hm-raised: #15211a;
+  --hm-gutter: 230px;
+}
+.hm-page {
+  max-width: 1040px;
+}
+.hm-meter {
+  margin: 28px 0 8px;
+  padding: 16px 18px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+}
+.hm-bar {
+  display: flex;
+  height: 8px;
+  border-radius: 999px;
+  overflow: hidden;
+  gap: 2px;
+}
+.hm-bar-mine {
+  background: var(--hm-mine);
+}
+.hm-bar-ai {
+  background: var(--hm-ai);
+}
+.hm .hm-legend,
+.hm .hm-sum {
+  margin: 10px 0 0;
+  font-size: 0.9rem;
+  max-width: none;
+}
+.hm-legend {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 6px;
+}
+.hm-legend .hm-key.is-ai {
+  margin-left: 14px;
+}
+.hm-key {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 3px;
+}
+.hm-key.is-mine {
+  background: var(--hm-mine);
+}
+.hm-key.is-ai {
+  background: var(--hm-ai);
+}
+.hm-sum {
+  color: var(--muted);
+}
+.hm-tools {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 14px;
+}
+.hm-tools button,
+.hm-watch,
+.hm-x {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 14px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: transparent;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+.hm-tools button[aria-pressed='true'] {
+  border-color: var(--hm-ai);
+  color: var(--hm-ai);
+}
+
+/* The text, with its sentences marked. */
+.hm-body {
+  position: relative;
+}
+.hm-body.is-marked.is-wide .hm-text {
+  max-width: calc(100% - var(--hm-gutter) - 50px);
+}
+.hm-s {
+  border-radius: 3px;
+  text-decoration-thickness: 1.5px;
+  text-underline-offset: 5px;
+  text-decoration-skip-ink: none;
+  transition: background-color 0.15s;
+}
+.hm-body.is-marked .hm-s {
+  cursor: pointer;
+}
+.hm-body.is-marked .hm-s.is-ai {
+  text-decoration-line: underline;
+  text-decoration-color: var(--hm-ai);
+}
+.hm-body.is-marked .hm-s.is-mixed .hm-aiw {
+  text-decoration-line: underline;
+  text-decoration-thickness: 1.5px;
+  text-underline-offset: 5px;
+  text-decoration-color: var(--hm-ai);
+}
+.hm-body.is-marked .hm-s.is-hot,
+.hm-body.is-marked .hm-s.is-active {
+  background: var(--hm-ai-soft);
+}
+.hm-body.is-marked .hm-s.is-mine.is-hot,
+.hm-body.is-marked .hm-s.is-mine.is-active {
+  background: rgba(141, 187, 98, 0.12);
+}
+.hm-s:focus-visible {
+  outline-offset: 1px;
+}
+
+/* The margin: a bar beside each stretch, a short line to it, and who wrote it. */
+.hm-gutter {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  pointer-events: none;
+}
+.hm-lines {
+  position: absolute;
+  inset: 0 0 0 -16px;
+  overflow: visible;
+}
+.hm-lines g {
+  transform: translateX(16px);
+}
+.hm-rail {
+  stroke-width: 2px;
+  stroke-linecap: round;
+}
+.hm-tick {
+  stroke-width: 1px;
+  opacity: 0.7;
+}
+.hm-lines .is-mine line,
+.hm-lines .is-mine path {
+  stroke: var(--hm-mine);
+}
+.hm-lines .is-mine .hm-rail {
+  opacity: 0.45;
+}
+.hm-lines .is-mine .hm-tick {
+  opacity: 0;
+}
+.hm-lines .is-ai line,
+.hm-lines .is-ai path,
+.hm-lines .is-mixed line,
+.hm-lines .is-mixed path {
+  stroke: var(--hm-ai);
+}
+.hm-lines .is-mixed .hm-rail {
+  stroke-dasharray: 4 3;
+}
+.hm-lines .is-hot .hm-rail {
+  stroke-width: 3px;
+  opacity: 1;
+}
+.hm-lines .is-hot .hm-tick {
+  opacity: 1;
+}
+.hm-label {
+  position: absolute;
+  left: 18px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  max-width: min(260px, calc(var(--hm-room, var(--hm-gutter)) - 24px));
+  padding: 0;
+  border: 0;
+  background: none;
+  font: 500 0.72rem/1.35 var(--mono);
+  letter-spacing: 0.04em;
+  text-align: left;
+  color: var(--hm-ai);
+  pointer-events: auto;
+  cursor: pointer;
+}
+.hm-label span {
+  color: var(--muted);
+  letter-spacing: 0;
+}
+.hm-label.is-mine {
+  color: var(--hm-mine);
+  opacity: 0.75;
+}
+.hm-label.is-hot {
+  opacity: 1;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.hm-card-at {
+  position: absolute;
+  left: 18px;
+  width: min(300px, calc(var(--hm-room, var(--hm-gutter)) - 18px));
+  pointer-events: auto;
+  z-index: 2;
+}
+.hm-card {
+  padding: 12px 14px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--hm-raised);
+  font-size: 0.88rem;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.4);
+}
+.hm .hm-card p {
+  margin: 0 0 8px;
+  max-width: none;
+}
+.hm-card-head {
+  display: flex;
+  flex-direction: column;
+  font-weight: 600;
+  color: var(--hm-ai);
+}
+.hm-card-head.is-mine {
+  color: var(--hm-mine);
+}
+.hm-card-head span,
+.hm-card-k {
+  font: 500 0.72rem var(--mono);
+  color: var(--muted);
+}
+.hm-card-note {
+  color: var(--muted);
+}
+.hm-prompt {
+  display: block;
+  margin: 0 0 8px;
+  padding-left: 10px;
+  border-left: 2px solid var(--hm-ai);
+  font-style: italic;
+}
+.hm-reply {
+  margin: 0 0 10px;
+  font-size: 0.88rem;
+}
+.hm-reply summary {
+  color: var(--muted);
+  cursor: pointer;
+}
+.hm .hm-reply p {
+  margin: 6px 0 0;
+  padding: 8px 10px;
+  border-radius: 8px;
+  background: var(--hm-ai-soft);
+  white-space: pre-wrap;
+  max-width: none;
+}
+.hm-card-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.hm-watch {
+  border-color: var(--lamp);
+  color: var(--lamp);
+}
+.hm-x {
+  margin-left: auto;
+}
+/* Phones: no margin; tapping a sentence opens its card at the bottom. */
+.hm-sheet {
+  position: fixed;
+  left: 12px;
+  right: 12px;
+  bottom: max(12px, env(safe-area-inset-bottom, 0px));
+  z-index: 20;
+}
+
+/* Everything asked of the AI. */
+.hm-trail {
+  margin-top: 56px;
+}
+.hm-trail h2 {
+  margin: 0 0 6px;
+}
+.hm .hm-hint {
+  margin: 0 0 18px;
+  color: var(--muted);
+  font-size: 0.92rem;
+}
+.hm-trail ol {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 12px;
+}
+.hm-ask {
+  max-width: none !important;
+  padding: 14px 16px;
+  border: 1px solid var(--line);
+  border-left: 3px solid var(--hm-ai);
+  border-radius: 10px;
+}
+.hm-ask.is-unused,
+.hm-ask.is-cut {
+  border-left-color: var(--muted);
+}
+.hm .hm-ask-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 10px;
+  margin: 0 0 8px;
+  font: 500 0.75rem var(--mono);
+  color: var(--muted);
+}
+.hm-chip {
+  padding: 1px 8px;
+  border: 1px solid currentColor;
+  border-radius: 999px;
+  color: var(--hm-ai);
+}
+.hm-chip.is-unused,
+.hm-chip.is-cut {
+  color: var(--muted);
+}
+.hm .hm-why {
+  margin: 0 0 10px;
+  font-size: 0.9rem;
+}
+.hm-why span {
+  margin-right: 6px;
+  font: 500 0.7rem var(--mono);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--hm-mine);
+}
+.hm-player {
+  margin-top: 32px;
+  scroll-margin-top: 24px;
+}
+@media (prefers-reduced-motion: reduce) {
+  .hm-s {
+    transition: none;
+  }
+}
+
+/* ---------- AI help at the desk ---------- */
+.desk-paste {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 10px;
+  margin: 0 0 14px;
+  padding: 10px 14px;
+  border: 1px solid var(--ww-sky);
+  border-radius: 12px;
+  font-size: 0.92rem;
+}
+.desk-paste span {
+  margin-right: auto;
+}
+.desk-ask {
+  display: grid;
+  gap: 10px;
+  max-width: 640px;
+  margin: 0 0 18px;
+  padding: 16px 18px;
+  border: 1px solid var(--line);
+  border-left: 3px solid var(--ww-sky);
+  border-radius: 12px;
+  background: var(--ww-raised);
+}
+.desk-ask h2 {
+  margin: 0;
+  font-size: 1.1rem;
+}
+.desk-ask .desk-hint {
+  margin: 0;
+}
+.desk-ask input,
+.desk-ask textarea,
+.desk-why {
+  width: 100%;
+  padding: 8px 10px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--ww-paper);
+  color: var(--ink);
+  font: inherit;
+  font-size: 0.95rem;
+}
+.desk-why {
+  display: block;
+  margin-top: 6px;
+  padding: 5px 8px;
+  font-size: 0.85rem;
+}

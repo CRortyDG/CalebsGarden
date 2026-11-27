@@ -1,7 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { BREAK_CARD_MS, MASK, applyIds, applyText, markers, noteRange, replay, snapshots, stepsAt, textAt, timeline, wordCount, type Recording } from './format';
+import { BREAK_CARD_MS, MASK, applyIds, applyText, markers, noteRange, originById, replay, snapshots, stepsAt, textAt, timeline, wordCount, type Recording } from './format';
 import './typing.css';
 
 const SPEEDS = [1, 2, 8, 32];
@@ -131,9 +131,14 @@ export function Player({ rec, autoplay = true, onClose, startAt = 0 }: { rec: Re
   const ghost = !reduced && last && last[2] > 0 && (t - tl.end[n - 1]) / speed < GHOST_MS ? before.slice(last[1], last[1] + last[2]) : '';
   // The note for this moment, and where its words are now.
   const note = (rec.notes ?? []).filter((nt) => nt.at > 0 && nt.at <= n && (t - tl.end[nt.at - 1]) / speed < NOTE_MS).slice(-1)[0];
+  // AI help: which characters came from an AI, and the ask being answered (up while its reply is pasted, and a little after).
+  const asks = rec.asks ?? [];
+  const byId = useMemo(() => (rec.asks?.length ? originById(rec.steps) : null), [rec]);
+  const ask = asks.map((a, k) => ({ ...a, k })).filter((a) => a.at > 0 && a.at <= n && (n <= a.at + 1 || (t - tl.end[a.at]) / speed < NOTE_MS)).slice(-1)[0];
   const ids = useRef<{ n: number; ids: number[]; next: number } | null>(null);
   let lit: [number, number] | null = null;
-  if (note && note.from !== undefined && note.from >= 0) {
+  let idsNow: number[] | null = null;
+  if (byId || (note && note.from !== undefined && note.from >= 0)) {
     let c = ids.current;
     if (!c || c.n > n || n - c.n > 4000) {
       const d = replay(rec.steps, n);
@@ -144,8 +149,10 @@ export function Player({ rec, autoplay = true, onClose, startAt = 0 }: { rec: Re
       c = { n, ids: d.ids, next: d.next };
     }
     ids.current = c;
-    lit = noteRange(c.ids, note.from, note.to);
+    idsNow = c.ids;
+    if (note) lit = noteRange(c.ids, note.from, note.to);
   }
+  const aiAt = (i: number) => (byId && idsNow ? byId[idsNow[i]] >= 0 : false);
   const brk = tl.breaks.find((b) => t >= b.from && t < b.from + BREAK_CARD_MS);
   const session = 1 + tl.breaks.filter((b) => b.at < n || (b.at === n && t >= b.from)).length;
 
@@ -176,7 +183,9 @@ export function Player({ rec, autoplay = true, onClose, startAt = 0 }: { rec: Re
   };
 
   // Cut the text where the cursor and the lit-up note words start and end.
-  const cuts = [...new Set([0, caretAt, ...(lit ?? []), text.length])].filter((x) => x >= 0 && x <= text.length).sort((a, b) => a - b);
+  const aiEdges: number[] = [];
+  if (byId && idsNow) for (let i = 1; i < text.length; i++) if (aiAt(i) !== aiAt(i - 1)) aiEdges.push(i);
+  const cuts = [...new Set([0, caretAt, ...(lit ?? []), ...aiEdges, text.length])].filter((x) => x >= 0 && x <= text.length).sort((a, b) => a - b);
   const pieces: React.ReactNode[] = [];
   for (let i = 0; i < cuts.length; i++) {
     const at = cuts[i];
@@ -187,7 +196,8 @@ export function Player({ rec, autoplay = true, onClose, startAt = 0 }: { rec: Re
     if (i === cuts.length - 1) break;
     const part = text.slice(at, cuts[i + 1]);
     const on = lit && at >= lit[0] && at < lit[1];
-    pieces.push(on ? <mark key={at} className="ww-lit"><Runs text={part} /></mark> : <Runs key={at} text={part} />);
+    const runs = aiAt(at) ? <span className="ww-ai"><Runs text={part} /></span> : <Runs text={part} />;
+    pieces.push(on ? <mark key={at} className="ww-lit">{runs}</mark> : <span key={at}>{runs}</span>);
   }
   return (
     <section className="ww" aria-label="Watch me write this" onKeyDown={onKey} tabIndex={-1}>
@@ -262,9 +272,14 @@ export function Player({ rec, autoplay = true, onClose, startAt = 0 }: { rec: Re
           {lit ? null : note.from !== undefined && note.from >= 0 ? <em> (its words were later deleted)</em> : null}
         </p>
       )}
+      {ask && (
+        <p className="ww-margin is-ai">
+          <span>Asked {ask.tool ?? 'an AI'}</span> {ask.prompt}
+        </p>
+      )}
       <p className="ww-what">
         <strong>What this shows:</strong> every change to this note&rsquo;s text, in order, with the real pauses, recorded while it was written. Pastes are marked on the
-        timeline.{rec.hidden ? ` ${rec.hidden} characters of deleted text are blanked out.` : ''} It&rsquo;s a record of the writing, not proof: it can&rsquo;t show where the words in
+        timeline.{asks.length ? ' Text in blue was pasted from an AI and is still exactly as the AI wrote it; anything typed over it counts as typed.' : ''}{rec.hidden ? ` ${rec.hidden} characters of deleted text are blanked out.` : ''} It&rsquo;s a record of the writing, not proof: it can&rsquo;t show where the words in
         someone&rsquo;s head came from.
       </p>
     </section>

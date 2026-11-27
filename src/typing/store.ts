@@ -1,6 +1,6 @@
 'use client';
 
-import type { DeskNote, Session, Step } from './format';
+import type { Ask, DeskNote, Session, Step } from './format';
 
 /** A draft at the desk. It never leaves this browser unless you save a backup or publish. */
 export type Draft = {
@@ -15,6 +15,7 @@ export type Draft = {
   hide?: string[]; // keys of deleted spans to blank out when publishing
   show?: string[]; // ids of notes to show readers
   slug?: string;
+  asks?: Ask[]; // AI help: what was asked, and the reply; pasted text from it is flagged on its step
 };
 
 export type Backup = { kind: 'desk-draft'; v: 1; draft: Draft };
