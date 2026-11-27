@@ -1,14 +1,16 @@
 // Vines that overgrow the words when you stop to read.
 //
 // Nothing happens while you're reading along. Leave the page still for a while
-// (no scrolling, typing or moving the pointer) and vines creep in from the
-// edges of the screen and take the page over, like a building left to the
+// (no scrolling, typing or moving the pointer) and the vines in the header
+// band grow on, down out of it (or in from the top of the screen, if you're
+// further down the page) and take the page over, like a building left to the
 // weeds: they climb the margins and the edges of the text, and wrap around the
 // headings, passing over a letter, under the next, and over again. They keep
 // off the paragraphs, lists, code and boxes, so the reading stays clear. Run the
-// pointer over them and the leaves it touches come loose, drift down a little way and fade; scroll (as
-// you will) and every leaf drops at once and the bare vines fade, ready to grow
-// again the next time the page is left alone.
+// pointer over them and the leaves it touches come loose, drift down a little
+// way and fade. Scroll (as you will) or click and the new growth is cut back:
+// every leaf drops at once and the new vines fade, while the header band's own
+// vines stay put. Then it all waits to grow again the next time the page is left alone.
 //
 // Reduced motion: none of this happens. ?vines=now starts them after 3 seconds
 // instead of the usual wait, to try it out.
@@ -99,7 +101,7 @@ export function idleVines(
     };
     for (const el of root.querySelectorAll('p, ul, ol, dl, blockquote, figure, pre, table, img, svg, .cs-short, nav, button, input')) {
       if (el.closest('.og-band') && !el.matches('p')) continue;
-      add(solid, el.getBoundingClientRect(), 10);
+      add(solid, el.getBoundingClientRect(), vw < 760 ? 4 : 10);
     }
     for (const el of root.querySelectorAll('h1, h2, h3, h4')) {
       if (el.closest('figure, pre, .cs-short, nav')) continue;
@@ -132,18 +134,25 @@ export function idleVines(
         width: thick * (0.75 + Math.random() * 0.5),
         life: (phone ? 450 : 750) + Math.random() * (phone ? 400 : 600),
       });
-    const n = phone ? 2 : 3;
-    // in from both edges, toward the text, at spread-out heights
-    for (let i = 0; i < n; i++) {
-      seed(-4, vh * ((i + 0.2 + Math.random() * 0.6) / n), (Math.random() - 0.5) * 0.7);
-      seed(vw + 4, vh * ((i + 0.2 + Math.random() * 0.6) / n), Math.PI + (Math.random() - 0.5) * 0.7);
+    // the vines in the header band grow on, down out of it and into the page:
+    // from the band's foot when it's on screen, or in from the top of the
+    // screen (as if they'd come all the way down) when you're further along
+    const band = root.querySelector('.og-band');
+    const foot = band ? band.getBoundingClientRect().bottom - 30 : -30;
+    const y0 = Math.max(-30, Math.min(vh - 40, foot));
+    const col = (root.querySelector('.cs-prose p, .cs-prose, p') ?? root).getBoundingClientRect();
+    // the margins: left of the text, and right of the widest block on screen
+    const left = Math.max(phone ? 6 : 10, Math.min(col.left, ...keepOff.map((k) => k.x)) - 6);
+    const right = Math.min(vw - (phone ? 6 : 10), Math.max(col.right, ...keepOff.map((k) => k.x + k.w)) + 6);
+    const down = (spread: number) => Math.PI / 2 + (Math.random() - 0.5) * spread;
+    // down the margins on both sides
+    for (let i = 0; i < (phone ? 1 : 2); i++) {
+      seed(Math.max(3, left * (0.2 + Math.random() * 0.6)), y0 + Math.random() * 20, down(phone ? 0.15 : 0.5));
+      seed(Math.min(vw - 3, right + (vw - right) * (0.2 + Math.random() * 0.6)), y0 + Math.random() * 20, down(phone ? 0.15 : 0.5));
     }
-    // and up from the bottom of the screen
-    seed(vw * (0.15 + Math.random() * 0.2), vh + 4, -Math.PI / 2 + (Math.random() - 0.5) * 0.5);
-    seed(vw * (0.65 + Math.random() * 0.2), vh + 4, -Math.PI / 2 + (Math.random() - 0.5) * 0.5);
-    // and down from the top corners
-    seed(vw * (0.05 + Math.random() * 0.1), -4, Math.PI / 2 + (Math.random() - 0.5) * 0.6);
-    seed(vw * (0.85 + Math.random() * 0.1), -4, Math.PI / 2 + (Math.random() - 0.5) * 0.6);
+    // and down into the text, to climb the edges of the paragraphs and wrap the headings
+    seed(col.left + col.width * (0.15 + Math.random() * 0.3), y0, down(0.8));
+    if (!phone) seed(col.left + col.width * (0.55 + Math.random() * 0.3), y0, down(0.8));
   }
 
   function wipe() {
@@ -169,9 +178,10 @@ export function idleVines(
       // climb along its edge like ivy up a wall; one that ends up on it stops
       const ahead = hit(keepOff, g.x + Math.cos(g.a) * 16, g.y + Math.sin(g.a) * 16);
       if (ahead) {
-        const away = Math.atan2(g.y - (ahead.y + ahead.h / 2), (g.x - (ahead.x + ahead.w / 2)) * (ahead.h / ahead.w));
-        g.a = turn(g.a, away, 0.35);
-        g.home = Math.sin(g.a) >= 0 ? Math.PI / 2 : -Math.PI / 2;
+        // slip off to the nearer side of it, and carry on down past it
+        const side = g.x < ahead.x + ahead.w / 2 ? Math.PI - 0.25 : 0.25;
+        g.a = turn(g.a, side, 0.35);
+        g.home = Math.PI / 2;
       }
       if (hit(keepOff, g.x, g.y)) continue;
       // on a heading, creep along the line, winding over and under it
@@ -203,7 +213,7 @@ export function idleVines(
         const a = g.a + (Math.random() < 0.5 ? 1 : -1) * (0.6 + Math.random() * 0.6);
         next.push({ x: g.x, y: g.y, a, home: a, wrap: Math.random() * TAU, width: g.width * 0.7, life: 200 + Math.random() * 400 });
       }
-      if (g.life > 0 && g.width > 0.5 && g.x > -20 && g.x < vw + 20 && g.y > -20 && g.y < vh + 20) next.push(g);
+      if (g.life > 0 && g.width > 0.5 && g.x > -20 && g.x < vw + 20 && g.y > -45 && g.y < vh + 20) next.push(g);
       else bud(g);
     }
     agents = next;
