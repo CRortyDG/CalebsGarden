@@ -167,6 +167,21 @@ export default function ReelMaker() {
     ctx.fillRect(x(tl.songStart + t), 0, 2 * devicePixelRatio, h);
   }, [song, tl, t]);
 
+  // Tap the beat: the tempo from the taps' typical spacing (the median, so one late tap doesn't skew it).
+  const taps = useRef<number[]>([]);
+  const [, setTapCount] = useState(0);
+  const tapBeat = () => {
+    const now = performance.now();
+    const last = taps.current.at(-1);
+    if (last !== undefined && now - last > 2000) taps.current = [];
+    taps.current = [...taps.current, now].slice(-12);
+    setTapCount(taps.current.length);
+    if (taps.current.length < 4) return;
+    const gaps = taps.current.slice(1).map((x, i) => x - taps.current[i]).sort((a, b) => a - b);
+    const mid = gaps[Math.floor(gaps.length / 2)];
+    setBpm(Math.max(60, Math.min(200, Math.round((60000 / mid) * 10) / 10)));
+  };
+
   const ctxAudio = () => (audioRef.current ??= new AudioContext());
 
   const stop = useCallback(() => {
@@ -546,12 +561,20 @@ export default function ReelMaker() {
               <p className="reel-hint">Click the waveform to start on the part you want (the drop, the chorus). The gold lines are the cuts.</p>
             </>
           ) : (
+            <>
             <div className="reel-row">
               <label className="reel-label">
-                No song yet? Cut to{' '}
-                <input type="number" min={60} max={200} value={bpm} onChange={(e) => setBpm(Math.max(60, Math.min(200, Number(e.target.value) || 120)))} className="reel-num" /> BPM
+                No song file? Cut to{' '}
+                <input type="number" min={60} max={200} step={0.1} value={bpm} onChange={(e) => setBpm(Math.max(60, Math.min(200, Number(e.target.value) || 120)))} className="reel-num" /> BPM
               </label>
+              <button type="button" className="reel-btn reel-small" onClick={tapBeat}>
+                Tap the beat{taps.current.length >= 2 ? ` (${taps.current.length})` : ''}
+              </button>
             </div>
+            <p className="reel-hint">
+              Using a song from Instagram or TikTok? Play it on another phone and tap along about 8 times. Then make the video, post it, and add the song in the app.
+            </p>
+            </>
           )}
           <div className="reel-row">
             <span className="reel-label">Cut every</span>
