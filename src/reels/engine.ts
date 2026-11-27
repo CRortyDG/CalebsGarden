@@ -270,6 +270,10 @@ export type Look = {
   motion: 'punch' | 'flash' | 'clean';
   /** CSS font family list for the captions. */
   font: string;
+  /** 'story': one clip at a time with a line of text. 'recap': a photo dump that builds into a collage. */
+  mode?: 'story' | 'recap';
+  /** Recap only: how many photos pop in on their own (the rest of the screen black) before the collage starts to build. */
+  alone?: number;
 };
 
 /** Background colours for clips with no photo yet (text-only cards are a real reel move too). */
@@ -291,6 +295,12 @@ export function drawFrame(ctx: CanvasRenderingContext2D, t: number, tl: Timeline
   ctx.fillRect(0, 0, W, H);
   const seg = segmentAt(tl, t);
   if (!seg) {
+    ctx.restore();
+    return;
+  }
+  if (look.mode === 'recap') {
+    drawRecap(ctx, t, seg, tl, cards, end, look);
+    fadeOut(ctx, t, tl);
     ctx.restore();
     return;
   }
@@ -337,13 +347,95 @@ export function drawFrame(ctx: CanvasRenderingContext2D, t: number, tl: Timeline
     ctx.fillStyle = `rgba(255,255,255,${(0.55 * Math.exp(-dt / 0.07)).toFixed(3)})`;
     ctx.fillRect(0, 0, W, H);
   }
-  // Fade to black over the last half second.
+  fadeOut(ctx, t, tl);
+  ctx.restore();
+}
+
+/** Fade to black over the last half second. */
+function fadeOut(ctx: CanvasRenderingContext2D, t: number, tl: Timeline) {
   const out = clamp01((t - (tl.duration - 0.5)) / 0.5);
   if (out > 0) {
     ctx.fillStyle = `rgba(0,0,0,${out.toFixed(3)})`;
     ctx.fillRect(0, 0, W, H);
   }
-  ctx.restore();
+}
+
+// ---------- the photo recap ----------
+
+export const RECAP_MAX = 16;
+export type Grid = { cols: number; rows: number; count: number; order: number[] };
+
+/**
+ * The collage grid for `n` photos: 2, 3 or 4 columns, whichever gives tiles closest to a
+ * phone photo's 3:4 with the fewest empty cells. Photo i lands in cell order[i], shuffled
+ * the same way every time so the photos jump around the screen as they come in.
+ */
+export function recapGrid(n: number): Grid {
+  const count = Math.max(1, Math.min(RECAP_MAX, n));
+  let best = { cols: 2, rows: 1, score: Infinity };
+  for (const cols of [2, 3, 4]) {
+    const rows = Math.ceil(count / cols);
+    const score = Math.abs(Math.log(W / cols / (H / rows) / 0.75)) + (cols * rows - count) * 0.25;
+    if (score < best.score) best = { cols, rows, score };
+  }
+  const order = Array.from({ length: best.cols * best.rows }, (_, i) => i);
+  let seed = 7 + count * 13;
+  const rnd = () => (seed = (seed * 1103515245 + 12345) & 0x7fffffff) / 0x7fffffff;
+  for (let i = order.length - 1; i > 0; i--) {
+    const j = Math.floor(rnd() * (i + 1));
+    [order[i], order[j]] = [order[j], order[i]];
+  }
+  return { cols: best.cols, rows: best.rows, count, order };
+}
+
+/**
+ * A photo dump that builds into a collage: the first few photos flash up alone in their
+ * spot on a black screen, the rest stay as they land, one per cut, and on the last beat
+ * the ones that flashed alone come back and fill the grid. An optional title lands a beat later.
+ */
+function drawRecap(ctx: CanvasRenderingContext2D, t: number, seg: Segment, tl: Timeline, cards: Card[], end: EndCard, look: Look) {
+  ctx.fillStyle = '#000000';
+  ctx.fillRect(0, 0, W, H);
+  const g = recapGrid(cards.length);
+  const cw = W / g.cols;
+  const ch = H / g.rows;
+  const alone = Math.max(0, Math.min(look.alone ?? 0, g.count));
+  const tile = (card: number, cell: number, since: number, zoom = 1) => {
+    const m = cards[card]?.media;
+    if (!m || since < 0) return;
+    const x = (cell % g.cols) * cw;
+    const y = Math.floor(cell / g.cols) * ch;
+    const pop = clamp01(since / 0.16);
+    const s = Math.max(cw / m.w, ch / m.h) * (1 + 0.14 * (1 - pop) ** 3) * zoom;
+    ctx.save();
+    ctx.beginPath();
+    ctx.rect(x, y, cw, ch);
+    ctx.clip();
+    ctx.globalAlpha = clamp01(since / 0.05);
+    ctx.drawImage(m.el, x + (cw - m.w * s) / 2, y + (ch - m.h * s) / 2, m.w * s, m.h * s);
+    ctx.restore();
+  };
+  const landed = (i: number) => t - (tl.segments[i]?.start ?? 0);
+
+  if (seg.kind === 'clip') {
+    const i = seg.index;
+    if (i >= g.count) {
+      // Past the grid's size: show the photo alone, full screen.
+      const m = cards[i]?.media;
+      if (m) drawCover(ctx, m, 1 + 0.12 * (1 - clamp01((t - seg.start) / 0.16)) ** 3);
+    } else if (i < alone) tile(i, g.order[i], t - seg.start, 1 + 0.04 * ((t - seg.start) / Math.max(0.1, seg.end - seg.start)));
+    else for (let j = alone; j <= i; j++) tile(j, g.order[j], landed(j));
+    return;
+  }
+
+  // The last beat: everything lands; empty cells take a second look at the first photos.
+  const since = t - seg.start;
+  for (let j = 0; j < g.count; j++) tile(j, g.order[j], j < alone ? since : landed(j));
+  const second = seg.beats[1] ?? seg.start + 0.5;
+  for (let c = g.count; c < g.order.length; c++) tile((c - g.count) % g.count, g.order[c], t - second);
+  if (end.tagline && t >= second) drawCaption(ctx, end.tagline, H * 0.5, t - second, look, null);
+  const third = seg.beats[2] ?? second + 0.5;
+  if (end.small && t >= third) drawSmall(ctx, end.small, H * 0.5 + 190, t - third, look);
 }
 
 function drawCover(ctx: CanvasRenderingContext2D, m: Media, scale: number) {

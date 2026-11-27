@@ -13,6 +13,7 @@ import {
   gridAnalysis,
   H,
   pickRecorderType,
+  RECAP_MAX,
   segmentAt,
   syncVideos,
   W,
@@ -75,8 +76,10 @@ export default function ReelMaker() {
   const [bpm, setBpm] = useState(120);
   const [startAt, setStartAt] = useState(0);
   const [cutEvery, setCutEvery] = useState(2);
+  const [mode, setMode] = useState<'story' | 'recap'>('recap');
+  const [alone, setAlone] = useState(3);
   const [clips, setClips] = useState<Clip[]>([]);
-  const [end, setEnd] = useState<EndCard & { url: string | null; beats: number }>({ media: null, url: null, tagline: 'Planned in one link. Free.', small: 'travel.calebs.garden', beats: 8 });
+  const [end, setEnd] = useState<EndCard & { url: string | null; beats: number }>({ media: null, url: null, tagline: '', small: '', beats: 8 });
   const [look, setLook] = useState<Omit<Look, 'font'>>({ text: 'bold', motion: 'punch' });
   const [font, setFont] = useState('system-ui, sans-serif');
   const [scriptId, setScriptId] = useState(SCRIPTS[0].id);
@@ -91,10 +94,11 @@ export default function ReelMaker() {
 
   const an = useMemo(() => song?.an ?? gridAnalysis(bpm), [song, bpm]);
   const tl: Timeline = useMemo(
-    () => buildTimeline(an, song ? startAt : 0, clips.map((c) => c.beats ?? cutEvery), end.beats),
-    [an, song, startAt, clips, cutEvery, end.beats],
+    // In a recap, the photos that build the collage come in twice as fast as the ones that pop in alone.
+    () => buildTimeline(an, song ? startAt : 0, clips.map((c, i) => c.beats ?? (mode === 'recap' && i >= alone ? Math.max(1, cutEvery / 2) : cutEvery)), end.beats),
+    [an, song, startAt, clips, cutEvery, end.beats, mode, alone],
   );
-  const fullLook: Look = useMemo(() => ({ ...look, font }), [look, font]);
+  const fullLook: Look = useMemo(() => ({ ...look, font, mode, alone }), [look, font, mode, alone]);
 
   // Everything the animation loop reads, kept current without restarting it.
   const live = useRef({ tl, clips, end: end as EndCard, look: fullLook });
@@ -293,7 +297,7 @@ export default function ReelMaker() {
       return out;
     });
 
-  async function loadExample() {
+  async function loadExample(as: 'story' | 'recap' = mode) {
     stop();
     setError(null);
     setBusy('Loading the example…');
@@ -315,6 +319,15 @@ export default function ReelMaker() {
       setStartAt(a.beats.find((b) => b > 3.2) ?? a.beats[0] ?? 0);
       setCutEvery(2);
       setScriptId(s.id);
+      if (as === 'recap') {
+        // A photo dump: every picture, no lines of text, and a title on the last beat.
+        const all = [...pics.filter((p): p is NonNullable<typeof p> => !!p), endPic];
+        setClips(all.map((p, i) => ({ id: nextId++, media: p.media, url: p.url, name: `photo ${i + 1}`, text: '', hint: '', fit: 'fill' as const, beats: null })));
+        setEnd({ media: null, url: null, tagline: 'Yellowstone, summer ’27', small: '', beats: 8 });
+        setT(0);
+        setExported(null);
+        return;
+      }
       setClips(
         s.lines.map((line, i) => ({
           id: nextId++,
@@ -341,6 +354,7 @@ export default function ReelMaker() {
   useEffect(() => {
     (window as unknown as { __reel: unknown }).__reel = {
       loadExample,
+      setMode,
       info: () => ({ duration: live.current.tl.duration, songStart: live.current.tl.songStart, bpm: an.bpm, steady: an.steady, cuts: live.current.tl.segments.map((s) => s.start) }),
       drawAt: (at: number) => {
         draw(at);
@@ -447,6 +461,37 @@ export default function ReelMaker() {
         )}
 
         <section className="reel-step">
+          <h2>Style</h2>
+          <div className="reel-row">
+            {(['recap', 'story'] as const).map((v) => (
+              <button key={v} type="button" className={`reel-chip${mode === v ? ' on' : ''}`} onClick={() => {
+                  setMode(v);
+                  // A recap is a post for friends, not an ad: drop the board's tagline and address.
+                  if (v === 'recap')
+                    setEnd((x) => ({ ...x, tagline: SCRIPTS.some((sc) => sc.tagline === x.tagline) ? '' : x.tagline, small: x.small === 'travel.calebs.garden' ? '' : x.small }));
+                }} aria-pressed={mode === v}>
+                {v === 'recap' ? 'Photo recap' : 'Story with text'}
+              </button>
+            ))}
+          </div>
+          <p className="reel-hint">
+            {mode === 'recap'
+              ? 'A photo dump for your friends: photos pop in around a black screen on the beat, then build into a collage. No text needed.'
+              : 'One clip at a time with a line of text on each, ending on a card. Good for telling a story or showing something off.'}
+          </p>
+          {mode === 'recap' && (
+            <div className="reel-row">
+              <span className="reel-label">Pop in alone first</span>
+              {[0, 2, 3, 4, 6].map((n) => (
+                <button key={n} type="button" className={`reel-chip${alone === n ? ' on' : ''}`} onClick={() => setAlone(n)} aria-pressed={alone === n}>
+                  {n}
+                </button>
+              ))}
+            </div>
+          )}
+        </section>
+
+        <section className="reel-step">
           <h2>
             <span>1</span> Song
           </h2>
@@ -455,7 +500,7 @@ export default function ReelMaker() {
               Choose a song
               <input type="file" accept="audio/*,.mp3,.m4a,.wav,.aac" hidden onChange={(e) => e.target.files?.[0] && onSong(e.target.files[0])} />
             </label>
-            <button type="button" className="reel-btn" onClick={loadExample}>
+            <button type="button" className="reel-btn" onClick={() => loadExample()}>
               Load the example
             </button>
           </div>
@@ -507,7 +552,7 @@ export default function ReelMaker() {
           </div>
         </section>
 
-        <section className="reel-step">
+        {mode === 'story' && <section className="reel-step">
           <h2>
             <span>2</span> Script
           </h2>
@@ -539,11 +584,11 @@ export default function ReelMaker() {
               </ol>
             </div>
           )}
-        </section>
+        </section>}
 
         <section className="reel-step">
           <h2>
-            <span>3</span> Clips
+            <span>{mode === 'story' ? 3 : 2}</span> {mode === 'story' ? 'Clips' : 'Photos'}
           </h2>
           <label
             className={`reel-drop${dragging ? ' over' : ''}`}
@@ -559,7 +604,7 @@ export default function ReelMaker() {
             }}
           >
             <strong>Drop photos or video clips here</strong>
-            <span>or tap to choose. They fill the script&apos;s empty slots in order.</span>
+            <span>{mode === 'story' ? 'or tap to choose. They fill the script\'s empty slots in order.' : `or tap to choose. Up to ${RECAP_MAX} make the collage.`}</span>
             <input type="file" accept="image/*,video/*" multiple hidden onChange={(e) => e.target.files && addFiles(e.target.files)} />
           </label>
           <ol className="reel-clips">
@@ -571,8 +616,13 @@ export default function ReelMaker() {
                   {!c.media && <span>Text only</span>}
                 </button>
                 <div className="reel-clip-body">
-                  <input value={c.text} onChange={(e) => update(c.id, { text: e.target.value })} placeholder="Text on this clip" aria-label={`Text on clip ${i + 1}`} />
-                  {c.hint && <small>Shot: {c.hint}</small>}
+                  {mode === 'story' && (
+                    <>
+                      <input value={c.text} onChange={(e) => update(c.id, { text: e.target.value })} placeholder="Text on this clip" aria-label={`Text on clip ${i + 1}`} />
+                      {c.hint && <small>Shot: {c.hint}</small>}
+                    </>
+                  )}
+                  {mode === 'recap' && <small>{i < alone ? 'Pops in alone' : i < RECAP_MAX ? 'Builds the collage' : 'Past the collage: shown full screen'}</small>}
                   <div className="reel-row">
                     <select value={c.beats ?? ''} onChange={(e) => update(c.id, { beats: e.target.value ? Number(e.target.value) : null })} className="reel-select reel-small" aria-label="Beats">
                       <option value="">{cutEvery} beats</option>
@@ -582,7 +632,7 @@ export default function ReelMaker() {
                         </option>
                       ))}
                     </select>
-                    {c.media && (
+                    {c.media && mode === 'story' && (
                       <button type="button" className="reel-chip" onClick={() => update(c.id, { fit: c.fit === 'fill' ? 'whole' : 'fill' })} title="Fill crops to the screen; Whole shows all of it (good for screenshots)">
                         {c.fit === 'fill' ? 'Fill' : 'Whole'}
                       </button>
@@ -601,16 +651,19 @@ export default function ReelMaker() {
               </li>
             ))}
           </ol>
-          <button type="button" className="reel-btn reel-small" onClick={() => setClips((cs) => [...cs, { id: nextId++, media: null, url: null, name: '', text: '', hint: '', fit: 'fill', beats: null }])}>
-            + Text-only card
-          </button>
+          {mode === 'story' && (
+            <button type="button" className="reel-btn reel-small" onClick={() => setClips((cs) => [...cs, { id: nextId++, media: null, url: null, name: '', text: '', hint: '', fit: 'fill', beats: null }])}>
+              + Text-only card
+            </button>
+          )}
         </section>
 
         <section className="reel-step">
           <h2>
-            <span>4</span> End card
+            <span>{mode === 'story' ? 4 : 3}</span> {mode === 'story' ? 'End card' : 'Last beat'}
           </h2>
-          <div className="reel-row">
+          {mode === 'recap' && <p className="reel-hint">Every photo lands in the collage. A title is optional: leave it empty for photos only.</p>}
+          {mode === 'story' && <div className="reel-row">
             <label className="reel-btn">
               {end.media ? 'Change picture' : 'Add a picture of the board'}
               <input
@@ -630,9 +683,9 @@ export default function ReelMaker() {
               />
             </label>
             {end.url && <img src={end.url} alt="" className="reel-endthumb" />}
-          </div>
+          </div>}
           <label className="reel-field">
-            Tagline
+            {mode === 'story' ? 'Tagline' : 'Title'}
             <input value={end.tagline} onChange={(e) => setEnd((x) => ({ ...x, tagline: e.target.value }))} />
           </label>
           <label className="reel-field">
@@ -651,7 +704,7 @@ export default function ReelMaker() {
 
         <section className="reel-step">
           <h2>
-            <span>5</span> Look
+            <span>{mode === 'story' ? 5 : 4}</span> Look
           </h2>
           <div className="reel-row">
             <span className="reel-label">Text</span>
@@ -661,19 +714,19 @@ export default function ReelMaker() {
               </button>
             ))}
           </div>
-          <div className="reel-row">
+          {mode === 'story' && <div className="reel-row">
             <span className="reel-label">Cuts</span>
             {(['punch', 'flash', 'clean'] as const).map((v) => (
               <button key={v} type="button" className={`reel-chip${look.motion === v ? ' on' : ''}`} onClick={() => setLook((l) => ({ ...l, motion: v }))} aria-pressed={look.motion === v}>
                 {v === 'punch' ? 'Punch in' : v === 'flash' ? 'Flash' : 'Clean'}
               </button>
             ))}
-          </div>
+          </div>}
         </section>
 
         <section className="reel-step">
           <h2>
-            <span>6</span> Export
+            <span>{mode === 'story' ? 6 : 5}</span> Export
           </h2>
           {song && (
             <label className="reel-check">
