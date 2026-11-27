@@ -2,6 +2,7 @@
 // the reel onto a 1080×1920 canvas. No libraries and no server: Web Audio decodes the song,
 // this file finds the beats, and the page records the canvas with MediaRecorder.
 
+import { drawEdit, type EditId, type Shot } from './edits';
 import { drawJump, type JumpStyle } from './jumps';
 
 export const W = 1080;
@@ -262,18 +263,20 @@ export function segmentAt(tl: Timeline, t: number): Segment | undefined {
 // ---------- drawing ----------
 
 export type Media =
-  | { kind: 'image'; el: HTMLImageElement | ImageBitmap; w: number; h: number }
+  | { kind: 'image'; el: HTMLImageElement | ImageBitmap | HTMLCanvasElement; w: number; h: number }
   | { kind: 'video'; el: HTMLVideoElement; w: number; h: number };
 
 export type Card = { media: Media | null; text: string; fit: 'fill' | 'whole' };
 export type EndCard = { media: Media | null; tagline: string; small: string };
 export type Look = {
-  text: 'bold' | 'boxed';
+  text: 'quiet' | 'bold' | 'boxed';
   motion: 'punch' | 'flash' | 'clean';
   /** CSS font family list for the captions. */
   font: string;
   /** 'story': one clip at a time with a line of text. 'recap': a photo dump that builds into a collage. */
-  mode?: 'story' | 'recap' | JumpStyle;
+  mode?: 'story' | 'recap' | JumpStyle | EditId;
+  /** For the recap edits: the planned shots (see edits.ts). */
+  shots?: Shot[];
   /** Recap only: how many photos pop in on their own (the rest of the screen black) before the collage starts to build. */
   alone?: number;
 };
@@ -301,8 +304,9 @@ export function drawFrame(ctx: CanvasRenderingContext2D, t: number, tl: Timeline
     return;
   }
   if (look.mode && look.mode !== 'story') {
-    if (look.mode === 'recap') drawRecap(ctx, t, seg, tl, cards, end, look);
-    else drawJump(ctx, t, seg, tl, cards, end, look, look.mode);
+    if (look.shots) drawEdit(ctx, t, seg, tl, cards, end, look, look.shots);
+    else if (look.mode === 'recap') drawRecap(ctx, t, seg, tl, cards, end, look);
+    else drawJump(ctx, t, seg, tl, cards, end, look, look.mode as JumpStyle);
     fadeOut(ctx, t, tl);
     ctx.restore();
     return;
@@ -329,7 +333,8 @@ export function drawFrame(ctx: CanvasRenderingContext2D, t: number, tl: Timeline
     }
     if (card?.text) {
       const y = card.media && card.fit === 'whole' ? H * 0.155 : H * 0.5;
-      drawCaption(ctx, card.text, y, dt, look, card.media ? null : CARD_INK);
+      if (look.text === 'quiet') drawQuiet(ctx, card.text, y, dt, look, 76, 1, card.media ? '#ffffff' : CARD_INK);
+      else drawCaption(ctx, card.text, y, dt, look, card.media ? null : CARD_INK);
     }
   } else {
     // The end card: the board itself, the tagline on top, the small line under it a beat later.
@@ -341,7 +346,7 @@ export function drawFrame(ctx: CanvasRenderingContext2D, t: number, tl: Timeline
       ctx.fillStyle = g;
       ctx.fillRect(0, 0, W, H);
     }
-    if (end.tagline) drawCaption(ctx, end.tagline, end.media ? H * 0.155 : H * 0.45, dt, look, null);
+    if (end.tagline) drawText(ctx, end.tagline, end.media ? H * 0.155 : H * 0.45, dt, look);
     const beat2 = seg.beats[1] ?? seg.start + 0.5;
     if (end.small && t >= beat2) drawSmall(ctx, end.small, end.media ? H * 0.255 : H * 0.58, t - beat2, look);
   }
@@ -365,80 +370,137 @@ function fadeOut(ctx: CanvasRenderingContext2D, t: number, tl: Timeline) {
 
 // ---------- the photo recap ----------
 
-export const RECAP_MAX = 16;
+export const RECAP_MAX = 60;
 export type Grid = { cols: number; rows: number; count: number; order: number[] };
 
 /**
- * The collage grid for `n` photos: 2, 3 or 4 columns, whichever gives tiles closest to a
- * phone photo's 3:4 with the fewest empty cells. Photo i lands in cell order[i], shuffled
- * the same way every time so the photos jump around the screen as they come in.
+ * The collage: a 3×3 grid of small 9:16 tiles, so every tile is a little copy of the screen's
+ * shape. The photos that flash alone sit in the middle column first; the collage then fills
+ * from the bottom up, so the screen builds rather than scatters. Past nine photos, each new one
+ * cuts into the next cell in the same order, so a long recap keeps changing without ever
+ * looking crowded.
  */
 export function recapGrid(n: number): Grid {
   const count = Math.max(1, Math.min(RECAP_MAX, n));
-  let best = { cols: 2, rows: 1, score: Infinity };
-  for (const cols of [2, 3, 4]) {
-    const rows = Math.ceil(count / cols);
-    const score = Math.abs(Math.log(W / cols / (H / rows) / 0.75)) + (cols * rows - count) * 0.25;
-    if (score < best.score) best = { cols, rows, score };
+  const cols = 3;
+  const rows = 3;
+  const cells = cols * rows;
+  const first = [1, cols + 1, cols + 2, 0, 2 * cols + 1].filter((c) => c < cells);
+  // Then bottom row to top, alternating direction across each row.
+  const rest: number[] = [];
+  for (let r = rows - 1; r >= 0; r--) {
+    const row = Array.from({ length: cols }, (_, c) => r * cols + c);
+    if ((rows - 1 - r) % 2) row.reverse();
+    for (const c of row) if (!first.includes(c)) rest.push(c);
   }
-  const order = Array.from({ length: best.cols * best.rows }, (_, i) => i);
-  let seed = 7 + count * 13;
-  const rnd = () => (seed = (seed * 1103515245 + 12345) & 0x7fffffff) / 0x7fffffff;
-  for (let i = order.length - 1; i > 0; i--) {
-    const j = Math.floor(rnd() * (i + 1));
-    [order[i], order[j]] = [order[j], order[i]];
-  }
-  return { cols: best.cols, rows: best.rows, count, order };
+  return { cols, rows, count, order: [...first, ...rest] };
 }
 
 /**
- * A photo dump that builds into a collage: the first few photos flash up alone in their
- * spot on a black screen, the rest stay as they land, one per cut, and on the last beat
- * the ones that flashed alone come back and fill the grid. An optional title lands a beat later.
+ * A photo dump that builds into a collage, cut like an editor would: hard cuts, no bounce,
+ * lots of black. Each of the first photos lands on its beat as a small tile, blinks once,
+ * and is gone, leaving the screen dark until the next hit. Then the rest land one per cut and
+ * stay, and on the last beat the ones that flashed alone come back and the grid is full.
+ * Inside every tile the picture drifts slowly, so stills feel like footage.
  */
 function drawRecap(ctx: CanvasRenderingContext2D, t: number, seg: Segment, tl: Timeline, cards: Card[], end: EndCard, look: Look) {
   ctx.fillStyle = '#000000';
   ctx.fillRect(0, 0, W, H);
   const g = recapGrid(cards.length);
-  const cw = W / g.cols;
-  const ch = H / g.rows;
+  const gap = 6;
+  const cw = (W - gap * (g.cols + 1)) / g.cols;
+  const ch = (H - gap * (g.rows + 1)) / g.rows;
   const alone = Math.max(0, Math.min(look.alone ?? 0, g.count));
-  const tile = (card: number, cell: number, since: number, zoom = 1) => {
+  const tile = (card: number, cell: number, since: number) => {
     const m = cards[card]?.media;
     if (!m || since < 0) return;
-    const x = (cell % g.cols) * cw;
-    const y = Math.floor(cell / g.cols) * ch;
-    const pop = clamp01(since / 0.16);
-    const s = Math.max(cw / m.w, ch / m.h) * (1 + 0.14 * (1 - pop) ** 3) * zoom;
+    const x = gap + (cell % g.cols) * (cw + gap);
+    const y = gap + Math.floor(cell / g.cols) * (ch + gap);
+    // A slow drift, a different direction per photo.
+    const drift = Math.min(1, (since + card * 0.37) / 6);
+    const dir = card % 4;
+    const s = Math.max(cw / m.w, ch / m.h) * (1.06 + 0.05 * drift);
+    const dx = (dir === 0 ? 1 : dir === 1 ? -1 : 0) * 0.025 * cw * (drift - 0.5);
+    const dy = (dir === 2 ? 1 : dir === 3 ? -1 : 0) * 0.025 * ch * (drift - 0.5);
     ctx.save();
     ctx.beginPath();
     ctx.rect(x, y, cw, ch);
     ctx.clip();
-    ctx.globalAlpha = clamp01(since / 0.05);
-    ctx.drawImage(m.el, x + (cw - m.w * s) / 2, y + (ch - m.h * s) / 2, m.w * s, m.h * s);
+    // Hard cut: full strength from the first frame (a fade-in here read as a black flash).
+    ctx.drawImage(m.el, x + (cw - m.w * s) / 2 + dx, y + (ch - m.h * s) / 2 + dy, m.w * s, m.h * s);
     ctx.restore();
   };
   const landed = (i: number) => t - (tl.segments[i]?.start ?? 0);
+  const cells = g.order.length;
+  const cellOf = (j: number) => g.order[j % cells];
+  /** Draws, for each cell, the newest photo in it among photos from..upto. */
+  const latest = (from: number, upto: number, since?: number) => {
+    const done = new Set<number>();
+    for (let j = upto; j >= from && done.size < cells; j--) {
+      const c = cellOf(j);
+      if (done.has(c)) continue;
+      done.add(c);
+      tile(j, c, since ?? landed(j));
+    }
+    return done;
+  };
 
   if (seg.kind === 'clip') {
     const i = seg.index;
-    if (i >= g.count) {
-      // Past the grid's size: show the photo alone, full screen.
-      const m = cards[i]?.media;
-      if (m) drawCover(ctx, m, 1 + 0.12 * (1 - clamp01((t - seg.start) / 0.16)) ** 3);
-    } else if (i < alone) tile(i, g.order[i], t - seg.start, 1 + 0.04 * ((t - seg.start) / Math.max(0.1, seg.end - seg.start)));
-    else for (let j = alone; j <= i; j++) tile(j, g.order[j], landed(j));
+    const dt = t - seg.start;
+    const beat = seg.beats.length > 1 ? seg.beats[1] - seg.beats[0] : (seg.end - seg.start) / 2;
+    if (i >= g.count) return;
+    if (i < alone) {
+      // On for a beat with one blink in it, then dark until the next hit.
+      const on = dt < beat * 0.55 || (dt > beat * 0.68 && dt < beat * 1.15);
+      if (on) tile(i, cellOf(i), dt);
+    } else latest(alone, i);
     return;
   }
 
-  // The last beat: everything lands; empty cells take a second look at the first photos.
+  // The last beat: the photos that flashed alone come back into any cell still empty.
   const since = t - seg.start;
-  for (let j = 0; j < g.count; j++) tile(j, g.order[j], j < alone ? since : landed(j));
+  const filled = latest(alone, g.count - 1);
+  for (let j = 0; j < alone; j++) if (!filled.has(cellOf(j))) {
+    filled.add(cellOf(j));
+    tile(j, cellOf(j), since);
+  }
+  for (let c = 0, k = 0; c < cells; c++) if (!filled.has(g.order[c])) tile(k++ % g.count, g.order[c], since);
   const second = seg.beats[1] ?? seg.start + 0.5;
-  for (let c = g.count; c < g.order.length; c++) tile((c - g.count) % g.count, g.order[c], t - second);
-  if (end.tagline && t >= second) drawCaption(ctx, end.tagline, H * 0.5, t - second, look, null);
+  if (end.tagline && t >= second) {
+    ctx.fillStyle = `rgba(0,0,0,${(0.45 * clamp01((t - second) / 0.25)).toFixed(3)})`;
+    ctx.fillRect(0, 0, W, H);
+    drawText(ctx, end.tagline, H * 0.5, t - second, look, 64);
+  }
   const third = seg.beats[2] ?? second + 0.5;
-  if (end.small && t >= third) drawSmall(ctx, end.small, H * 0.5 + 190, t - third, look);
+  if (end.small && t >= third) drawQuiet(ctx, end.small, H * 0.5 + 90, t - third, look, 34, 0.7);
+}
+
+/** Text over a photo in the chosen style: quiet (plain with a soft shadow), bold outline or white box. */
+export function drawText(ctx: CanvasRenderingContext2D, text: string, cy: number, dt: number, look: Look, size = 72) {
+  if (look.text === 'quiet') drawQuiet(ctx, text, cy, dt, look, size);
+  else drawCaption(ctx, text, cy, dt, look, null);
+}
+
+/** Quiet type for the photo styles: no outline, no bounce, a short fade and a small rise. */
+export function drawQuiet(ctx: CanvasRenderingContext2D, text: string, cy: number, dt: number, look: Look, size: number, alpha = 1, ink = '#ffffff') {
+  const p = clamp01(dt / 0.35);
+  const e = 1 - (1 - p) ** 3;
+  ctx.save();
+  ctx.globalAlpha = alpha * e;
+  ctx.font = `500 ${size}px ${look.font}`;
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillStyle = ink;
+  // A soft shadow (no outline) so white type reads on a bright photo.
+  if (ink === '#ffffff') {
+    ctx.shadowColor = 'rgba(0,0,0,0.55)';
+    ctx.shadowBlur = size * 0.6;
+  }
+  if ('letterSpacing' in ctx) (ctx as unknown as { letterSpacing: string }).letterSpacing = `${(size * 0.02).toFixed(1)}px`;
+  const lines = wrap(ctx, text, W * 0.8);
+  lines.forEach((line, i) => ctx.fillText(line, W / 2, cy + (i - (lines.length - 1) / 2) * size * 1.2 + 14 * (1 - e)));
+  ctx.restore();
 }
 
 export function drawCover(ctx: CanvasRenderingContext2D, m: Media, scale: number) {
