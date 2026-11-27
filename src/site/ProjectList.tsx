@@ -18,6 +18,11 @@ export function ProjectList({ projects }: { projects: Project[] }) {
             {p.type === 'project' && <span className={`status is-${p.status}`}>{statusLabel[p.status]}</span>}
             {p.blurb && <span className="blurb">{p.blurb}</span>}
             {p.about && <p>{p.about}</p>}
+            {p.seeds?.map((seed) => (
+              <a key={seed.href} className="seed" href={seed.href}>
+                {seed.name}
+              </a>
+            ))}
           </li>
         );
       })}
