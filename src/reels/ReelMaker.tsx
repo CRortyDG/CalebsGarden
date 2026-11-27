@@ -24,15 +24,18 @@ import {
   type Media,
   type Timeline,
 } from './engine';
+import { EDITS, planEdit, shotOfPhoto, type EditId, type Shot } from './edits';
 import type { JumpStyle } from './jumps';
 import { SCRIPTS } from './scripts';
 
 type Clip = Card & { id: number; hint: string; beats: number | null; name: string; url: string | null };
 type Song = { name: string; buffer: AudioBuffer; an: Analysis };
-type Mode = 'story' | 'recap' | JumpStyle;
+type Mode = 'story' | 'recap' | JumpStyle | EditId;
+const isEditId = (m: Mode): m is EditId => EDITS.some((e) => e.id === m);
 /** The styles, in the order they're offered: every one but Story needs only photos. */
 const STYLES: { id: Mode; label: string; about: string }[] = [
-  { id: 'recap', label: 'Photo recap', about: 'A photo dump for your friends: photos pop in around a black screen on the beat, then build into a collage.' },
+  ...EDITS,
+  { id: 'recap', label: 'Simple recap', about: 'A photo dump for your friends: photos pop in around a black screen on the beat, then build into a collage.' },
   { id: 'zoom', label: 'Zoom jump', about: 'Each photo rushes in toward the camera and punches through into the next one on the beat.' },
   { id: 'whip', label: 'Whip pan', about: 'The photos fly sideways past each other on every cut, like a fast camera swing.' },
   { id: 'polaroid', label: 'Polaroid stack', about: 'Prints drop onto a table one per beat and pile up into a messy stack.' },
@@ -100,7 +103,7 @@ export default function ReelMaker() {
   const [bpm, setBpm] = useState(120);
   const [startAt, setStartAt] = useState(0);
   const [cutEvery, setCutEvery] = useState(2);
-  const [mode, setMode] = useState<Mode>('recap');
+  const [mode, setMode] = useState<Mode>('pages');
   const [alone, setAlone] = useState(3);
   const [clips, setClips] = useState<Clip[]>([]);
   const [end, setEnd] = useState<EndCard & { url: string | null; beats: number }>({ media: null, url: null, tagline: '', small: '', beats: 8 });
@@ -117,12 +120,17 @@ export default function ReelMaker() {
   const [dragging, setDragging] = useState(false);
 
   const an = useMemo(() => song?.an ?? gridAnalysis(bpm), [song, bpm]);
+  // A recap edit plans its own shots from the photos; Cut every becomes its pace.
+  const shots: Shot[] | undefined = useMemo(() => (isEditId(mode) ? planEdit(mode, clips.length, cutEvery / 2) : undefined), [mode, clips.length, cutEvery]);
   const tl: Timeline = useMemo(
     // In a recap, the photos that build the collage come in twice as fast as the ones that pop in alone.
-    () => buildTimeline(an, song ? startAt : 0, clips.map((c, i) => c.beats ?? (mode === 'recap' && i >= alone ? Math.max(1, cutEvery / 2) : cutEvery)), end.beats),
-    [an, song, startAt, clips, cutEvery, end.beats, mode, alone],
+    () =>
+      shots
+        ? buildTimeline(an, song ? startAt : 0, shots.map((x) => x.beats), 0)
+        : buildTimeline(an, song ? startAt : 0, clips.map((c, i) => c.beats ?? (mode === 'recap' && i >= alone ? Math.max(1, cutEvery / 2) : cutEvery)), end.beats),
+    [an, song, startAt, clips, cutEvery, end.beats, mode, alone, shots],
   );
-  const fullLook: Look = useMemo(() => ({ ...look, font, mode, alone }), [look, font, mode, alone]);
+  const fullLook: Look = useMemo(() => ({ ...look, font, mode, alone, shots }), [look, font, mode, alone, shots]);
 
   // Everything the animation loop reads, kept current without restarting it.
   const live = useRef({ tl, clips, end: end as EndCard, look: fullLook });
@@ -588,10 +596,10 @@ export default function ReelMaker() {
             </>
           )}
           <div className="reel-row">
-            <span className="reel-label">Cut every</span>
+            <span className="reel-label">{shots ? 'Pace' : 'Cut every'}</span>
             {[1, 2, 4].map((n) => (
               <button key={n} type="button" className={`reel-chip${cutEvery === n ? ' on' : ''}`} onClick={() => setCutEvery(n)} aria-pressed={cutEvery === n}>
-                {n} beat{n > 1 ? 's' : ''}
+                {shots ? (n === 1 ? 'Fast' : n === 2 ? 'Normal' : 'Slow') : `${n} beat${n > 1 ? 's' : ''}`}
               </button>
             ))}
           </div>
@@ -649,13 +657,13 @@ export default function ReelMaker() {
             }}
           >
             <strong>Drop photos or video clips here</strong>
-            <span>{mode === 'story' ? 'or tap to choose. They fill the script\'s empty slots in order.' : mode === 'recap' ? `or tap to choose. Up to ${RECAP_MAX}; past nine, each one cuts into the collage.` : 'or tap to choose. One photo per cut, in this order.'}</span>
+            <span>{mode === 'story' ? 'or tap to choose. They fill the script\'s empty slots in order.' : mode === 'recap' ? `or tap to choose. Up to ${RECAP_MAX}; past nine, each one cuts into the collage.` : shots ? 'or tap to choose. As many as you like, in the order they should appear.' : 'or tap to choose. One photo per cut, in this order.'}</span>
             <input type="file" accept="image/*,video/*" multiple hidden onChange={(e) => e.target.files && addFiles(e.target.files)} />
           </label>
           <ol className="reel-clips">
             {clips.map((c, i) => (
               <li key={c.id} className="reel-clip">
-                <button type="button" className="reel-thumb" onClick={() => { stop(); setT(tl.segments[i]?.start ?? 0); }} aria-label={`Show clip ${i + 1}`}>
+                <button type="button" className="reel-thumb" onClick={() => { stop(); setT(tl.segments[shots ? shotOfPhoto(shots, i) : i]?.start ?? 0); }} aria-label={`Show clip ${i + 1}`}>
                   {c.url && c.media?.kind === 'image' && <img src={c.url} alt="" />}
                   {c.url && c.media?.kind === 'video' && <video src={c.url} muted playsInline />}
                   {!c.media && <span>Text only</span>}
@@ -669,14 +677,14 @@ export default function ReelMaker() {
                   )}
                   {mode === 'recap' && <small>{i < alone ? 'Pops in alone' : i < 9 ? 'Builds the collage' : i < RECAP_MAX ? 'Cuts into the collage' : 'Over the limit: left out'}</small>}
                   <div className="reel-row">
-                    <select value={c.beats ?? ''} onChange={(e) => update(c.id, { beats: e.target.value ? Number(e.target.value) : null })} className="reel-select reel-small" aria-label="Beats">
+                    {!shots && <select value={c.beats ?? ''} onChange={(e) => update(c.id, { beats: e.target.value ? Number(e.target.value) : null })} className="reel-select reel-small" aria-label="Beats">
                       <option value="">{cutEvery} beats</option>
                       {[1, 2, 3, 4, 6, 8].filter((n) => n !== cutEvery).map((n) => (
                         <option key={n} value={n}>
                           {n} beat{n > 1 ? 's' : ''}
                         </option>
                       ))}
-                    </select>
+                    </select>}
                     {c.media && mode === 'story' && (
                       <button type="button" className="reel-chip" onClick={() => update(c.id, { fit: c.fit === 'fill' ? 'whole' : 'fill' })} title="Fill crops to the screen; Whole shows all of it (good for screenshots)">
                         {c.fit === 'fill' ? 'Fill' : 'Whole'}
@@ -707,7 +715,7 @@ export default function ReelMaker() {
           <h2>
             <span>{mode === 'story' ? 4 : 3}</span> {mode === 'story' ? 'End card' : 'Last beat'}
           </h2>
-          {mode !== 'story' && <p className="reel-hint">{mode === 'recap' ? 'Every photo lands in the collage.' : 'The last photo holds.'} A title is optional: leave it empty for photos only.</p>}
+          {mode !== 'story' && <p className="reel-hint">{shots ? 'Ends on a grid of your last nine photos.' : mode === 'recap' ? 'Every photo lands in the collage.' : 'The last photo holds.'} A title is optional: leave it empty for photos only.</p>}
           {mode === 'story' && <div className="reel-row">
             <label className="reel-btn">
               {end.media ? 'Change picture' : 'Add a picture of the board'}

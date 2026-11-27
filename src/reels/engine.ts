@@ -2,6 +2,7 @@
 // the reel onto a 1080×1920 canvas. No libraries and no server: Web Audio decodes the song,
 // this file finds the beats, and the page records the canvas with MediaRecorder.
 
+import { drawEdit, type EditId, type Shot } from './edits';
 import { drawJump, type JumpStyle } from './jumps';
 
 export const W = 1080;
@@ -273,7 +274,9 @@ export type Look = {
   /** CSS font family list for the captions. */
   font: string;
   /** 'story': one clip at a time with a line of text. 'recap': a photo dump that builds into a collage. */
-  mode?: 'story' | 'recap' | JumpStyle;
+  mode?: 'story' | 'recap' | JumpStyle | EditId;
+  /** For the recap edits: the planned shots (see edits.ts). */
+  shots?: Shot[];
   /** Recap only: how many photos pop in on their own (the rest of the screen black) before the collage starts to build. */
   alone?: number;
 };
@@ -301,8 +304,9 @@ export function drawFrame(ctx: CanvasRenderingContext2D, t: number, tl: Timeline
     return;
   }
   if (look.mode && look.mode !== 'story') {
-    if (look.mode === 'recap') drawRecap(ctx, t, seg, tl, cards, end, look);
-    else drawJump(ctx, t, seg, tl, cards, end, look, look.mode);
+    if (look.shots) drawEdit(ctx, t, seg, tl, cards, end, look, look.shots);
+    else if (look.mode === 'recap') drawRecap(ctx, t, seg, tl, cards, end, look);
+    else drawJump(ctx, t, seg, tl, cards, end, look, look.mode as JumpStyle);
     fadeOut(ctx, t, tl);
     ctx.restore();
     return;
