@@ -24,7 +24,7 @@ import {
   type Media,
   type Timeline,
 } from './engine';
-import { EDITS, planEdit, shotOfPhoto, type EditId, type Shot } from './edits';
+import { EDITS, planEdit, shotOfPhoto, syncEditVideos, type EditId, type Shot } from './edits';
 import type { JumpStyle } from './jumps';
 import { SCRIPTS } from './scripts';
 
@@ -107,7 +107,7 @@ export default function ReelMaker() {
   const [alone, setAlone] = useState(3);
   const [clips, setClips] = useState<Clip[]>([]);
   const [end, setEnd] = useState<EndCard & { url: string | null; beats: number }>({ media: null, url: null, tagline: '', small: '', beats: 8 });
-  const [look, setLook] = useState<Omit<Look, 'font'>>({ text: 'bold', motion: 'punch' });
+  const [look, setLook] = useState<Omit<Look, 'font'>>({ text: 'quiet', motion: 'punch' });
   const [font, setFont] = useState('system-ui, sans-serif');
   const [scriptId, setScriptId] = useState(SCRIPTS[0].id);
   const [withAudio, setWithAudio] = useState(true);
@@ -140,7 +140,9 @@ export default function ReelMaker() {
     const ctx = canvasRef.current?.getContext('2d');
     if (!ctx) return;
     const { tl, clips, end, look } = live.current;
-    syncVideos(at, tl, clips, end, isPlaying);
+    const shots = look.shots;
+    if (shots) syncEditVideos(at, tl, clips, shots, isPlaying);
+    else syncVideos(at, tl, clips, end, isPlaying);
     drawFrame(ctx, at, tl, clips, end, look);
   }, []);
 
@@ -669,9 +671,9 @@ export default function ReelMaker() {
                   {!c.media && <span>Text only</span>}
                 </button>
                 <div className="reel-clip-body">
-                  {mode === 'story' && (
+                  {(mode === 'story' || shots) && (
                     <>
-                      <input value={c.text} onChange={(e) => update(c.id, { text: e.target.value })} placeholder="Text on this clip" aria-label={`Text on clip ${i + 1}`} />
+                      <input value={c.text} onChange={(e) => update(c.id, { text: e.target.value })} placeholder={shots ? 'Text over this photo (optional)' : 'Text on this clip'} aria-label={`Text on clip ${i + 1}`} />
                       {c.hint && <small>Shot: {c.hint}</small>}
                     </>
                   )}
@@ -761,9 +763,9 @@ export default function ReelMaker() {
           </h2>
           <div className="reel-row">
             <span className="reel-label">Text</span>
-            {(['bold', 'boxed'] as const).map((v) => (
+            {(['quiet', 'bold', 'boxed'] as const).map((v) => (
               <button key={v} type="button" className={`reel-chip${look.text === v ? ' on' : ''}`} onClick={() => setLook((l) => ({ ...l, text: v }))} aria-pressed={look.text === v}>
-                {v === 'bold' ? 'Bold outline' : 'White box'}
+                {v === 'quiet' ? 'Clean' : v === 'bold' ? 'Bold outline' : 'White box'}
               </button>
             ))}
           </div>

@@ -7,7 +7,7 @@
 // its own arc (a sparse open, a build, a peak, a breath, the finale); the sections repeat until
 // every photo has been used, so 6 photos make a short reel and 60 make a long one.
 
-import { drawCover, drawQuiet, H, W, type Card, type EndCard, type Look, type Media, type Segment, type Timeline } from './engine';
+import { drawCover, drawQuiet, drawText, H, segmentAt, W, type Card, type EndCard, type Look, type Media, type Segment, type Timeline } from './engine';
 
 export type Shot =
   | { kind: 'solo'; photos: [number]; beats: number; cell: number }
@@ -54,11 +54,11 @@ const RECIPES: Record<EditId, { open: Section[]; loop: Section[] }> = {
     open: [{ kind: 'solo', beats: 4 }, { kind: 'solo', beats: 4 }, { kind: 'solo', beats: 4 }],
     loop: [
       { kind: 'grid', size: 3, step: 1, hold: 2 },
-      { kind: 'full', beats: 2, blink: true },
-      { kind: 'full', beats: 2, blink: true },
+      { kind: 'full', beats: 2 },
+      { kind: 'full', beats: 2 },
       { kind: 'grid', size: 3, step: 0.5, hold: 2 },
       { kind: 'solo', beats: 2 },
-      { kind: 'full', beats: 2, blink: true },
+      { kind: 'full', beats: 2 },
     ],
   },
   cuts: {
@@ -74,7 +74,7 @@ const RECIPES: Record<EditId, { open: Section[]; loop: Section[] }> = {
     open: [{ kind: 'solo', beats: 4 }, { kind: 'solo', beats: 4 }],
     loop: [
       { kind: 'split', step: 1, hold: 1 },
-      { kind: 'full', beats: 2, blink: true },
+      { kind: 'full', beats: 2 },
       { kind: 'split', step: 0.5, hold: 2 },
       { kind: 'full', beats: 1 },
       { kind: 'full', beats: 1 },
@@ -90,7 +90,7 @@ const RECIPES: Record<EditId, { open: Section[]; loop: Section[] }> = {
       { kind: 'solo', beats: 2 },
     ],
     loop: [
-      ...Array.from({ length: 4 }, () => ({ kind: 'full', beats: 1, blink: true }) as Section),
+      ...Array.from({ length: 4 }, () => ({ kind: 'full', beats: 1 }) as Section),
       { kind: 'grid', size: 3, step: 0.5, hold: 1 },
       { kind: 'strobe', count: 8, step: 0.5 },
     ],
@@ -99,9 +99,9 @@ const RECIPES: Record<EditId, { open: Section[]; loop: Section[] }> = {
     open: [{ kind: 'solo', beats: 4 }, { kind: 'solo', beats: 2 }],
     loop: [
       { kind: 'grid', size: 2, step: 1, hold: 2 },
-      { kind: 'full', beats: 2, blink: true },
+      { kind: 'full', beats: 2 },
       { kind: 'grid', size: 3, step: 0.5, hold: 2 },
-      { kind: 'full', beats: 2, blink: true },
+      { kind: 'full', beats: 2 },
       { kind: 'black', beats: 1 },
     ],
   },
@@ -175,7 +175,8 @@ function photoIn(ctx: CanvasRenderingContext2D, m: Media | null | undefined, x: 
   ctx.beginPath();
   ctx.rect(x, y, w, h);
   ctx.clip();
-  ctx.globalAlpha = alpha * clamp01(since / 0.05);
+  // A hard cut: full strength from the first frame. (Fading in from 0 put a black frame on every cut.)
+  ctx.globalAlpha = alpha;
   ctx.drawImage(m.el, x + (w - m.w * s) / 2 + dx, y + (h - m.h * s) / 2 + dy, m.w * s, m.h * s);
   ctx.restore();
 }
@@ -254,12 +255,58 @@ export function drawEdit(ctx: CanvasRenderingContext2D, t: number, seg: Segment,
       if (end.tagline && t >= second) {
         ctx.fillStyle = `rgba(0,0,0,${(0.45 * clamp01((t - second) / 0.25)).toFixed(3)})`;
         ctx.fillRect(0, 0, W, H);
-        drawQuiet(ctx, end.tagline, H * 0.5, t - second, look, 64);
+        drawText(ctx, end.tagline, H * 0.5, t - second, look, 64);
       }
       const third = seg.beats[2] ?? second + beat;
       if (end.small && t >= third) drawQuiet(ctx, end.small, H * 0.5 + 90, t - third, look, 34, 0.7);
       break;
     }
   }
+
+  // Text: the line on the newest photo on screen that has one, from when that photo lands.
+  if (shot.kind !== 'finale' && shot.kind !== 'black') {
+    let best: { text: string; since: number } | null = null;
+    shot.photos.forEach((p, k) => {
+      const text = cards[p]?.text?.trim();
+      if (!text) return;
+      const since = u - (shot.kind === 'grid' || shot.kind === 'split' || shot.kind === 'strobe' ? k * shot.step * beat : 0);
+      if (since < 0) return;
+      if (shot.kind === 'strobe' && since >= shot.step * beat) return; // only while it's the photo showing
+      if (!best || since < best.since) best = { text, since };
+    });
+    if (best) drawText(ctx, (best as { text: string }).text, H * 0.5, (best as { since: number }).since, look);
+  }
   void tl;
+}
+
+/**
+ * Keeps video clips in step with an edit: every clip on screen in the current shot plays from
+ * when it landed; the rest wait, paused and already rewound to their first frame, so a clip
+ * never shows a stale frame for a moment when it cuts in.
+ */
+export function syncEditVideos(t: number, tl: Timeline, cards: Card[], shots: Shot[], playing: boolean) {
+  const seg = segmentAt(tl, t);
+  const shot = seg ? shots[seg.index] : undefined;
+  const active = new Map<number, number>();
+  if (seg && shot) {
+    const beat = (seg.end - seg.start) / Math.max(1, shot.beats);
+    shot.photos.forEach((p, k) => {
+      const offset = shot.kind === 'grid' || shot.kind === 'split' || shot.kind === 'strobe' ? k * shot.step * beat : 0;
+      active.set(p, Math.max(0, t - seg.start - offset));
+    });
+  }
+  cards.forEach((c, i) => {
+    if (c.media?.kind !== 'video') return;
+    const v = c.media.el;
+    const want = active.get(i);
+    if (want === undefined) {
+      if (!v.paused) v.pause();
+      if (v.currentTime > 0.05 && !v.seeking) v.currentTime = 0;
+      return;
+    }
+    const w = Math.max(0, Math.min(want, (v.duration || 0) - 0.05));
+    if (Math.abs(v.currentTime - w) > (playing ? 0.3 : 0.04)) v.currentTime = w;
+    if (playing && v.paused) void v.play().catch(() => {});
+    if (!playing && !v.paused) v.pause();
+  });
 }

@@ -269,7 +269,7 @@ export type Media =
 export type Card = { media: Media | null; text: string; fit: 'fill' | 'whole' };
 export type EndCard = { media: Media | null; tagline: string; small: string };
 export type Look = {
-  text: 'bold' | 'boxed';
+  text: 'quiet' | 'bold' | 'boxed';
   motion: 'punch' | 'flash' | 'clean';
   /** CSS font family list for the captions. */
   font: string;
@@ -333,7 +333,8 @@ export function drawFrame(ctx: CanvasRenderingContext2D, t: number, tl: Timeline
     }
     if (card?.text) {
       const y = card.media && card.fit === 'whole' ? H * 0.155 : H * 0.5;
-      drawCaption(ctx, card.text, y, dt, look, card.media ? null : CARD_INK);
+      if (look.text === 'quiet') drawQuiet(ctx, card.text, y, dt, look, 76, 1, card.media ? '#ffffff' : CARD_INK);
+      else drawCaption(ctx, card.text, y, dt, look, card.media ? null : CARD_INK);
     }
   } else {
     // The end card: the board itself, the tagline on top, the small line under it a beat later.
@@ -345,7 +346,7 @@ export function drawFrame(ctx: CanvasRenderingContext2D, t: number, tl: Timeline
       ctx.fillStyle = g;
       ctx.fillRect(0, 0, W, H);
     }
-    if (end.tagline) drawCaption(ctx, end.tagline, end.media ? H * 0.155 : H * 0.45, dt, look, null);
+    if (end.tagline) drawText(ctx, end.tagline, end.media ? H * 0.155 : H * 0.45, dt, look);
     const beat2 = seg.beats[1] ?? seg.start + 0.5;
     if (end.small && t >= beat2) drawSmall(ctx, end.small, end.media ? H * 0.255 : H * 0.58, t - beat2, look);
   }
@@ -425,7 +426,7 @@ function drawRecap(ctx: CanvasRenderingContext2D, t: number, seg: Segment, tl: T
     ctx.beginPath();
     ctx.rect(x, y, cw, ch);
     ctx.clip();
-    ctx.globalAlpha = clamp01(since / 0.05); // two frames in, never a pop
+    // Hard cut: full strength from the first frame (a fade-in here read as a black flash).
     ctx.drawImage(m.el, x + (cw - m.w * s) / 2 + dx, y + (ch - m.h * s) / 2 + dy, m.w * s, m.h * s);
     ctx.restore();
   };
@@ -469,14 +470,20 @@ function drawRecap(ctx: CanvasRenderingContext2D, t: number, seg: Segment, tl: T
   if (end.tagline && t >= second) {
     ctx.fillStyle = `rgba(0,0,0,${(0.45 * clamp01((t - second) / 0.25)).toFixed(3)})`;
     ctx.fillRect(0, 0, W, H);
-    drawQuiet(ctx, end.tagline, H * 0.5, t - second, look, 64);
+    drawText(ctx, end.tagline, H * 0.5, t - second, look, 64);
   }
   const third = seg.beats[2] ?? second + 0.5;
   if (end.small && t >= third) drawQuiet(ctx, end.small, H * 0.5 + 90, t - third, look, 34, 0.7);
 }
 
+/** Text over a photo in the chosen style: quiet (plain with a soft shadow), bold outline or white box. */
+export function drawText(ctx: CanvasRenderingContext2D, text: string, cy: number, dt: number, look: Look, size = 72) {
+  if (look.text === 'quiet') drawQuiet(ctx, text, cy, dt, look, size);
+  else drawCaption(ctx, text, cy, dt, look, null);
+}
+
 /** Quiet type for the photo styles: no outline, no bounce, a short fade and a small rise. */
-export function drawQuiet(ctx: CanvasRenderingContext2D, text: string, cy: number, dt: number, look: Look, size: number, alpha = 1) {
+export function drawQuiet(ctx: CanvasRenderingContext2D, text: string, cy: number, dt: number, look: Look, size: number, alpha = 1, ink = '#ffffff') {
   const p = clamp01(dt / 0.35);
   const e = 1 - (1 - p) ** 3;
   ctx.save();
@@ -484,7 +491,12 @@ export function drawQuiet(ctx: CanvasRenderingContext2D, text: string, cy: numbe
   ctx.font = `500 ${size}px ${look.font}`;
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
-  ctx.fillStyle = '#ffffff';
+  ctx.fillStyle = ink;
+  // A soft shadow (no outline) so white type reads on a bright photo.
+  if (ink === '#ffffff') {
+    ctx.shadowColor = 'rgba(0,0,0,0.55)';
+    ctx.shadowBlur = size * 0.6;
+  }
   if ('letterSpacing' in ctx) (ctx as unknown as { letterSpacing: string }).letterSpacing = `${(size * 0.02).toFixed(1)}px`;
   const lines = wrap(ctx, text, W * 0.8);
   lines.forEach((line, i) => ctx.fillText(line, W / 2, cy + (i - (lines.length - 1) / 2) * size * 1.2 + 14 * (1 - e)));
