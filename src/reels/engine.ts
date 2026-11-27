@@ -262,7 +262,7 @@ export function segmentAt(tl: Timeline, t: number): Segment | undefined {
 // ---------- drawing ----------
 
 export type Media =
-  | { kind: 'image'; el: HTMLImageElement | ImageBitmap; w: number; h: number }
+  | { kind: 'image'; el: HTMLImageElement | ImageBitmap | HTMLCanvasElement; w: number; h: number }
   | { kind: 'video'; el: HTMLVideoElement; w: number; h: number };
 
 export type Card = { media: Media | null; text: string; fit: 'fill' | 'whole' };
@@ -365,19 +365,20 @@ function fadeOut(ctx: CanvasRenderingContext2D, t: number, tl: Timeline) {
 
 // ---------- the photo recap ----------
 
-export const RECAP_MAX = 15;
+export const RECAP_MAX = 60;
 export type Grid = { cols: number; rows: number; count: number; order: number[] };
 
 /**
- * The collage: three columns of small 9:16 tiles (three rows, more for more photos), so every
- * tile is a little copy of the screen's shape. The photos that flash alone sit in the middle
- * column first; the collage then fills from the bottom up, so the screen builds rather than
- * scatters.
+ * The collage: a 3×3 grid of small 9:16 tiles, so every tile is a little copy of the screen's
+ * shape. The photos that flash alone sit in the middle column first; the collage then fills
+ * from the bottom up, so the screen builds rather than scatters. Past nine photos, each new one
+ * cuts into the next cell in the same order, so a long recap keeps changing without ever
+ * looking crowded.
  */
 export function recapGrid(n: number): Grid {
   const count = Math.max(1, Math.min(RECAP_MAX, n));
   const cols = 3;
-  const rows = Math.max(3, Math.ceil(count / cols));
+  const rows = 3;
   const cells = cols * rows;
   const first = [1, cols + 1, cols + 2, 0, 2 * cols + 1].filter((c) => c < cells);
   // Then bottom row to top, alternating direction across each row.
@@ -425,6 +426,19 @@ function drawRecap(ctx: CanvasRenderingContext2D, t: number, seg: Segment, tl: T
     ctx.restore();
   };
   const landed = (i: number) => t - (tl.segments[i]?.start ?? 0);
+  const cells = g.order.length;
+  const cellOf = (j: number) => g.order[j % cells];
+  /** Draws, for each cell, the newest photo in it among photos from..upto. */
+  const latest = (from: number, upto: number, since?: number) => {
+    const done = new Set<number>();
+    for (let j = upto; j >= from && done.size < cells; j--) {
+      const c = cellOf(j);
+      if (done.has(c)) continue;
+      done.add(c);
+      tile(j, c, since ?? landed(j));
+    }
+    return done;
+  };
 
   if (seg.kind === 'clip') {
     const i = seg.index;
@@ -434,14 +448,19 @@ function drawRecap(ctx: CanvasRenderingContext2D, t: number, seg: Segment, tl: T
     if (i < alone) {
       // On for a beat with one blink in it, then dark until the next hit.
       const on = dt < beat * 0.55 || (dt > beat * 0.68 && dt < beat * 1.15);
-      if (on) tile(i, g.order[i], dt);
-    } else for (let j = alone; j <= i; j++) tile(j, g.order[j], landed(j));
+      if (on) tile(i, cellOf(i), dt);
+    } else latest(alone, i);
     return;
   }
 
+  // The last beat: the photos that flashed alone come back into any cell still empty.
   const since = t - seg.start;
-  for (let j = 0; j < g.count; j++) tile(j, g.order[j], j < alone ? since : landed(j));
-  for (let c = g.count; c < g.order.length; c++) tile((c - g.count) % g.count, g.order[c], since);
+  const filled = latest(alone, g.count - 1);
+  for (let j = 0; j < alone; j++) if (!filled.has(cellOf(j))) {
+    filled.add(cellOf(j));
+    tile(j, cellOf(j), since);
+  }
+  for (let c = 0, k = 0; c < cells; c++) if (!filled.has(g.order[c])) tile(k++ % g.count, g.order[c], since);
   const second = seg.beats[1] ?? seg.start + 0.5;
   if (end.tagline && t >= second) {
     ctx.fillStyle = `rgba(0,0,0,${(0.45 * clamp01((t - second) / 0.25)).toFixed(3)})`;

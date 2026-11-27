@@ -76,6 +76,17 @@ async function loadMedia(file: Blob, name: string): Promise<{ media: Media; url:
   await el.decode().catch(() => {
     throw new Error(`Couldn't open ${name} (this browser may not read that picture type; try a JPG or PNG)`);
   });
+  // Phone photos are 12+ megapixels; a reel never needs more than the screen's height, and
+  // 35 full-size photos would use gigabytes of memory. Keep a 1920 px copy instead.
+  const big = Math.max(el.naturalWidth, el.naturalHeight);
+  if (big > 1920) {
+    const k = 1920 / big;
+    const c = document.createElement('canvas');
+    c.width = Math.round(el.naturalWidth * k);
+    c.height = Math.round(el.naturalHeight * k);
+    c.getContext('2d')?.drawImage(el, 0, 0, c.width, c.height);
+    return { media: { kind: 'image', el: c, w: c.width, h: c.height }, url };
+  }
   return { media: { kind: 'image', el, w: el.naturalWidth, h: el.naturalHeight }, url };
 }
 
@@ -638,7 +649,7 @@ export default function ReelMaker() {
             }}
           >
             <strong>Drop photos or video clips here</strong>
-            <span>{mode === 'story' ? 'or tap to choose. They fill the script\'s empty slots in order.' : mode === 'recap' ? `or tap to choose. Up to ${RECAP_MAX} make the collage.` : 'or tap to choose. One photo per cut, in this order.'}</span>
+            <span>{mode === 'story' ? 'or tap to choose. They fill the script\'s empty slots in order.' : mode === 'recap' ? `or tap to choose. Up to ${RECAP_MAX}; past nine, each one cuts into the collage.` : 'or tap to choose. One photo per cut, in this order.'}</span>
             <input type="file" accept="image/*,video/*" multiple hidden onChange={(e) => e.target.files && addFiles(e.target.files)} />
           </label>
           <ol className="reel-clips">
@@ -656,7 +667,7 @@ export default function ReelMaker() {
                       {c.hint && <small>Shot: {c.hint}</small>}
                     </>
                   )}
-                  {mode === 'recap' && <small>{i < alone ? 'Pops in alone' : i < RECAP_MAX ? 'Builds the collage' : 'Past the collage: shown full screen'}</small>}
+                  {mode === 'recap' && <small>{i < alone ? 'Pops in alone' : i < 9 ? 'Builds the collage' : i < RECAP_MAX ? 'Cuts into the collage' : 'Over the limit: left out'}</small>}
                   <div className="reel-row">
                     <select value={c.beats ?? ''} onChange={(e) => update(c.id, { beats: e.target.value ? Number(e.target.value) : null })} className="reel-select reel-small" aria-label="Beats">
                       <option value="">{cutEvery} beats</option>
