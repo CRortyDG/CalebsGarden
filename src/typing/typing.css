@@ -1,0 +1,585 @@
+/* "Watch me write this": the player (.ww) and the writing desk (.desk).
+   Built from the site's tokens in app/globals.css; the few of its own are here. */
+.ww,
+.desk {
+  --ww-paper: #101913;
+  --ww-raised: #15211a;
+  --ww-moss: #8dbb62;
+  --ww-rust: #e08a5b;
+  --ww-sky: #8fc3d9;
+  --ww-mask: #3a4a3f;
+}
+
+/* ---------- invite on a note ---------- */
+.ww-invite {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 14px;
+  margin: 0 0 32px;
+  padding: 14px 16px;
+  border: 1px dashed var(--line);
+  border-radius: 12px;
+}
+.ww-invite-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--lamp);
+  color: var(--sheet-accent-ink);
+  font-weight: 600;
+  cursor: pointer;
+}
+.ww-invite-btn:disabled {
+  opacity: 0.7;
+  cursor: progress;
+}
+.ww-invite-note {
+  font-size: 0.9rem;
+  color: var(--muted);
+  max-width: 52ch;
+}
+
+/* ---------- the player ---------- */
+.ww {
+  margin: 0 0 40px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: var(--ww-paper);
+  overflow: hidden;
+}
+.ww:focus {
+  outline: none;
+}
+.ww-page {
+  position: relative;
+  height: min(60vh, 520px);
+  overflow-y: auto;
+  padding: 20px 22px 40px;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  font-size: 1.0625rem;
+  line-height: 1.7;
+}
+.ww-caret {
+  display: inline-block;
+  width: 2px;
+  height: 1.15em;
+  margin: 0 -1px;
+  vertical-align: text-bottom;
+  background: var(--lamp);
+}
+.ww-caret.is-still {
+  animation: ww-blink 1.1s steps(1) infinite;
+}
+@keyframes ww-blink {
+  50% {
+    opacity: 0;
+  }
+}
+.ww-ghost {
+  color: var(--ww-rust);
+  text-decoration-thickness: 2px;
+  animation: ww-fade 0.45s ease-in forwards;
+}
+@keyframes ww-fade {
+  to {
+    opacity: 0.15;
+  }
+}
+.ww-mask {
+  color: var(--ww-mask);
+  letter-spacing: -0.05em;
+}
+.ww-break {
+  position: sticky;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  width: fit-content;
+  margin: 24px auto 0;
+  padding: 10px 18px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--ww-raised);
+  font: 500 0.85rem var(--mono);
+  white-space: normal;
+  text-align: center;
+}
+.ww-break span {
+  color: var(--muted);
+  font-size: 0.75rem;
+}
+.ww-bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  border-top: 1px solid var(--line);
+  background: var(--ww-raised);
+}
+.ww-play {
+  flex: none;
+  width: 40px;
+  height: 40px;
+  border: 0;
+  border-radius: 50%;
+  background: var(--lamp);
+  color: var(--sheet-accent-ink);
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+.ww-track {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+  padding-top: 12px;
+}
+.ww-track input[type='range'] {
+  width: 100%;
+  margin: 0;
+  accent-color: var(--lamp);
+}
+.ww-marks {
+  position: absolute;
+  inset: 0 0 auto;
+  height: 12px;
+}
+.ww-mark {
+  position: absolute;
+  top: 0;
+  width: 10px;
+  height: 12px;
+  margin-left: -5px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+}
+.ww-mark::after {
+  content: '';
+  position: absolute;
+  left: 4px;
+  top: 2px;
+  width: 2px;
+  height: 9px;
+  border-radius: 1px;
+  background: var(--muted);
+}
+.ww-mark.is-delete::after {
+  background: var(--ww-rust);
+}
+.ww-mark.is-paste::after {
+  background: var(--ww-sky);
+}
+.ww-mark.is-note::after {
+  background: var(--ww-moss);
+}
+.ww-time {
+  flex: none;
+  font: 500 0.8rem var(--mono);
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+.ww-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 16px;
+  padding: 0 14px 10px;
+  background: var(--ww-raised);
+}
+.ww-speeds {
+  display: flex;
+  gap: 4px;
+}
+.ww-speeds button,
+.ww-close {
+  padding: 4px 10px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: transparent;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+.ww-speeds button[aria-pressed='true'] {
+  border-color: var(--lamp);
+  color: var(--lamp);
+}
+.ww-skip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.85rem;
+}
+.ww-skip input {
+  accent-color: var(--lamp);
+}
+.ww-close {
+  margin-left: auto;
+}
+.ww-stats,
+.ww-margin,
+.ww-what {
+  margin: 0;
+  padding: 8px 14px;
+  font-size: 0.85rem;
+  max-width: none !important;
+}
+.ww-stats {
+  font-family: var(--mono);
+  color: var(--muted);
+  border-top: 1px solid var(--line);
+}
+.ww-margin {
+  border-top: 1px solid var(--line);
+  border-left: 3px solid var(--ww-moss);
+}
+.ww-margin span {
+  font: 500 0.7rem var(--mono);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ww-moss);
+  margin-right: 6px;
+}
+.ww-what {
+  color: var(--muted);
+  border-top: 1px solid var(--line);
+  padding-bottom: 12px;
+}
+.ww-what strong {
+  color: var(--ink);
+  font-weight: 600;
+}
+@media (max-width: 560px) {
+  .ww-page {
+    padding: 16px 16px 32px;
+    font-size: 1rem;
+  }
+  .ww-time {
+    display: none;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ww-caret.is-still,
+  .ww-ghost {
+    animation: none;
+  }
+}
+
+/* ---------- the desk ---------- */
+.desk {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding-block: 40px 80px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+.desk h1 {
+  margin: 0 0 6px;
+  font-family: var(--display);
+  font-weight: 800;
+  font-size: clamp(2rem, 6vw, 3rem);
+  letter-spacing: -0.02em;
+}
+.desk-head p {
+  margin: 0 0 24px;
+  color: var(--muted);
+  max-width: 60ch;
+}
+:where(.desk) button {
+  padding: 7px 14px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--ww-raised);
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+:where(.desk) button:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+.desk .desk-primary {
+  border-color: var(--lamp);
+  background: var(--lamp);
+  color: var(--sheet-accent-ink);
+  font-weight: 600;
+}
+.desk .desk-danger {
+  border-color: var(--ww-rust);
+  color: var(--ww-rust);
+  background: transparent;
+}
+.desk .desk-link {
+  padding: 0;
+  border: 0;
+  background: none;
+  text-decoration: underline;
+  font-size: inherit;
+}
+.desk-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+.desk-msg,
+.desk-empty,
+.desk-hint {
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+.desk-warn {
+  margin: 0 0 16px;
+  padding: 10px 14px;
+  border: 1px solid var(--ww-rust);
+  border-radius: 10px;
+  font-size: 0.9rem;
+}
+.desk-list {
+  list-style: none;
+  margin: 24px 0 0;
+  padding: 0;
+}
+.desk-list li {
+  border-top: 1px solid var(--line);
+}
+.desk .desk-list button {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  width: 100%;
+  padding: 14px 4px;
+  border: 0;
+  border-radius: 0;
+  background: none;
+  text-align: left;
+  font-size: 1rem;
+}
+.desk-list span {
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+.desk-bar {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin: -40px 0 16px;
+  padding: 12px 0;
+  background: var(--night);
+  border-bottom: 1px solid var(--line);
+}
+.desk-count {
+  font: 500 0.8rem var(--mono);
+  color: var(--muted);
+}
+.desk-bar-gap {
+  flex: 1;
+}
+.desk-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 300px;
+  gap: 28px;
+  align-items: start;
+}
+.desk-page {
+  width: 100%;
+  min-height: 60vh;
+  padding: 8px 0;
+  border: 0;
+  outline: none;
+  resize: none;
+  overflow: hidden;
+  background: transparent;
+  color: var(--ink);
+  font: inherit;
+  font-size: 1.0625rem;
+  line-height: 1.7;
+  caret-color: var(--lamp);
+}
+.desk-page::placeholder {
+  color: var(--muted);
+}
+.desk-notes {
+  position: sticky;
+  top: 72px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-height: calc(100vh - 96px);
+  overflow-y: auto;
+}
+.desk-note {
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  border-left: 3px solid var(--ww-moss);
+  border-radius: 8px;
+  background: var(--ww-raised);
+  font-size: 0.9rem;
+}
+.desk-note.is-done {
+  opacity: 0.6;
+}
+.desk-note q {
+  display: block;
+  margin-bottom: 4px;
+  color: var(--muted);
+  font-style: italic;
+}
+.desk-note q.is-gone {
+  text-decoration: line-through;
+}
+.desk-note p {
+  margin: 0 0 6px;
+}
+.desk-note textarea {
+  width: 100%;
+  padding: 6px 8px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--night);
+  color: var(--ink);
+  font: inherit;
+}
+.desk-note-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+.desk .desk-note-actions button {
+  padding: 2px 10px;
+  font-size: 0.8rem;
+}
+.desk-done summary {
+  cursor: pointer;
+  color: var(--muted);
+  font-size: 0.85rem;
+  margin-bottom: 8px;
+}
+.desk-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 10;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: max(16px, env(safe-area-inset-top, 0px)) 16px 16px;
+  overflow-y: auto;
+  background: var(--chrome-bg);
+  backdrop-filter: blur(4px);
+}
+.desk-sheet {
+  width: 100%;
+  max-width: 820px;
+}
+.desk-sheet .ww {
+  margin: 0;
+}
+.desk-sheet-label {
+  margin: 0 0 8px;
+  font: 500 0.75rem var(--mono);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--lamp);
+}
+.desk-publish {
+  padding: 20px 22px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: var(--sheet-bg);
+}
+.desk-publish h2 {
+  margin: 0 0 8px;
+  font-family: var(--display);
+}
+.desk-publish h3 {
+  margin: 24px 0 4px;
+  font-size: 1rem;
+}
+.desk-publish > p {
+  margin: 0 0 16px;
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+.desk-publish .desk-actions {
+  margin-top: 24px;
+}
+.desk-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+.desk-slug {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  font-family: var(--mono);
+}
+.desk-slug input {
+  flex: 1;
+  min-width: 140px;
+  padding: 4px 8px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--night);
+  color: var(--ink);
+  font: inherit;
+}
+.desk-spans {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  max-height: 40vh;
+  overflow-y: auto;
+}
+.desk-spans li {
+  padding: 8px 0;
+  border-top: 1px solid var(--line);
+  font-size: 0.9rem;
+}
+.desk-spans label {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  cursor: pointer;
+}
+.desk-spans input {
+  margin-top: 4px;
+  accent-color: var(--lamp);
+}
+.desk-ctx {
+  color: var(--muted);
+  margin-right: 4px;
+}
+.desk-spans del {
+  color: var(--ww-rust);
+  white-space: pre-wrap;
+}
+@media (max-width: 820px) {
+  .desk-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .desk-notes {
+    position: static;
+    max-height: none;
+    order: -1;
+  }
+}
+
+/* A note's words, lit up while the note is showing. */
+.ww-lit {
+  background: color-mix(in srgb, var(--ww-moss) 28%, transparent);
+  color: inherit;
+  border-radius: 3px;
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--ww-moss) 28%, transparent);
+}

@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "tsc --noEmit",
-    "og": "node scripts/og-cards.mjs"
+    "og": "node scripts/og-cards.mjs",
+    "typing:check": "node --no-warnings scripts/typing-check.mts"
   },
   "dependencies": {
     "next": "^16.4.6",
