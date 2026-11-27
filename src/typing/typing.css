@@ -583,3 +583,70 @@
   border-radius: 3px;
   box-shadow: 0 0 0 2px color-mix(in srgb, var(--ww-moss) 28%, transparent);
 }
+
+/* ---------- the "Human written" tag in a note's header ---------- */
+.ww-tag {
+  padding: 1px 8px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: transparent;
+  font: inherit;
+  letter-spacing: inherit;
+  text-transform: inherit;
+  color: inherit;
+  cursor: pointer;
+}
+.ww-tag:hover,
+.ww-tag[aria-expanded='true'] {
+  border-color: currentColor;
+}
+.ww-info {
+  margin: 0 0 32px;
+  padding: 14px 16px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  font-size: 0.95rem;
+}
+.ww-info p {
+  margin: 0 0 12px;
+  color: var(--muted);
+}
+.ww-info-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 14px;
+}
+.ww-watch {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 14px;
+  border: 1px solid var(--lamp);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--lamp);
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+.ww-watch:disabled {
+  opacity: 0.7;
+  cursor: progress;
+}
+.ww-info-meta {
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+.ww-info-close {
+  margin-left: auto;
+  padding: 2px 10px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: transparent;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+.ww-tag-i {
+  text-transform: none;
+}

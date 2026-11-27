@@ -1,7 +1,8 @@
 # Watch me write this
 
 Notes written at [calebs.garden/desk](https://calebs.garden/desk) carry a replay of every
-change to their text, with the real pauses. The code is in `src/typing/`, with no outside
+change to their text, with the real pauses. A small "Human written" tag next to the date
+opens a short explanation and the way into the replay. The code is in `src/typing/`, with no outside
 libraries and no server.
 
 ## Writing
@@ -33,7 +34,7 @@ libraries and no server.
 
 ```tsx
 import { Note, noteMetadata } from '../_parts/Note';
-import { RecordedNote } from '@/typing/RecordedNote';
+import { RecordedNote, recordingInfo } from '@/typing/RecordedNote';
 import rec from '../../../public/typing/<slug>.json';
 
 const SLUG = '<slug>';
@@ -42,7 +43,7 @@ export const revalidate = 3600;
 
 export default function Page() {
   return (
-    <Note slug={SLUG} kind="note">
+    <Note slug={SLUG} kind="note" recording={recordingInfo(SLUG, rec)}>
       <RecordedNote slug={SLUG} rec={rec} />
     </Note>
   );

@@ -6,6 +6,7 @@ import { allPosts, formatDate, isDue, isLive, livePosts, postUrl } from './posts
 import { VineBand } from '@/overgrowth/VineBand';
 import { IdleVines } from '@/overgrowth/IdleVines';
 import { ogImage } from '@/og/image';
+import { HumanTag } from '@/typing/WatchMeWrite';
 
 const SITE = 'https://calebs.garden';
 
@@ -23,7 +24,18 @@ export function noteMetadata(slug: string): Metadata {
 }
 
 /** The frame for one note: date, title, the summary as a standalone "In short", the post, and other notes. */
-export function Note({ slug, kind, children }: { slug: string; kind: 'idea' | 'working' | 'note'; children: React.ReactNode }) {
+export function Note({
+  slug,
+  kind,
+  recording,
+  children,
+}: {
+  slug: string;
+  kind: 'idea' | 'working' | 'note';
+  /** For a note written at the desk: adds the "Human written" tag that opens the replay. */
+  recording?: { slug: string; minutesOfWriting: number; sessions: number };
+  children: React.ReactNode;
+}) {
   const p = allPosts.find((x) => x.slug === slug)!;
   if (!isLive(p)) notFound();
   const label = { idea: 'An idea, not built', working: 'Working it out', note: 'Note' }[kind];
@@ -48,6 +60,12 @@ export function Note({ slug, kind, children }: { slug: string; kind: 'idea' | 'w
         <header className="cs-head">
           <p className="cs-kicker">
             {isDue(p) ? '' : 'Scheduled for '}<time dateTime={p.date}>{formatDate(p.date)}</time> · {label}
+            {recording && (
+              <>
+                {' · '}
+                <HumanTag {...recording} />
+              </>
+            )}
           </p>
           <h1>{p.title}</h1>
         </header>
